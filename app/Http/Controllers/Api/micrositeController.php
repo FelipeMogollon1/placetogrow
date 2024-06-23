@@ -21,9 +21,10 @@ class micrositeController extends Controller
         $this->micrositesRepository = $repository;
     }
 
-    public function  index(): iterable
+    public function  index():JsonResponse
     {
-        return $this->micrositesRepository->all();
+        $microsite = $this->micrositesRepository->getAllWithCategories();
+        return response()->json($microsite, 200);
     }
 
     public function store(StoreMicrositeRequest $request, StoreMicrositeAction $storeMicrositeAction): JsonResponse

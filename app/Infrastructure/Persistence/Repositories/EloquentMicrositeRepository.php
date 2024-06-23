@@ -35,4 +35,22 @@ class EloquentMicrositeRepository implements MicrositeRepositoryInterface
 
         return false;
     }
+
+    public function getAllWithCategories(): iterable
+    {
+        return Microsite::query()
+            ->join('categories', 'microsites.category_id', '=', 'categories.id')
+            ->select([
+                'microsites.id',
+                'microsites.name',
+                'microsites.document_type',
+                'microsites.document',
+                'microsites.created_at',
+                'microsites.currency',
+                'microsites.payment_expiration_time',
+                'microsites.microsite_type',
+                'categories.name as category_name'
+            ])
+            ->get();
+    }
 }
