@@ -24,8 +24,6 @@ class StoreMicrositeAction
             'currency' => $data['currency'],
             'payment_expiration_time' => $data['payment_expiration_time'],
             'category_id' => $categoryId,
-            'updated_at' => now(),
-            'created_at' => now(),
         ]);
 
         return [

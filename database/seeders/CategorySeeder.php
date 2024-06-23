@@ -7,24 +7,27 @@ use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run()
     {
 
         $categories = [
             [
-                'name' => 'essential',
-                'description' => 'Category for essential items',
+                'name' => 'Donaciones',
+                'description' => 'Incluir micrositios destinados a la recolección de donaciones para causas específicas o sin fines de lucro.',
             ],
             [
-                'name' => 'invoice',
-                'description' => 'Category for invoices',
+                'name' => 'Facturación',
+                'description' => 'Micrositios utilizados para el pago de facturas emitidas por servicios o productos.
+',
             ],
             [
-                'name' => 'subscription',
-                'description' => 'Category for subscriptions',
+                'name' => 'Suscripciones',
+                'description' => 'Micrositios que ofrecen planes de suscripción a servicios o contenidos recurrentes.',
+            ],
+            [
+                'name' => ' Pago Personalizado',
+                'description' => 'Micrositios que permiten a los usuarios establecer un monto personalizado para pagos únicos.',
             ],
         ];
 
