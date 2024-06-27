@@ -11,7 +11,11 @@ class Category extends Model
     use HasFactory;
 
     protected $table = 'categories';
+
+    protected $guarded = [];
+
     protected $fillable = [
+        'id',
         'name',
         'description',
         'enabled_at',
@@ -21,6 +25,7 @@ class Category extends Model
     {
         return $this->hasMany(Microsite::class);
     }
-    protected $guarded = [];
+
+
 
 }

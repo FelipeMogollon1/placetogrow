@@ -7,27 +7,49 @@ use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder
 {
-
-    public function run()
+    public function run(): void
     {
 
         $categories = [
             [
-                'name' => 'Donaciones',
-                'description' => 'Incluir micrositios destinados a la recolección de donaciones para causas específicas o sin fines de lucro.',
+                'name' => 'Servicios',
+                'description' => 'Página dedicada a ofrecer suscripciones a servicios específicos, con detalles sobre planes disponibles, beneficios incluidos y opciones de pago.',
             ],
             [
-                'name' => 'Facturación',
-                'description' => 'Micrositios utilizados para el pago de facturas emitidas por servicios o productos.
-',
+                'name' => 'Contenido Premium',
+                'description' => 'Sitio enfocado en ofrecer acceso a contenido exclusivo o premium a través de suscripciones, con muestras del contenido disponible y beneficios de membresía.',
             ],
             [
-                'name' => 'Suscripciones',
-                'description' => 'Micrositios que ofrecen planes de suscripción a servicios o contenidos recurrentes.',
+                'name' => 'Causas Sociales',
+                'description' => 'Página destinada a recaudar fondos para organizaciones sin fines de lucro o campañas de caridad, con información sobre la causa, métodos de donación y resultados alcanzados.',
             ],
             [
-                'name' => ' Pago Personalizado',
-                'description' => 'Micrositios que permiten a los usuarios establecer un monto personalizado para pagos únicos.',
+                'name' => 'Proyectos Creativos',
+                'description' => 'Sitio web que facilita la financiación colectiva para proyectos creativos como películas, libros o arte, ofreciendo detalles del proyecto y recompensas para donantes.',
+            ],
+            [
+                'name' => 'Cursos Online',
+                'description' => 'Página que permite suscribirse a cursos educativos en línea, con descripciones de cursos, currículos, testimonios y opciones de inscripción.',
+            ],
+            [
+                'name' => 'Membresías para Comunidades',
+                'description' => 'Sitio enfocado en ofrecer membresías para acceso a comunidades exclusivas, con beneficios como eventos virtuales, recursos compartidos y networking.',
+            ],
+            [
+                'name' => 'Servicios de Entretenimiento',
+                'description' => 'Página dedicada a suscripciones para servicios de streaming de música, películas o videojuegos, con detalles sobre contenido disponible y opciones de suscripción.',
+            ],
+            [
+                'name' => 'Investigación Científica',
+                'description' => 'Sitio web que facilita donaciones para apoyar investigaciones científicas, con detalles sobre proyectos, logros pasados y testimonios de científicos.',
+            ],
+            [
+                'name' => 'Aplicaciones o Software',
+                'description' => 'Página que ofrece suscripciones para acceso premium a aplicaciones o software, con características avanzadas, soporte prioritario y actualizaciones exclusivas.',
+            ],
+            [
+                'name' => 'Emergencias o Desastres',
+                'description' => 'Sitio web dedicado a recaudar fondos para situaciones de emergencia o desastres naturales, proporcionando información actualizada, testimonios de afectados y formas de ayuda.',
             ],
         ];
 
