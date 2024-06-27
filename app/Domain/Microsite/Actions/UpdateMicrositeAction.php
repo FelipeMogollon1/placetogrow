@@ -2,35 +2,22 @@
 
 namespace App\Domain\Microsite\Actions;
 
-use App\Infrastructure\Persistence\Models\Category;
 use App\Infrastructure\Persistence\Models\Microsite;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 
 class UpdateMicrositeAction
 {
-    public function execute(int $id, array $data): ?array
+    public function execute(int $id, array $data): RedirectResponse
     {
-
-        $category = Category::find($data['category_id']);
-
         $microsite = Microsite::find($id);
 
-        if (!$microsite) {
-            return ['error' => 'No se encontró el micrositio'];
-        }
+        $data['logo'] = $data['logo'] ? $data['logo']->store('logo', ['disk' => 'public']) : $microsite->logo;
+
+        $microsite->logo && $data['logo'] && Storage::disk('public')->delete($microsite->logo);
 
         $microsite->update($data);
 
-        return [
-            'id' => $microsite->id,
-            'slug' => $microsite->slug,
-            'name' => $microsite->name,
-            'document_type' => $microsite->document_type,
-            'document' => $microsite->document,
-            'logo' => $microsite->logo,
-            'microsite_type' => $microsite->microsite_type,
-            'currency' => $microsite->currency,
-            "payment_expiration_time" => $microsite->payment_expiration_time,
-            "category_id" => $microsite->category_id,
-        ];
+        return to_route('microsites.index');
     }
 }

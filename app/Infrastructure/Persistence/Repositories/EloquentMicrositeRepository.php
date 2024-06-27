@@ -2,9 +2,14 @@
 
 namespace App\Infrastructure\Persistence\Repositories;
 
+use App\Constants\CurrencyTypes;
+use App\Constants\DocumentTypes;
+use App\Constants\MicrositesTypes;
 use App\Domain\Microsite\Repositories\MicrositeRepositoryInterface;
+use App\Infrastructure\Persistence\Models\Category;
 use App\Infrastructure\Persistence\Models\Microsite;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class EloquentMicrositeRepository implements MicrositeRepositoryInterface
 {
@@ -27,13 +32,13 @@ class EloquentMicrositeRepository implements MicrositeRepositoryInterface
 
     public function delete(int $id): bool
     {
-        $microsite = $this->find($id);
+        $microsite = $this->findOrFail($id);
 
-        if ($microsite) {
-            return $microsite->delete();
+        if ($microsite->logo) {
+            Storage::disk('public')->delete($microsite->logo);
         }
 
-        return false;
+        return $microsite->delete();
     }
 
     public function getAllWithCategories(): iterable
@@ -45,12 +50,33 @@ class EloquentMicrositeRepository implements MicrositeRepositoryInterface
                 'microsites.name',
                 'microsites.document_type',
                 'microsites.document',
-                'microsites.created_at',
                 'microsites.currency',
                 'microsites.payment_expiration_time',
                 'microsites.microsite_type',
+                'microsites.logo',
                 'categories.name as category_name'
             ])
             ->get();
+    }
+
+    private function findOrFail(int $id)
+    {
+        $microsite = $this->microsite->find($id);
+
+        if (!$microsite) {
+            return false;
+        }
+
+        return $microsite;
+    }
+
+    public function getCommonData(): array
+    {
+        return [
+            'documentTypes' => DocumentTypes::getDocumentTypes(),
+            'micrositesTypes' => MicrositesTypes::getMicrositesTypes(),
+            'currencyTypes' => CurrencyTypes::getCurrencyType(),
+            'categories' => Category::select('id', 'name')->get(),
+        ];
     }
 }

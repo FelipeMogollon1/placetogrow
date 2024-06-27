@@ -12,6 +12,8 @@ class Microsite extends Model
 
     protected $table = 'microsites';
 
+    protected $guarded = [];
+
     protected $fillable = [
         'slug',
         'name',
@@ -24,7 +26,7 @@ class Microsite extends Model
         'category_id',
         'enabled_at',
     ];
-    protected $guarded = [];
+
 
     public function category(): BelongsTo
     {

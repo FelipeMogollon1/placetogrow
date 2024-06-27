@@ -20,13 +20,13 @@ class StoreMicrositeRequest extends FormRequest
         return [
             'slug' => 'nullable|string|max:40',
             'name' => 'required','string','max:255',
-            'logo' => 'nullable|string|max:255',
+            'logo' => 'nullable|mimes:png,jpg,jpeg,ico|max:2040',
             'document_type'=> ['required', Rule::in(DocumentTypes::getDocumentTypes())],
-            'document'=> ['required', 'string','max:20'],
+            'document' => ['required', 'max:20', 'regex:/^[a-zA-Z0-9 \-]+$/'],
             'microsite_type' => ['required','string', Rule::in(MicrositesTypes::getMicrositesTypes())],
             'currency' => ['required', Rule::in(CurrencyTypes::getCurrencyType())],
             'payment_expiration_time' => ['required','integer'],
-            'category_id' => ['required', 'integer', Rule::in([1, 2, 3])],
+            'category_id' => ['required', 'integer'],
         ];
     }
 
@@ -40,13 +40,14 @@ class StoreMicrositeRequest extends FormRequest
             'name.string' => 'El nombre debe ser una cadena de texto.',
             'name.max' => 'El nombre no debe exceder 255 caracteres.',
 
-            'logo.string' => 'El logo debe ser una cadena de texto.',
-            'logo.max' => 'El logo no debe exceder 255 caracteres.',
+            'logo.mimes' => 'El logo debe ser un archivo de tipo: png, jpg, jpeg ó ico.',
+            'logo.max' => 'El logo no puede ser mayor a 2040 kilobytes.',
 
             'document_type.required' => 'El campo tipo de documento es requerido.',
             'document_type.in' => 'El tipo de documento seleccionado no es válido.',
 
             'document.required' => 'El campo documento es requerido.',
+            'document.regex' => 'El campo documento solo puede contener letras y números.',
             'document.string' => 'El documento debe ser una cadena de texto.',
             'document.max' => 'El documento no debe exceder 20 caracteres.',
 
@@ -61,7 +62,7 @@ class StoreMicrositeRequest extends FormRequest
             'payment_expiration_time.integer' => 'El tiempo de expiración de pago debe ser un número entero.',
 
             'category_id.required' => 'El campo categoría es requerido.',
-            'category_id.in' => 'La categoría seleccionada no es válida.',
+            'category_id.integer' => 'La categoría de expiración de pago debe ser un número entero.',
         ];
     }
 }

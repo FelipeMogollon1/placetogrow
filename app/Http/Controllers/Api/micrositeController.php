@@ -11,6 +11,9 @@ use App\Http\Requests\Microsite\UpdateMicrositeRequest;
 use App\Http\Requests\Microsite\UpdatePartialMicrositeRequest;
 use App\Infrastructure\Persistence\Repositories\EloquentMicrositeRepository;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class micrositeController extends Controller
 {
@@ -21,16 +24,21 @@ class micrositeController extends Controller
         $this->micrositesRepository = $repository;
     }
 
-    public function  index():JsonResponse
+    public function  index(): Response
     {
-        $microsite = $this->micrositesRepository->getAllWithCategories();
-        return response()->json($microsite, 200);
+        $microsites = $this->micrositesRepository->getAllWithCategories();
+        return Inertia::render('Microsites/Index', ['microsites' =>  $microsites ]);
     }
 
-    public function store(StoreMicrositeRequest $request, StoreMicrositeAction $storeMicrositeAction): JsonResponse
+    public function create(): Response
     {
-        $microsite = $storeMicrositeAction->execute($request->validated());
-        return response()->json($microsite, 201);
+        $arrayConstants = $this->micrositesRepository->getCommonData();
+        return Inertia::render('Microsites/Create', $arrayConstants);
+    }
+
+    public function store(StoreMicrositeRequest $request, StoreMicrositeAction $storeAction): RedirectResponse
+    {
+        return $storeAction->execute($request->validated());
     }
 
      public function show(string $id): JsonResponse
@@ -44,35 +52,23 @@ class micrositeController extends Controller
         return response()->json($microsite, 200);
     }
 
-   public function update(UpdateMicrositeRequest $request, string $id, UpdateMicrositeAction $updateAction): JsonResponse
+    public function edit(string $id): Response
     {
-        if (!is_numeric($id) || $id <= 0) {
-            return response()->json(['error' => 'Bad Request'], 400);
-        }
+        $microsite = $this->micrositesRepository->find($id);
+        $arrayConstants = $this->micrositesRepository->getCommonData();
 
-        $microsite = $updateAction->execute($id, $request->validated());
-        return response()->json($microsite, 200);
+        return Inertia::render('Microsites/Edit',
+            array_merge($arrayConstants, ['microsite' => $microsite]));
     }
 
-    public function updatePartial(UpdatePartialMicrositeRequest $request, string $id, UpdatePartialMicrositeAction $updateAction): JsonResponse
+    public function update(UpdateMicrositeRequest $request, string $id, UpdateMicrositeAction $updateAction): RedirectResponse
     {
-        if (!is_numeric($id) || $id <= 0) {
-            return response()->json(['error' => 'Bad Request'], 400);
-        }
-
-        $validatedData = $request->validated();
-        $microsite = $updateAction->execute($id, $validatedData);
-        return response()->json($microsite, 200);
+        return $updateAction->execute($id, $request->validated());
     }
 
-    public function destroy(int $id): JsonResponse
+    public function destroy(int $id): RedirectResponse
     {
-        $deleted = $this->micrositesRepository->delete($id);
-
-        if (!$deleted) {
-            return response()->json(['error' => 'Microsite not found or could not be deleted'], 404);
-        }
-
-        return response()->json(['message' => 'Microsite eliminado exitosamente'], 200);
+        $this->micrositesRepository->delete($id);
+        return to_route('microsites.index');
     }
 }
