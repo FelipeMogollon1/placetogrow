@@ -4,13 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Domain\Microsite\Actions\StoreMicrositeAction;
 use App\Domain\Microsite\Actions\UpdateMicrositeAction;
-use App\Domain\Microsite\Actions\UpdatePartialMicrositeAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Microsite\StoreMicrositeRequest;
 use App\Http\Requests\Microsite\UpdateMicrositeRequest;
-use App\Http\Requests\Microsite\UpdatePartialMicrositeRequest;
 use App\Infrastructure\Persistence\Repositories\EloquentMicrositeRepository;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -27,12 +24,13 @@ class micrositeController extends Controller
     public function  index(): Response
     {
         $microsites = $this->micrositesRepository->getAllWithCategories();
-        return Inertia::render('Microsites/Index', ['microsites' =>  $microsites ]);
+        return Inertia::render('Microsites/Index', compact('microsites'));
     }
 
     public function create(): Response
     {
         $arrayConstants = $this->micrositesRepository->getCommonData();
+
         return Inertia::render('Microsites/Create', $arrayConstants);
     }
 
@@ -41,15 +39,11 @@ class micrositeController extends Controller
         return $storeAction->execute($request->validated());
     }
 
-     public function show(string $id): JsonResponse
-    {
-        $microsite = $this->micrositesRepository->find($id);
+     public function show(string $id): Response
+     {
+        $microsite = $this->micrositesRepository->getWithCategories($id);
 
-        if (!$microsite) {
-            return response()->json(['error' => 'Microsite not found'], 404);
-        }
-
-        return response()->json($microsite, 200);
+        return Inertia::render('Microsites/Show', compact('microsite'));
     }
 
     public function edit(string $id): Response
@@ -57,8 +51,7 @@ class micrositeController extends Controller
         $microsite = $this->micrositesRepository->find($id);
         $arrayConstants = $this->micrositesRepository->getCommonData();
 
-        return Inertia::render('Microsites/Edit',
-            array_merge($arrayConstants, ['microsite' => $microsite]));
+        return Inertia::render('Microsites/Edit', compact('microsite','arrayConstants'));
     }
 
     public function update(UpdateMicrositeRequest $request, string $id, UpdateMicrositeAction $updateAction): RedirectResponse
@@ -71,4 +64,12 @@ class micrositeController extends Controller
         $this->micrositesRepository->delete($id);
         return to_route('microsites.index');
     }
+
+    public function welcomeIndex(): Response
+    {
+        $microsites = $this->micrositesRepository->getAllWithCategories();
+        return Inertia::render('Welcome', compact('microsites'));
+
+    }
+
 }

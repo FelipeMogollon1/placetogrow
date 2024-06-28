@@ -157,6 +157,8 @@ defineProps({
                                 type="number"
                                 class="mt-1 block w-full"
                                 v-model="form.payment_expiration_time"
+                                min="1"
+                                max="18000000000000000000"
                                 autofocus
                                 autocomplete="payment_expiration_time"
                                 placeholder="1234567890"

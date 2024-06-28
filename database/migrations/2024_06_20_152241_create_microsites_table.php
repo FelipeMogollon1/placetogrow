@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('document', 20)->nullable();
             $table->enum('microsite_type', MicrositesTypes::getMicrositesTypes());
             $table->enum('currency', CurrencyTypes::getCurrencyType());
-            $table->integer('payment_expiration_time');
+            $table->unsignedBigInteger('payment_expiration_time');
             $table->foreignId('category_id')->constrained();
             $table->timestamp('enabled_at')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('created_at')->useCurrent();

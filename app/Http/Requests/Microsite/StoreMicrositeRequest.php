@@ -25,7 +25,7 @@ class StoreMicrositeRequest extends FormRequest
             'document' => ['required', 'max:20', 'regex:/^[a-zA-Z0-9 \-]+$/'],
             'microsite_type' => ['required','string', Rule::in(MicrositesTypes::getMicrositesTypes())],
             'currency' => ['required', Rule::in(CurrencyTypes::getCurrencyType())],
-            'payment_expiration_time' => ['required','integer'],
+            'payment_expiration_time' => ['required','max:18446744073709551614'],
             'category_id' => ['required', 'integer'],
         ];
     }
@@ -59,7 +59,7 @@ class StoreMicrositeRequest extends FormRequest
             'currency.in' => 'La moneda seleccionada no es válida.',
 
             'payment_expiration_time.required' => 'El campo tiempo de expiración de pago es requerido.',
-            'payment_expiration_time.integer' => 'El tiempo de expiración de pago debe ser un número entero.',
+            'payment_expiration_time.max' => 'El tiempo de expiración de pago debe ser menor.',
 
             'category_id.required' => 'El campo categoría es requerido.',
             'category_id.integer' => 'La categoría de expiración de pago debe ser un número entero.',

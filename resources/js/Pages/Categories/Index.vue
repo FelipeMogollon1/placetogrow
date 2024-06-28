@@ -32,14 +32,7 @@ const headers = ["Nombre","Descripción"];
             </div>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="flex justify-center py-4">
-                        <PrimaryTable :data="categories" :headers="headers" />
-                    </div>
-                </div>
-            </div>
-        </div>
+        <PrimaryTable :data="categories" :headers="headers" />
+
     </AuthenticatedLayout>
 </template>

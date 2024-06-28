@@ -8,6 +8,7 @@ use App\Constants\MicrositesTypes;
 use App\Domain\Microsite\Repositories\MicrositeRepositoryInterface;
 use App\Infrastructure\Persistence\Models\Category;
 use App\Infrastructure\Persistence\Models\Microsite;
+use GuzzleHttp\Psr7\Query;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
@@ -48,10 +49,6 @@ class EloquentMicrositeRepository implements MicrositeRepositoryInterface
             ->select([
                 'microsites.id',
                 'microsites.name',
-                'microsites.document_type',
-                'microsites.document',
-                'microsites.currency',
-                'microsites.payment_expiration_time',
                 'microsites.microsite_type',
                 'microsites.logo',
                 'categories.name as category_name'
@@ -79,4 +76,12 @@ class EloquentMicrositeRepository implements MicrositeRepositoryInterface
             'categories' => Category::select('id', 'name')->get(),
         ];
     }
+
+    public function getWithCategories(int $id): array
+    {
+        return Microsite::with('category')
+            ->findOrFail($id)
+            ->toArray();
+    }
+
 }

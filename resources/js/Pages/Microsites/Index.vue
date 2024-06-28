@@ -12,7 +12,7 @@ defineProps({
     }
 });
 
-const headers = ["Nombre","Tipo de Documento","Documento","Moneda","Tiempo de expiración","Tipo de Micrositio", "Tipo de Categoria"];
+const headers = ["Nombre"," Tipo", "Categoria"];
 
 
 </script>
@@ -32,15 +32,7 @@ const headers = ["Nombre","Tipo de Documento","Documento","Moneda","Tiempo de ex
             </div>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="flex justify-center py-4">
-                        <SecondaryTable :data="microsites" :headers="headers" />
-                    </div>
-                </div>
-            </div>
-        </div>
+        <SecondaryTable :data="microsites" :headers="headers" />
 
     </AuthenticatedLayout>
 </template>

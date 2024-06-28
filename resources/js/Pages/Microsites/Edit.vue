@@ -9,48 +9,33 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import FileInput from "@/Components/FileInput.vue";
 import {defineProps, ref} from "vue";
 
-defineProps({
-    documentTypes: {
+const props = defineProps({
+    arrayConstants: {
         type: Object,
         default: () => []
     },
-    micrositesTypes: {
-        type: Object,
-        default: () => []
-    },
-    currencyTypes: {
-        type: Object,
-        default: () => []
-    },
-    categories: {
+    microsite: {
         type: Object,
         default: () => []
     }
 });
 
-const page = usePage()
-const microsite = ref(page.props.microsite);
 
 const initialValues = {
-    name : microsite.value.name,
+    name : props.microsite.name,
     logo : null,
-    document_type: microsite.value.document_type,
-    document: microsite.value.document,
-    microsite_type: microsite.value.microsite_type,
-    currency: microsite.value.currency,
-    payment_expiration_time: microsite.value.payment_expiration_time,
-    category_id: microsite.value.category_id
+    document_type: props.microsite.document_type,
+    document: props.microsite.document,
+    microsite_type: props.microsite.microsite_type,
+    currency: props.microsite.currency,
+    payment_expiration_time: props.microsite.payment_expiration_time,
+    category_id: props.microsite.category_id
 }
 
 const form = useForm(initialValues)
 
 const submit = () => {
-    form.post(route('microsites.update',microsite.value),{
-        onSuccess: (e) => {
-            microsite.value = e.props.microsite
-        }
-    })
-
+    form.post(route('microsites.update', props.microsite.id))
 }
 
 const onSelectLogo = (e) => {
@@ -60,10 +45,10 @@ const onSelectLogo = (e) => {
     }
 }
 
-
 </script>
 
 <template>
+    <span>{{props.microsite.id}}</span>
     <Head title="Actualizar Micrositio"/>
     <AuthenticatedLayout>
         <template #header>
@@ -83,18 +68,6 @@ const onSelectLogo = (e) => {
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="flex justify-center p-6 text-gray-900">
                         <form class="w-1/3 py-8 space-y-5" @submit.prevent="submit">
-
-                            <div class="flex justify-center">
-                                <Transition
-                                    enter-active-class="transition ease-in-out"
-                                    enter-from-class="opacity-0"
-                                    leave-active-class="transition ease-in-out"
-                                    leave-to-class="opacity-0"
-                                >
-                                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Actualización del micrositio Satisfactoria.</p>
-                                </Transition>
-                            </div>
-
                         <div>
                             <InputLabel for="name" value="Nombre" />
                             <TextInput
@@ -109,8 +82,8 @@ const onSelectLogo = (e) => {
                             <InputError class="mt-2" :message="form.errors.name" />
                         </div>
 
-                        <div>
-                            <img class="max-w-full max-h-16 " :src="`/storage/${microsite.logo}`" alt="logo">
+                        <div v-if="props.microsite.logo">
+                            <img class="max-w-full max-h-16 " :src="`/storage/${props.microsite.logo}`" alt="logo">
                         </div>
 
                         <div>
@@ -128,7 +101,7 @@ const onSelectLogo = (e) => {
                                 v-model="form.document_type"
                             >
                                 <option value="">Seleccione</option>
-                                <option v-for="(type, key) in documentTypes" :key="key" :value="key">{{ type }}</option>
+                                <option v-for="(type, key) in props.arrayConstants.documentTypes" :key="key" :value="key">{{ type }}</option>
                             </select>
                             <InputError class="mt-2" :message="form.errors.document_type" />
                         </div>
@@ -156,7 +129,7 @@ const onSelectLogo = (e) => {
                                 v-model="form.microsite_type"
                             >
                                 <option value="">Seleccione</option>
-                                <option v-for="(type, key) in micrositesTypes" :key="key" :value="type">{{ type }}</option>
+                                <option v-for="(type, key) in props.arrayConstants.micrositesTypes" :key="key" :value="type">{{ type }}</option>
                             </select>
                             <InputError class="mt-2" :message="form.errors.microsite_type" />
                         </div>
@@ -170,7 +143,7 @@ const onSelectLogo = (e) => {
                                 v-model="form.currency"
                             >
                                 <option value="">Seleccione</option>
-                                <option v-for="(type, key) in currencyTypes" :key="key" :value="key">{{ type }}</option>
+                                <option v-for="(type, key) in props.arrayConstants.currencyTypes" :key="key" :value="key">{{ type }}</option>
                             </select>
                             <InputError class="mt-2" :message="form.errors.currency" />
                         </div>
@@ -184,7 +157,7 @@ const onSelectLogo = (e) => {
                                 v-model="form.payment_expiration_time"
                                 autofocus
                                 autocomplete="payment_expiration_time"
-                                placeholder="1234567890"
+                                placeholder="123"
                             />
                             <InputError class="mt-2" :message="form.errors.payment_expiration_time" />
                         </div>
@@ -198,7 +171,7 @@ const onSelectLogo = (e) => {
                                     v-model="form.category_id"
                                 >
                                     <option value="">Seleccione</option>
-                                    <option v-for="category in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
+                                    <option v-for="category in props.arrayConstants.categories" :key="category.id" :value="category.id">{{ category.name }}</option>
                                 </select>
                                 <InputError class="mt-2" :message="form.errors.category_id" />
                             </div>
