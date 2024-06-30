@@ -15,9 +15,9 @@ class UpdateRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:roles,name',
-           // 'permissions' => 'required|array',
-           // 'permissions.*' => 'exists:permissions,name',
+            'name' => 'nullable|string|max:255|unique:roles,name',
+           'permissions' => 'required|array',
+           'permissions.*' => 'exists:permissions,name',
         ];
     }
 }
