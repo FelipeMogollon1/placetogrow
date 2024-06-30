@@ -9,10 +9,11 @@ class StoreRoleAction
 {
     public function execute(array $data): RedirectResponse
     {
+
         Role::create([
             'name' => $data['name'],
-            'guard_name' => 'web' ,
-        ]);
+            'guard_name' => 'web',
+        ])->syncPermissions($data['permissions'] ?? []);
 
         return to_route('roles.index');
     }
