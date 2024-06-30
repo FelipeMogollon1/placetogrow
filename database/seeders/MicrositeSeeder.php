@@ -20,9 +20,9 @@ class MicrositeSeeder extends Seeder
         $microsites = [];
 
         for ($i = 1; $i <= 5; $i++) {
-            $slug = Str::slug("Microsite $i") . '-' . Str::random(5); // Agregar sufijo aleatorio
+            $slug = Str::slug("Microsite $i") . '-' . Str::random(5);
             while (Microsite::where('slug', $slug)->exists()) {
-                $slug = Str::slug("Microsite $i") . '-' . Str::random(5); // Generar nuevo slug si ya existe
+                $slug = Str::slug("Microsite $i") . '-' . Str::random(5);
             }
 
             $microsite = [
