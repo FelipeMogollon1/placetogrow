@@ -19,7 +19,7 @@ const props = defineProps({
 
 <template>
     <div class="flex flex-col m-10">
-        <div class="overflow-x-auto sm:mx-0.5 lg:mx-0.5">
+        <div class="overflow-x-auto  md:mx-0.5 sm:mx-0.5 lg:mx-0.5">
             <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8">
                 <div class="overflow-hidden rounded-2xl">
                     <table class="min-w-full">
