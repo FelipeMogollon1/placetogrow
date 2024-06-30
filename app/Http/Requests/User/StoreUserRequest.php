@@ -19,6 +19,7 @@ class StoreUserRequest extends FormRequest
             'name' => 'string|max:255',
             'email' => 'string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed'],
+            'role' => 'required|string'
         ];
     }
 }

@@ -11,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Permission\Models\Role;
 
 class userController extends Controller
 {
@@ -23,7 +24,7 @@ class userController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('Users/Create');
+        return Inertia::render('Users/Create', ['roles' => Role::select('name')->get()]);
     }
 
      public function store(StoreUserRequest $request, StoreUserAction $storeAction): RedirectResponse
