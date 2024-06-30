@@ -33,7 +33,7 @@ class Permissions
         return (new \ReflectionClass(self::class))->getConstants();
     }
 
-    public function getGuestPermissions(): array
+    public static function getGuestPermissions(): array
     {
         return [
           self::MICROSITES_INDEX,

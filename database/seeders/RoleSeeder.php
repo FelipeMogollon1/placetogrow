@@ -34,6 +34,6 @@ class RoleSeeder extends Seeder
     {
         $guestRole = Role::findByName(Roles::GUEST);
 
-        $guestRole->syncPermissions(Permissions::getAllPermissions());
+        $guestRole->syncPermissions(Permissions::getGuestPermissions());
     }
 }
