@@ -15,7 +15,13 @@ function toggleGroup(group, selectedGroups, permissions) {
     selectedGroups[group] = isChecked;
 
     permissions[group].forEach(permission => {
-        document.getElementById(`${group}.${permission}`).checked = isChecked;
+        const checkbox = document.getElementById(`${group}.${permission}`);
+        checkbox.checked = isChecked;
+        if (isChecked) {
+            form.permissions.push(`${group}.${permission}`);
+        } else {
+            form.permissions = form.permissions.filter(p => p !== `${group}.${permission}`);
+        }
     });
 }
 
@@ -37,13 +43,20 @@ function processPermissions(permissions) {
 
 const initialValues = {
     name: "",
-    permission: ""
+    permissions: []
 }
 
 const form = useForm(initialValues)
 
 const submit = () => {
-    form.post(route('roles.store'))
+    form.post(route('roles.store'), {
+        onSuccess: () => {
+            // Manejar éxito, por ejemplo, redirigir o mostrar un mensaje
+        },
+        onError: () => {
+            // Manejar error, por ejemplo, mostrar errores de validación
+        }
+    });
 }
 
 const props = defineProps({
@@ -94,11 +107,11 @@ const groupedPermissions = processPermissions(props.permissions);
                                 <div class="flex items-center">
                                     <input
                                         type="checkbox"
-                                        :id="`group_${group}`"
+                                        :id="'group_' + group"
                                         v-model="selectedRoles[group]"
                                         @click="toggleGroup(group, selectedRoles, groupedPermissions)"
                                     />
-                                    <InputLabel :for="`group_${group}`" :value="group" class="ml-2" />
+                                    <InputLabel :for="'group_' + group" :value="group" class="ml-2" />
                                 </div>
                                 <div class="ml-6">
                                     <div v-for="permission in permissions" :key="permission" class="flex items-center mt-2">
@@ -108,6 +121,13 @@ const groupedPermissions = processPermissions(props.permissions);
                                             :value="`${group}.${permission}`"
                                             name="permissions[]"
                                             class="form-checkbox"
+                                            @change="e => {
+                                                if (e.target.checked) {
+                                                    form.permissions.push(e.target.value);
+                                                } else {
+                                                    form.permissions = form.permissions.filter(p => p !== e.target.value);
+                                                }
+                                            }"
                                         />
                                         <InputLabel :for="`${group}.${permission}`" :value="permission" class="ml-2" />
                                     </div>
