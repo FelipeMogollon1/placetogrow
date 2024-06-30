@@ -51,10 +51,10 @@ const form = useForm(initialValues)
 const submit = () => {
     form.post(route('roles.store'), {
         onSuccess: () => {
-            // Manejar éxito, por ejemplo, redirigir o mostrar un mensaje
+
         },
         onError: () => {
-            // Manejar error, por ejemplo, mostrar errores de validación
+
         }
     });
 }
@@ -67,6 +67,18 @@ const props = defineProps({
 
 const groupedPermissions = processPermissions(props.permissions);
 
+const handlePermissionChange = (group, permission, event) => {
+    const value = `${group}.${permission}`;
+    if (event.target.checked) {
+        form.permissions.push(value);
+    } else {
+        form.permissions = form.permissions.filter(p => p !== value);
+    }
+};
+
+const isPermissionChecked = (group, permission) => {
+    return form.permissions.includes(`${group}.${permission}`);
+};
 </script>
 
 <template>
@@ -88,7 +100,7 @@ const groupedPermissions = processPermissions(props.permissions);
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="flex justify-center p-6 text-gray-900">
-                        <form class="w-1/3 py-8 space-y-5" @submit.prevent="submit" id="formPermissions">
+                        <form class="w-full max-w-3xl py-8 space-y-5" @submit.prevent="submit" id="formPermissions">
                             <div>
                                 <InputLabel for="name" value="Nombre" />
                                 <TextInput
@@ -103,33 +115,30 @@ const groupedPermissions = processPermissions(props.permissions);
                                 <InputError class="mt-2" :message="form.errors.name" />
                             </div>
 
-                            <div v-for="(permissions, group) in groupedPermissions" :key="group">
-                                <div class="flex items-center">
-                                    <input
-                                        type="checkbox"
-                                        :id="'group_' + group"
-                                        v-model="selectedRoles[group]"
-                                        @click="toggleGroup(group, selectedRoles, groupedPermissions)"
-                                    />
-                                    <InputLabel :for="'group_' + group" :value="group" class="ml-2" />
-                                </div>
-                                <div class="ml-6">
-                                    <div v-for="permission in permissions" :key="permission" class="flex items-center mt-2">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div v-for="(permissions, group) in groupedPermissions" :key="group">
+                                    <div class="flex items-center">
                                         <input
                                             type="checkbox"
-                                            :id="`${group}.${permission}`"
-                                            :value="`${group}.${permission}`"
-                                            name="permissions[]"
-                                            class="form-checkbox"
-                                            @change="e => {
-                                                if (e.target.checked) {
-                                                    form.permissions.push(e.target.value);
-                                                } else {
-                                                    form.permissions = form.permissions.filter(p => p !== e.target.value);
-                                                }
-                                            }"
+                                            :id="'group_' + group"
+                                            v-model="selectedRoles[group]"
+                                            @click="toggleGroup(group, selectedRoles, groupedPermissions)"
                                         />
-                                        <InputLabel :for="`${group}.${permission}`" :value="permission" class="ml-2" />
+                                        <InputLabel :for="'group_' + group" :value="group" class="ml-2" />
+                                    </div>
+                                    <div class="ml-6">
+                                        <div v-for="permission in permissions" :key="permission" class="flex items-center mt-2">
+                                            <input
+                                                type="checkbox"
+                                                :id="`${group}.${permission}`"
+                                                :value="`${group}.${permission}`"
+                                                name="permissions[]"
+                                                class="form-checkbox"
+                                                @change="e => handlePermissionChange(group, permission, e)"
+                                                :checked="isPermissionChecked(group, permission)"
+                                            />
+                                            <InputLabel :for="`${group}.${permission}`" :value="permission" class="ml-2" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
