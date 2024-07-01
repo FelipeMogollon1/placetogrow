@@ -80,5 +80,8 @@ class micrositeController extends Controller
         return Inertia::render('Welcome', compact('microsites'));
 
     }
-
+    public function paymentForm(): Response
+    {
+        return Inertia::render('PaymentForm');
+    }
 }

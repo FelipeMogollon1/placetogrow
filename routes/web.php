@@ -10,6 +10,7 @@ use Inertia\Inertia;
 
 Route::get('/', [micrositeController::class, 'welcomeIndex'])->name('Welcome');
 
+Route::get('payment',[micrositeController::class,'paymentForm'])->name('payment');
 
 Route::group(['middleware' => 'auth', 'verified'], function () {
 
