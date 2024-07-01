@@ -15,7 +15,7 @@ class StoreUserAction
 
         $user->assignRole($data['role']);
 
-        Log::info('user created successfully', ['id' => $user->id, 'name' => $user->name, 'email' =>$user->email]);
+        Log::info('user created successfully', ['id' => $user->id, 'name' => $user->name, 'email' => $user->email]);
 
         return to_route('users.index');
     }

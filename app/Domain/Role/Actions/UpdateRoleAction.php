@@ -11,9 +11,9 @@ class UpdateRoleAction
     {
         $role = Role::findOrFail($id);
 
-         $role->update([
-            'name' => $data['name'],
-            'guard_name' => 'web',
+        $role->update([
+           'name' => $data['name'],
+           'guard_name' => 'web',
         ]);
 
         $role->syncPermissions($data['permissions'] ?? []);

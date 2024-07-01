@@ -10,20 +10,20 @@ use Spatie\Permission\Models\Role;
 
 class RoleSeeder extends Seeder
 {
-    protected array $roles =[
+    protected array $roles = [
         ['name' => Roles::ADMIN, 'guard_name' => 'web'],
         ['name' => Roles::GUEST, 'guard_name' => 'web'],
     ];
 
     public function run(): void
     {
-        DB::table('roles')->upsert($this->roles,'name');
+        DB::table('roles')->upsert($this->roles, 'name');
 
         $this->assignPermissionsToAdmin();
         $this->assignPermissionsToGuest();
     }
 
-    public function  assignPermissionsToAdmin(): void
+    public function assignPermissionsToAdmin(): void
     {
         $adminRole = Role::findByName(Roles::ADMIN);
 

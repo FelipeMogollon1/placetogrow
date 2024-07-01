@@ -23,13 +23,13 @@ class RoleController extends Controller
 
     public function index(): Response
     {
-        return Inertia::render('Roles/Index',['roles' => Role::all()]);
+        return Inertia::render('Roles/Index', ['roles' => Role::all()]);
     }
 
     public function create(): Response
     {
         $permissions =  Permission::all();
-        return Inertia::render('Roles/Create',compact('permissions'));
+        return Inertia::render('Roles/Create', compact('permissions'));
     }
 
     public function store(StoreRoleRequest $request, StoreRoleAction $storeAction): RedirectResponse
@@ -42,10 +42,10 @@ class RoleController extends Controller
         $role = Role::with('permissions')->find($id);
         $allPermissions = Permission::all();
 
-        return Inertia::render('Roles/Edit', compact('role','allPermissions'));
+        return Inertia::render('Roles/Edit', compact('role', 'allPermissions'));
     }
 
-    public function update(UpdateRoleRequest $request, string $id,UpdateRoleAction $updateAction): RedirectResponse
+    public function update(UpdateRoleRequest $request, string $id, UpdateRoleAction $updateAction): RedirectResponse
     {
         return $updateAction->execute($id, $request->validated());
     }
@@ -61,11 +61,11 @@ class RoleController extends Controller
     {
         $user = Auth::user();
 
-        if (!$user->hasPermissionTo(Permissions::ROLES_DESTROY)){
+        if (!$user->hasPermissionTo(Permissions::ROLES_DESTROY)) {
             return redirect()->back();
         }
 
-        if (!in_array($role->getAttribute('name'), Roles::getAllRoles())){
+        if (!in_array($role->getAttribute('name'), Roles::getAllRoles())) {
             $role->delete();
             return redirect()->route('roles.index');
         }

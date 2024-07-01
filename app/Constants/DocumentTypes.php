@@ -2,7 +2,7 @@
 
 namespace App\Constants;
 
-class  DocumentTypes
+class DocumentTypes
 {
     public const CC = 'CC';
     public const NIT = 'NIT';

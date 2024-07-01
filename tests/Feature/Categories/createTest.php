@@ -20,7 +20,7 @@ class createTest extends TestCase
             ->get(route('categories.create'));
 
         $response->assertOk()
-            ->assertInertia(fn(AssertableInertia $page) => $page
+            ->assertInertia(fn (AssertableInertia $page) => $page
                 ->component('Categories/Create'));
 
     }

@@ -29,7 +29,7 @@ class Category extends Model
 
     protected static function newFactory()
     {
-        Return CategoryFactory::new();
+        return CategoryFactory::new();
     }
 
 

@@ -38,7 +38,7 @@ class categoryController extends Controller
         return Inertia::render('Categories/Create');
     }
 
-    public function store(StoreCategoryRequest $request,StoreCategoryAction $storeAction): RedirectResponse
+    public function store(StoreCategoryRequest $request, StoreCategoryAction $storeAction): RedirectResponse
     {
         $this->authorize('store', Category::class);
         return $storeAction->execute($request->validated());

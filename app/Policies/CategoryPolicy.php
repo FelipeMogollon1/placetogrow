@@ -7,7 +7,6 @@ use App\Models\User;
 
 class CategoryPolicy
 {
-
     public function viewAny(User $user): bool
     {
         return $user->hasPermissionTo(Permissions::CATEGORIES_INDEX);

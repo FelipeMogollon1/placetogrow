@@ -5,7 +5,6 @@ namespace App\Domain\User\Actions;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 
-
 class UpdateUserAction
 {
     public function execute(int $id, array $data): RedirectResponse

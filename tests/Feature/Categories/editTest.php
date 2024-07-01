@@ -23,7 +23,7 @@ class editTest extends TestCase
 
         $response->assertOK()
             ->assertInertia(
-                fn(AssertableInertia $page) => $page
+                fn (AssertableInertia $page) => $page
                     ->component('Categories/Edit')
             );
     }

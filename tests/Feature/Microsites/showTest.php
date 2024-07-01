@@ -46,9 +46,11 @@ class showTest extends TestCase
 
         $response->assertOk()
             ->assertInertia(
-                fn(AssertableInertia $page) => $page
+                fn (AssertableInertia $page) => $page
                     ->component('Microsites/Show')
-                    ->has('microsite', fn($microsite) =>
+                    ->has(
+                        'microsite',
+                        fn ($microsite) =>
                     $microsite
                         ->where('name', 'andres')
                         ->where('logo', $logoPath)

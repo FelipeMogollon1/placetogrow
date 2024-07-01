@@ -35,7 +35,7 @@ class Permissions
     public const ROLES_UPDATE  = 'roles.update';
     public const ROLES_DESTROY = 'roles.destroy';
 
-    public static function  getAllPermissions(): array
+    public static function getAllPermissions(): array
     {
         return (new \ReflectionClass(self::class))->getConstants();
     }

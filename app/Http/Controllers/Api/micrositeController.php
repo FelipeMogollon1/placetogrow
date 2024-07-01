@@ -14,7 +14,6 @@ use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
-
 class micrositeController extends Controller
 {
     use AuthorizesRequests;
@@ -23,9 +22,9 @@ class micrositeController extends Controller
     public function __construct(EloquentMicrositeRepository $repository)
     {
         $this->micrositesRepository = $repository;
-     }
+    }
 
-    public function  index(): Response
+    public function index(): Response
     {
         $this->authorize('viewAny', Microsite::class);
         $microsites = $this->micrositesRepository->getAllWithCategories();
@@ -45,9 +44,9 @@ class micrositeController extends Controller
         return $storeAction->execute($request->validated());
     }
 
-     public function show(string $id): Response
-     {
-         $this->authorize('view', Microsite::class);
+    public function show(string $id): Response
+    {
+        $this->authorize('view', Microsite::class);
         $microsite = $this->micrositesRepository->getWithCategories($id);
 
         return Inertia::render('Microsites/Show', compact('microsite'));
@@ -59,7 +58,7 @@ class micrositeController extends Controller
         $microsite = $this->micrositesRepository->find($id);
         $arrayConstants = $this->micrositesRepository->getCommonData();
 
-        return Inertia::render('Microsites/Edit', compact('microsite','arrayConstants'));
+        return Inertia::render('Microsites/Edit', compact('microsite', 'arrayConstants'));
     }
 
     public function update(UpdateMicrositeRequest $request, string $id, UpdateMicrositeAction $updateAction): RedirectResponse

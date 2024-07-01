@@ -20,11 +20,11 @@ class storeTest extends TestCase
             'password' => 'JuanDios995',
         ];
 
-       $this->actingAs($user)
-            ->post(route('users.store'),$data)
-            ->assertRedirect(route('users.index'));
+        $this->actingAs($user)
+             ->post(route('users.store'), $data)
+             ->assertRedirect(route('users.index'));
 
-        $this->assertDatabaseHas('users',[
+        $this->assertDatabaseHas('users', [
             'name' => 'Juan de Dios',
             'email' => 'JuanDios995@gmail.com',
         ]);

@@ -17,11 +17,11 @@ class editTest extends TestCase
 
         $response = $this->actingAs($user)
             ->assertAuthenticatedAs($user)
-            ->get(route('users.edit',compact('user')));
+            ->get(route('users.edit', compact('user')));
 
         $response->assertOk()
             ->assertInertia(
-                fn(AssertableInertia $page) => $page
+                fn (AssertableInertia $page) => $page
                     ->component('Users/Edit')
             );
     }

@@ -7,7 +7,6 @@ use Tests\TestCase;
 
 class updateTest extends TestCase
 {
-
     public function test_can_update_use(): void
     {
         $user = User::factory()->create();
@@ -20,10 +19,10 @@ class updateTest extends TestCase
 
 
         $this->actingAs($user)
-            ->put(route('users.update',$user->id),$data)
+            ->put(route('users.update', $user->id), $data)
             ->assertRedirect(route('users.index'));
 
-        $this->assertDatabaseHas('users',[
+        $this->assertDatabaseHas('users', [
             'name' => $data['name'],
             'email' => $data['email'],
 

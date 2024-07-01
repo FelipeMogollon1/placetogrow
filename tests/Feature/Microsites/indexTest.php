@@ -23,8 +23,8 @@ class indexTest extends TestCase
 
         $response->assertOk()
             ->assertInertia(
-                fn(AssertableInertia $page) => $page
-                    ->component('Microsites/Index',['microsites' => $microsites])
+                fn (AssertableInertia $page) => $page
+                    ->component('Microsites/Index', ['microsites' => $microsites])
                     ->has('microsites')
             );
     }

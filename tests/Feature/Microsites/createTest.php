@@ -2,10 +2,8 @@
 
 namespace Tests\Feature\Microsites;
 
-use App\Infrastructure\Persistence\Models\Microsite;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
@@ -22,7 +20,7 @@ class createTest extends TestCase
             ->get(route('microsites.create'));
 
         $response->assertOk()
-            ->assertInertia(fn(AssertableInertia $page) => $page
+            ->assertInertia(fn (AssertableInertia $page) => $page
                 ->component('Microsites/Create'));
     }
 }

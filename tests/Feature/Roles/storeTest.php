@@ -10,7 +10,7 @@ use Tests\TestCase;
 
 class storeTest extends TestCase
 {
-    Use RefreshDatabase;
+    use RefreshDatabase;
 
     protected array $request;
     public function setUp(): void
@@ -29,14 +29,14 @@ class storeTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $role = Role::findOrCreate('super_admin','web');
+        $role = Role::findOrCreate('super_admin', 'web');
 
         $user->assignRole($role);
 
         $permissionIndex = Permission::findOrCreate('microsites.index', 'web');
         $permissionStore = Permission::findOrCreate('microsites.store', 'web');
 
-        $user->givePermissionTo($permissionIndex,$permissionStore);
+        $user->givePermissionTo($permissionIndex, $permissionStore);
 
         $response = $this->actingAs($user)
             ->post(route('roles.store'), $this->request);

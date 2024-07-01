@@ -15,13 +15,13 @@ class UpdateMicrositeRequest extends FormRequest
         return true;
     }
 
-    public function rules():array
+    public function rules(): array
     {
         return [
             'slug' => 'nullable|string|max:40',
             'name' => 'nullable','string','max:255',
             'logo' => 'nullable|mimes:png,jpg,jpeg,ico|max:2040',
-            'document_type'=> ['nullable', Rule::in(DocumentTypes::getDocumentTypes())],
+            'document_type' => ['nullable', Rule::in(DocumentTypes::getDocumentTypes())],
             'document' => ['nullable', 'max:20', 'regex:/^[a-zA-Z0-9 \-]+$/'],
             'microsite_type' => ['nullable','string', Rule::in(MicrositesTypes::getMicrositesTypes())],
             'currency' => ['nullable', Rule::in(CurrencyTypes::getCurrencyType())],

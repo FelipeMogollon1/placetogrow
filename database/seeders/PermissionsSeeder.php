@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 
 class PermissionsSeeder extends Seeder
 {
-
     public function run(): void
     {
         foreach (Permissions::getAllPermissions() as $permission) {

@@ -15,7 +15,7 @@ class destroyTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $role = Role::findOrCreate('super_admin','web');
+        $role = Role::findOrCreate('super_admin', 'web');
 
         $response = $this->actingAs($user)
             ->delete(route('roles.destroy', $role->id));

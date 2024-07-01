@@ -5,7 +5,6 @@ namespace App\Policies;
 use App\Constants\Permissions;
 use App\Models\User;
 
-
 class MicrositePolicy
 {
     public function viewAny(User $user): bool

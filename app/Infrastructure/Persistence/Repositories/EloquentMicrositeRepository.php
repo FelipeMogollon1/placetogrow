@@ -8,7 +8,6 @@ use App\Constants\MicrositesTypes;
 use App\Domain\Microsite\Repositories\MicrositeRepositoryInterface;
 use App\Infrastructure\Persistence\Models\Category;
 use App\Infrastructure\Persistence\Models\Microsite;
-use GuzzleHttp\Psr7\Query;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 

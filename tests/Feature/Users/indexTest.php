@@ -21,7 +21,7 @@ class indexTest extends TestCase
 
         $response->assertOk()
             ->assertInertia(
-                fn(AssertableInertia $page) => $page
+                fn (AssertableInertia $page) => $page
                 ->component('Users/Index')
                 ->has('users')
             );

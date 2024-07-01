@@ -7,7 +7,6 @@ use App\Models\User;
 
 class UserPolicy
 {
-
     public function viewAny(User $user): bool
     {
         return $user->hasPermissionTo(Permissions::USERS_INDEX);

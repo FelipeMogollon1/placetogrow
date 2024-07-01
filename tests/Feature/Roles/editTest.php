@@ -15,7 +15,7 @@ class editTest extends TestCase
     public function test_can_edit_role(): void
     {
         $user = User::factory()->create();
-        $role = Role::findOrCreate('super_admin','web');
+        $role = Role::findOrCreate('super_admin', 'web');
 
         $response = $this->actingAs($user)
             ->assertAuthenticatedAs($user)
@@ -23,7 +23,7 @@ class editTest extends TestCase
 
         $response->assertOK()
             ->assertInertia(
-                fn(AssertableInertia $page) => $page
+                fn (AssertableInertia $page) => $page
                     ->component('Roles/Edit')
             );
     }

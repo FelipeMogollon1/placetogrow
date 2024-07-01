@@ -6,7 +6,6 @@ use Database\Factories\MicrositeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use PHPUnit\Framework\MockObject\Stub\ReturnArgument;
 
 class Microsite extends Model
 {
@@ -37,7 +36,7 @@ class Microsite extends Model
 
     protected static function newFactory()
     {
-        Return MicrositeFactory::new();
+        return MicrositeFactory::new();
     }
 
 }

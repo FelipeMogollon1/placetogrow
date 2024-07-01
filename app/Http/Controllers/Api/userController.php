@@ -30,17 +30,17 @@ class userController extends Controller
         return Inertia::render('Users/Create', ['roles' => Role::select('name')->get()]);
     }
 
-     public function store(StoreUserRequest $request, StoreUserAction $storeAction): RedirectResponse
-     {
-         $this->authorize('store', User::class);
-         return $storeAction->execute($request->validated());
-     }
+    public function store(StoreUserRequest $request, StoreUserAction $storeAction): RedirectResponse
+    {
+        $this->authorize('store', User::class);
+        return $storeAction->execute($request->validated());
+    }
 
     public function edit(string $id): Response
     {
         $this->authorize('edit', User::class);
         $user = User::find($id);
-        return Inertia::render('Users/Edit',compact('user'));
+        return Inertia::render('Users/Edit', compact('user'));
     }
 
     public function update(UpdateUserRequest $request, string $id, UpdateUserAction $updateAction): RedirectResponse

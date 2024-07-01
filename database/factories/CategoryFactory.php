@@ -19,9 +19,9 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'=> $this->faker->name(),
-            'description'=> $this->faker->name(),
-            'enabled_at'=> now()
+            'name' => $this->faker->name(),
+            'description' => $this->faker->name(),
+            'enabled_at' => now()
         ];
     }
 

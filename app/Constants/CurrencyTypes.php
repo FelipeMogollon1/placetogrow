@@ -2,8 +2,7 @@
 
 namespace App\Constants;
 
-
-class  CurrencyTypes
+class CurrencyTypes
 {
     public const COP = 'COP';
     public const USD = 'USD';

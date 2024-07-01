@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Auth;
 
 class StoreCategoryRequest extends FormRequest
 {
-
     public function authorize(): bool
     {
         return Auth::check();

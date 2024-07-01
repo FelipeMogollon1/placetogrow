@@ -21,7 +21,7 @@ class createTest extends TestCase
 
         $response->assertOk()
             ->assertInertia(
-                fn(AssertableInertia $page) => $page
+                fn (AssertableInertia $page) => $page
                     ->component('Roles/Create')
             );
     }

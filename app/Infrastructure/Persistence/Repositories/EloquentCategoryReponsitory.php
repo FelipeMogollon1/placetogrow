@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class EloquentCategoryReponsitory implements CategoryRepositoryInterface
 {
-
     protected Model $category;
 
     public function __construct(category $category)

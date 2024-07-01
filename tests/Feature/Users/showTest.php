@@ -8,7 +8,6 @@ use Tests\TestCase;
 
 class showTest extends TestCase
 {
-
     public function test_can_show_use(): void
     {
         $user = User::factory()->create();
@@ -21,13 +20,12 @@ class showTest extends TestCase
 
         $response = $this->actingAs($user)
             ->assertAuthenticatedAs($user)
-            ->get(route('users.show',$data));
+            ->get(route('users.show', $data));
 
         $response->assertOk()
             ->assertInertia(
-                fn(AssertableInertia $page) => $page
+                fn (AssertableInertia $page) => $page
                     ->component('Users/Show')
             );
     }
 }
-

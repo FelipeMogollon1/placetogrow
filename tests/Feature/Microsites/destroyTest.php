@@ -14,7 +14,7 @@ class destroyTest extends TestCase
 
     public function test_can_destroy_microsite(): void
     {
-         $user = User::factory()->create();
+        $user = User::factory()->create();
         $microsite = Microsite::factory()->create();
 
         $response = $this->actingAs($user)
