@@ -9,6 +9,7 @@ use App\Domain\Role\Actions\UpdateRoleAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Role\StoreRoleRequest;
 use App\Http\Requests\Role\UpdateRoleRequest;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -18,6 +19,7 @@ use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
+    use AuthorizesRequests;
 
     public function index(): Response
     {

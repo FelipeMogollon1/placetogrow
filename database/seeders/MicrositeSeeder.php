@@ -20,15 +20,16 @@ class MicrositeSeeder extends Seeder
         $microsites = [];
 
         for ($i = 1; $i <= 5; $i++) {
-            $slug = Str::slug("Microsite $i") . '-' . Str::random(5); // Agregar sufijo aleatorio
+            $slug = Str::slug("Microsite $i") . '-' . Str::random(5);
+
             while (Microsite::where('slug', $slug)->exists()) {
-                $slug = Str::slug("Microsite $i") . '-' . Str::random(5); // Generar nuevo slug si ya existe
+                $slug = Str::slug("Microsite $i") . '-' . Str::random(5);
             }
 
             $microsite = [
                 'name' => "Microsite $i",
                 'slug' => $slug,
-                'logo' => "logo$i.jpg",
+                'logo' => "",
                 'document_type' => array_rand(array_flip(DocumentTypes::getDocumentTypes())),
                 'document' => rand(1000000000, 9999999999),
                 'microsite_type' => array_rand(array_flip(MicrositesTypes::getMicrositesTypes())),
