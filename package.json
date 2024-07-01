@@ -25,6 +25,7 @@
         "@inertiajs/vue3": "^1.0.16",
         "@vitejs/plugin-vue": "^5.0.4",
         "bootstrap": "^5.3.3",
+        "laravel-permission-to-vuejs": "^3.0.2",
         "ziggy": "^2.4.0",
         "ziggy-js": "github:tightenco/ziggy"
     }
