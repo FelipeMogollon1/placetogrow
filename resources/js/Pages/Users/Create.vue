@@ -28,7 +28,6 @@ const props = defineProps({
 </script>
 
 <template>
-    <span>{{props.roles}}</span>
     <Head title="Crear categoria"/>
     <AuthenticatedLayout>
         <template #header>
