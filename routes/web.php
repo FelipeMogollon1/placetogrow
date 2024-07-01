@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\categoryController;
 use App\Http\Controllers\Api\micrositeController;
 use App\Http\Controllers\Api\userController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Roles\RoleController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -16,6 +17,7 @@ Route::group(['middleware' => 'auth', 'verified'], function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
+    Route::resource('/roles',RoleController::class);
     Route::resource('/users', userController::class);
     Route::resource('/categories', CategoryController::class);
     Route::resource('/microsites', micrositeController::class);

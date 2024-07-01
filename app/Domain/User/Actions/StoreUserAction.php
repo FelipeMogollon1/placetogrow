@@ -10,11 +10,8 @@ class StoreUserAction
     public function execute(array $data): RedirectResponse
     {
 
-        User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => $data['password'],
-        ]);
+        $user = User::query()->create($data);
+        $user->assignRole($data['role']);
 
         return to_route('users.index');
     }

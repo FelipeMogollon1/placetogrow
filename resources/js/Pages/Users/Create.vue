@@ -11,7 +11,8 @@ const initialValues = {
     name : "",
     email : "",
     password: "",
-    password_confirmation: ""
+    password_confirmation: "",
+    role: ""
 }
 
 const form = useForm(initialValues)
@@ -20,10 +21,13 @@ const submit = () => {
     form.post(route('users.store'))
 }
 
+const props = defineProps({
+    roles: { type:Object}
+})
+
 </script>
 
 <template>
-
     <Head title="Crear categoria"/>
     <AuthenticatedLayout>
         <template #header>
@@ -70,6 +74,27 @@ const submit = () => {
                                     placeholder="test@mail.com"
                                 />
                                 <InputError class="mt-2" :message="form.errors.email" />
+                            </div>
+
+                            <div>
+                                <InputLabel for="role" value="Roles" />
+
+                                <select name="role"
+                                        id="role"
+                                        v-model="form.role"
+                                        class="w-full mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                >
+
+                                    <option value="">Seleccione</option>
+                                    <option
+                                        v-for="role in props.roles"
+                                            :value="role.name"
+                                    >
+                                        {{role.name}}
+                                    </option>
+
+                                </select>
+                                <InputError class="mt-2" :message="form.errors.role" />
                             </div>
 
                             <div>
