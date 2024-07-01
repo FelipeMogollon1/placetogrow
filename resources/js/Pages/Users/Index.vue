@@ -17,7 +17,7 @@ const headers = ["Nombre","Email"];
 </script>
 
 <template>
-    <Head title="Categorias"/>
+    <Head title="Usuarios index"/>
     <AuthenticatedLayout>
         <template #header>
             <div class="flex justify-between items-center">
