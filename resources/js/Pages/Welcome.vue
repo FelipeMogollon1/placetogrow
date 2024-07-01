@@ -65,7 +65,7 @@ const filteredMicrosites = computed(() => {
                     <div class="p-6 pt-0">
                         <a
                             class="flex items-center justify-center px-5 py-2 text-xs font-bold text-center text-gray-900 uppercase rounded-lg transition-all select-none hover:bg-gray-900/10 active:bg-gray-900/20"
-                            :href="route('register')"
+                            :href="route('payment')"
                         >
                             Ingresar
                             <ArrowLongRightIcon class="px-1 w-6 hover:text-gray-500" />
