@@ -46,6 +46,7 @@ const props = defineProps({
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                <div class="text-gray-400 flex justify-center">
                                    <Link
+                                       v-if="can('categories.edit')"
                                        class="m-1"
                                        :href="route('categories.edit',item.id)"
                                    >
@@ -55,6 +56,7 @@ const props = defineProps({
                                    </Link>
                                    <Link
                                        class="m-1"
+                                       v-if="can('categories.destroy')"
                                        :href="route('categories.destroy',item.id)"
                                        method="delete"
                                        as="button"

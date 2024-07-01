@@ -18,5 +18,12 @@
     </head>
     <body class="font-sans antialiased">
         @inertia
+        <script type="text/javascript">
+            window.Laravel = {
+                csrfToken: "{{ csrf_token() }}",
+                jsPermissions: {!! auth()->user()?->jsPermissions() !!}
+            }
+
+        </script>
     </body>
 </html>

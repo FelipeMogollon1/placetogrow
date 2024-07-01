@@ -25,6 +25,7 @@
                                 <div class="text-gray-400 flex justify-center">
                                     <Link
                                         class="m-1"
+                                        v-if="can('roles.edit')"
                                         :href="route('roles.edit', item.id)"
                                     >
                                             <span class="material-symbols-outlined">
@@ -33,6 +34,7 @@
                                     </Link>
                                     <Link
                                         class="m-1"
+                                        v-if="can('roles.destroy')"
                                         :href="route('roles.destroy', { id: item.id })"
                                         method="delete"
                                         as="button"

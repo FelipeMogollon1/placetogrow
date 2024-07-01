@@ -20,6 +20,9 @@ const microsites = ref(page.props.microsites)
 const onDeleteSuccess = (e) => {
    microsites.value = e.props.microsites
 }
+
+
+
 </script>
 
 <template>
@@ -57,15 +60,16 @@ const onDeleteSuccess = (e) => {
 
                             <td>
                                 <div class="text-gray-400 flex justify-center  ">
-                                    <Link :href="route('microsites.edit', item.id)">
+                                    <Link v-if="can('microsites.edit')" :href="route('microsites.edit', item.id)">
                                        <PencilIcon class="w-6 hover:text-gray-500"/>
                                     </Link>
 
-                                    <Link class="mx-1" :href="route('microsites.show', item.id)">
+                                    <Link  v-if="can('microsites.show')"  class="mx-1" :href="route('microsites.show', item.id)">
                                         <EyeIcon class="w-6 hover:text-gray-500"/>
                                     </Link>
 
                                     <Link
+                                        v-if="can('microsites.destroy')"
                                         @succes="onDeleteSuccess"
                                         :href="route('microsites.destroy', item.id)"
                                         method="delete"
