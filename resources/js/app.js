@@ -7,7 +7,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import LaravelPermissionToVueJS from 'laravel-permission-to-vuejs'
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'Bootcamp PHP';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
