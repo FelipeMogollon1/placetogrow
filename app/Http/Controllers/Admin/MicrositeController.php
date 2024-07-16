@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Admin;
 
+use App\Constants\Abilities;
 use App\Domain\Microsite\Actions\StoreMicrositeAction;
 use App\Domain\Microsite\Actions\UpdateMicrositeAction;
 use App\Http\Controllers\Controller;
@@ -14,7 +15,7 @@ use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class micrositeController extends Controller
+class MicrositeController extends Controller
 {
     use AuthorizesRequests;
     private $micrositesRepository;
@@ -26,27 +27,31 @@ class micrositeController extends Controller
 
     public function index(): Response
     {
-        $this->authorize('viewAny', Microsite::class);
+        $this->authorize(Abilities::VIEW_ANY->value, Microsite::class);
         $microsites = $this->micrositesRepository->getAllWithCategories();
+
         return Inertia::render('Microsites/Index', compact('microsites'));
     }
 
     public function create(): Response
     {
-        $this->authorize('create', Microsite::class);
+        $this->authorize(Abilities::CREATE->value   , Microsite::class);
         $arrayConstants = $this->micrositesRepository->getCommonData();
+
         return Inertia::render('Microsites/Create', $arrayConstants);
     }
 
     public function store(StoreMicrositeRequest $request, StoreMicrositeAction $storeAction): RedirectResponse
     {
-        $this->authorize('store', Microsite::class);
-        return $storeAction->execute($request->validated());
+        $this->authorize(Abilities::STORE->value, Microsite::class);
+        $storeAction->execute($request->validated());
+
+        return to_route('microsites.index');
     }
 
     public function show(string $id): Response
     {
-        $this->authorize('view', Microsite::class);
+        $this->authorize(Abilities::VIEW->value, Microsite::class);
         $microsite = $this->micrositesRepository->getWithCategories($id);
 
         return Inertia::render('Microsites/Show', compact('microsite'));
@@ -54,7 +59,7 @@ class micrositeController extends Controller
 
     public function edit(string $id): Response
     {
-        $this->authorize('edit', Microsite::class);
+        $this->authorize(Abilities::EDIT->value, Microsite::class);
         $microsite = $this->micrositesRepository->find($id);
         $arrayConstants = $this->micrositesRepository->getCommonData();
 
@@ -63,20 +68,24 @@ class micrositeController extends Controller
 
     public function update(UpdateMicrositeRequest $request, string $id, UpdateMicrositeAction $updateAction): RedirectResponse
     {
-        $this->authorize('update', Microsite::class);
-        return $updateAction->execute($id, $request->validated());
+        $this->authorize(Abilities::UPDATE->value, Microsite::class);
+        $updateAction->execute($id, $request->validated());
+
+        return to_route('microsites.index');
     }
 
     public function destroy(int $id): RedirectResponse
     {
-        $this->authorize('delete', Microsite::class);
+        $this->authorize(Abilities::DELETE->value, Microsite::class);
         $this->micrositesRepository->delete($id);
+
         return to_route('microsites.index');
     }
 
     public function welcomeIndex(): Response
     {
         $microsites = $this->micrositesRepository->getAllWithCategories();
+
         return Inertia::render('Welcome', compact('microsites'));
 
     }
