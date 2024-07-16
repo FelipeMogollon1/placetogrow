@@ -2,48 +2,49 @@
 
 namespace App\Constants;
 
-class Permissions
+enum Permissions: string
 {
-    public const USERS_INDEX = 'users.index';
-    public const USERS_STORE = 'users.store';
-    public const USERS_CREATE = 'users.create';
-    public const USERS_EDIT  = 'users.edit';
-    public const USERS_UPDATE  = 'users.update';
-    public const USERS_DESTROY = 'users.destroy';
+    case USERS_INDEX = 'users.index';
+    case USERS_STORE = 'users.store';
+    case USERS_CREATE = 'users.create';
+    case USERS_EDIT = 'users.edit';
+    case USERS_UPDATE = 'users.update';
+    case USERS_DESTROY = 'users.destroy';
 
 
-    public const MICROSITES_INDEX = 'microsites.index';
-    public const MICROSITES_SHOW = 'microsites.show';
-    public const MICROSITE_CREATE = 'microsites.create';
-    public const MICROSITES_STORE = 'microsites.store';
-    public const MICROSITES_EDIT  = 'microsites.edit';
-    public const MICROSITES_UPDATE  = 'microsites.update';
-    public const MICROSITES_DESTROY = 'microsites.destroy';
+    case MICROSITES_INDEX = 'microsites.index';
+    case MICROSITES_SHOW = 'microsites.show';
+    case MICROSITES_CREATE = 'microsites.create';
+    case MICROSITES_STORE = 'microsites.store';
+    case MICROSITES_EDIT = 'microsites.edit';
+    case MICROSITES_UPDATE = 'microsites.update';
+    case MICROSITES_DESTROY = 'microsites.destroy';
 
 
-    public const CATEGORIES_INDEX = 'categories.index';
-    public const CATEGORIES_CREATE = 'categories.create';
-    public const CATEGORIES_STORE = 'categories.store';
-    public const CATEGORIES_EDIT  = 'categories.edit';
-    public const CATEGORIES_UPDATE  = 'categories.update';
-    public const CATEGORIES_DESTROY = 'categories.destroy';
+    case CATEGORIES_INDEX = 'categories.index';
+    case CATEGORIES_CREATE = 'categories.create';
+    case CATEGORIES_STORE = 'categories.store';
+    case CATEGORIES_EDIT = 'categories.edit';
+    case CATEGORIES_UPDATE = 'categories.update';
+    case CATEGORIES_DESTROY = 'categories.destroy';
 
-    public const ROLES_INDEX = 'roles.index';
-    public const ROLES_CREATE = 'roles.create';
-    public const ROLES_STORE = 'roles.store';
-    public const ROLES_EDIT  = 'roles.edit';
-    public const ROLES_UPDATE  = 'roles.update';
-    public const ROLES_DESTROY = 'roles.destroy';
+
+    case ROLES_INDEX = 'roles.index';
+    case ROLES_CREATE = 'roles.create';
+    case ROLES_STORE = 'roles.store';
+    case ROLES_EDIT = 'roles.edit';
+    case ROLES_UPDATE = 'roles.update';
+    case ROLES_DESTROY = 'roles.destroy';
 
     public static function getAllPermissions(): array
     {
-        return (new \ReflectionClass(self::class))->getConstants();
+        return array_map(fn($enum) => $enum->value, self::cases());
     }
 
     public static function getGuestPermissions(): array
     {
         return [
-          self::MICROSITES_INDEX,
+            self::MICROSITES_INDEX->value,
         ];
     }
 }
