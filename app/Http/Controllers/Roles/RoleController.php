@@ -34,7 +34,9 @@ class RoleController extends Controller
 
     public function store(StoreRoleRequest $request, StoreRoleAction $storeAction): RedirectResponse
     {
-        return $storeAction->execute($request->validated());
+        $storeAction->execute($request->validated());
+
+        return to_route('roles.index');
     }
 
     public function edit(string $id): Response
