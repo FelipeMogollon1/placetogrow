@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Constants\Roles;
+use App\Infrastructure\Persistence\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -18,6 +20,8 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register(): void
     {
+        $this->seed();
+
         $response = $this->post('/register', [
             'name' => 'Test User',
             'email' => 'test@example.com',
@@ -25,7 +29,11 @@ class RegistrationTest extends TestCase
             'password_confirmation' => 'password',
         ]);
 
+        $response->assertRedirect(route('dashboard'));
+
         $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
+        $this->assertDatabaseHas('users', [
+            'email' => 'test@example.com',
+        ]);
     }
 }

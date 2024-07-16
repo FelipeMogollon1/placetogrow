@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Constants\Permissions;
-use App\Models\User;
+use App\Infrastructure\Persistence\Models\User;
 
 class MicrositePolicy
 {
@@ -29,7 +29,7 @@ class MicrositePolicy
 
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo(Permissions::MICROSITE_CREATE);
+        return $user->hasPermissionTo(Permissions::MICROSITES_CREATE);
     }
 
     public function update(User $user): bool

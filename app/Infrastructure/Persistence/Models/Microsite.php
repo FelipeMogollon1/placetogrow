@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Persistence\Models;
 
 use Database\Factories\MicrositeFactory;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -34,7 +35,7 @@ class Microsite extends Model
         return $this->belongsTo(Category::class);
     }
 
-    protected static function newFactory()
+    protected static function newFactory(): Factory|MicrositeFactory
     {
         return MicrositeFactory::new();
     }

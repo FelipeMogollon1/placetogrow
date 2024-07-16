@@ -2,14 +2,13 @@
 
 namespace App\Constants;
 
-class CurrencyTypes
+enum CurrencyTypes: string
 {
-    public const COP = 'COP';
-    public const USD = 'USD';
+    case COP = 'COP';
+    case USD = 'USD';
 
     public static function getCurrencyType(): array
     {
-        return (new \ReflectionClass(self::class))->getConstants();
+        return array_map(fn($enum) => $enum->value, self::cases());
     }
-
 }
