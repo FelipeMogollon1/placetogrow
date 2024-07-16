@@ -1,31 +1,28 @@
 <?php
 
-namespace Tests\Feature\Microsites;
+namespace Tests\Feature\Roles;
 
-use App\Infrastructure\Persistence\Models\Microsite;
-use App\Models\User;
+use App\Infrastructure\Persistence\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
-class editTest extends TestCase
+class CreateRoleTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_can_edit_microsite(): void
+    public function test_can_create_role(): void
     {
-
         $user = User::factory()->create();
-        $microsite = Microsite::factory()->create();
 
         $response = $this->actingAs($user)
             ->assertAuthenticatedAs($user)
-            ->get(route('microsites.edit', compact('microsite')));
+            ->get(route('roles.create'));
 
         $response->assertOk()
             ->assertInertia(
                 fn (AssertableInertia $page) => $page
-                    ->component('Microsites/Edit')
+                    ->component('Roles/Create')
             );
     }
 }

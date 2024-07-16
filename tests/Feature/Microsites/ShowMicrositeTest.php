@@ -5,24 +5,32 @@ namespace Tests\Feature\Microsites;
 use App\Constants\CurrencyTypes;
 use App\Constants\DocumentTypes;
 use App\Constants\MicrositesTypes;
+use App\Constants\Permissions;
+use App\Constants\Roles;
 use App\Infrastructure\Persistence\Models\Category;
 use App\Infrastructure\Persistence\Models\Microsite;
-use App\Models\User;
+use App\Infrastructure\Persistence\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
-class showTest extends TestCase
+class ShowMicrositeTest extends TestCase
 {
     use RefreshDatabase;
 
     public function test_can_show_microsite(): void
     {
+        $this->seed();
+
         Storage::fake('public');
 
         $user = User::factory()->create();
+        $user->assignRole(Roles::ADMIN);
+
+        $adminRole = $user->roles()->first();
+        $adminRole->givePermissionTo(Permissions::MICROSITES_SHOW);
 
         $logo = UploadedFile::fake()->image('logo.jpg');
         $logoPath = $logo->store('logo', ['disk' => 'public']);

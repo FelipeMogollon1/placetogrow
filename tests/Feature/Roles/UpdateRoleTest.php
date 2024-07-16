@@ -2,13 +2,13 @@
 
 namespace Tests\Feature\Roles;
 
-use App\Models\User;
+use App\Infrastructure\Persistence\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
-class updateTest extends TestCase
+class UpdateRoleTest extends TestCase
 {
     use RefreshDatabase;
 

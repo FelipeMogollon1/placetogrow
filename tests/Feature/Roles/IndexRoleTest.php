@@ -2,12 +2,12 @@
 
 namespace Tests\Feature\Roles;
 
-use App\Models\User;
+use App\Infrastructure\Persistence\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia;
 use Tests\TestCase;
 
-class indexTest extends TestCase
+class IndexRoleTest extends TestCase
 {
     use RefreshDatabase;
 

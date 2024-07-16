@@ -2,18 +2,26 @@
 
 namespace Tests\Feature\Categories;
 
+use App\Constants\Permissions;
+use App\Constants\Roles;
 use App\Infrastructure\Persistence\Models\Category;
-use App\Models\User;
+use App\Infrastructure\Persistence\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class updateTest extends TestCase
+class UpdateCategoryTest extends TestCase
 {
     use RefreshDatabase;
 
     public function test_can_update_categories(): void
     {
+        $this->seed();
+
         $user = User::factory()->create();
+        $user->assignRole(Roles::ADMIN);
+
+        $adminRole = $user->roles()->first();
+        $adminRole->givePermissionTo(Permissions::CATEGORIES_EDIT);
 
         $category = Category::factory()->create([
             'name' => 'name categories new',
@@ -33,6 +41,5 @@ class updateTest extends TestCase
         $category->refresh();
 
         $this->assertDatabaseHas('categories', $updatedData);
-
     }
 }

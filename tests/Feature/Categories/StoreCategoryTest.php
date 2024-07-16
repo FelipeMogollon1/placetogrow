@@ -2,18 +2,25 @@
 
 namespace Tests\Feature\Categories;
 
-use App\Models\User;
+use App\Constants\Permissions;
+use App\Constants\Roles;
+use App\Infrastructure\Persistence\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
-class storeTest extends TestCase
+class StoreCategoryTest extends TestCase
 {
     use RefreshDatabase;
 
     public function test_can_store_categories(): void
     {
+        $this->seed();
 
         $user = User::factory()->create();
+        $user->assignRole(Roles::ADMIN);
+
+        $adminRole = $user->roles()->first();
+        $adminRole->givePermissionTo(Permissions::CATEGORIES_STORE);
 
         $category = [
             'name' => 'name categories new',
