@@ -35,7 +35,7 @@ const initialValues = {
 const form = useForm(initialValues)
 
 const submit = () => {
-    form.post(route('microsites.update', props.microsite.id))
+    form.post(route('microsites.custom_update', props.microsite.id))
 }
 
 const onSelectLogo = (e) => {
