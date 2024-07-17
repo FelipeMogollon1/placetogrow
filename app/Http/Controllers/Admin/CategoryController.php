@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Constants\Abilities;
+use App\Domain\Category\Actions\DestroyCategoryAction;
 use App\Domain\Category\Actions\StoreCategoryAction;
 use App\Domain\Category\Actions\UpdateCategoryAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Category\StoreCategoryRequest;
 use App\Http\Requests\Category\UpdateCategoryRequest;
 use App\Infrastructure\Persistence\Models\Category;
-use App\Infrastructure\Persistence\Repositories\EloquentCategoryReponsitory;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -18,20 +18,13 @@ use Inertia\Response;
 class CategoryController extends Controller
 {
     use AuthorizesRequests;
-    private $categoryRepository;
-
-    public function __construct(EloquentCategoryReponsitory $repository)
-    {
-        $this->categoryRepository = $repository;
-    }
 
     public function index(): Response
     {
         $this->authorize(Abilities::VIEW_ANY->value, Category::class);
+        $categories = Category::select(['id', 'name', 'description'])->get();
 
-        return Inertia::render('Categories/Index', [
-            'categories' => $this->categoryRepository->getAllWithCategories()
-        ]);
+        return Inertia::render('Categories/Index', compact('categories'));
     }
 
     public function create(): Response
@@ -52,7 +45,7 @@ class CategoryController extends Controller
     public function edit(string $id): Response
     {
         $this->authorize(Abilities::EDIT->value, Category::class);
-        $category = $this->categoryRepository->find($id);
+        $category = Category::find($id);
 
         return Inertia::render('Categories/Edit', compact('category'));
     }
@@ -65,10 +58,10 @@ class CategoryController extends Controller
         return to_route('categories.index');
     }
 
-    public function destroy(string $id): RedirectResponse
+    public function destroy(string $id, DestroyCategoryAction $destroyAction): RedirectResponse
     {
         $this->authorize(Abilities::DELETE->value, Category::class);
-        $this->categoryRepository->delete($id);
+        $destroyAction->execute($id);
 
         return to_route('categories.index');
     }
