@@ -20,27 +20,6 @@ class EloquentMicrositeRepository implements MicrositeRepositoryInterface
         $this->microsite = $microsite;
     }
 
-    public function all(): iterable
-    {
-        return $this->microsite->all();
-    }
-
-    public function find(int $id): ?Microsite
-    {
-        return $this->microsite->find($id);
-    }
-
-    public function delete(int $id): bool
-    {
-        $microsite = $this->findOrFail($id);
-
-        if ($microsite->logo) {
-            Storage::disk('public')->delete($microsite->logo);
-        }
-
-        return $microsite->delete();
-    }
-
     public function getAllWithCategories(): iterable
     {
         return Microsite::query()
@@ -53,17 +32,6 @@ class EloquentMicrositeRepository implements MicrositeRepositoryInterface
                 'categories.name as category_name'
             ])
             ->get();
-    }
-
-    private function findOrFail(int $id)
-    {
-        $microsite = $this->microsite->find($id);
-
-        if (!$microsite) {
-            return false;
-        }
-
-        return $microsite;
     }
 
     public function getCommonData(): array
