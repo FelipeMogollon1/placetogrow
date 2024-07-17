@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Constants\Abilities;
+use App\Domain\Category\Actions\DestroyCategoryAction;
+use App\Domain\Microsite\Actions\DestroyMicrositeAction;
 use App\Domain\Microsite\Actions\StoreMicrositeAction;
 use App\Domain\Microsite\Actions\UpdateMicrositeAction;
 use App\Http\Controllers\Controller;
@@ -74,10 +76,10 @@ class MicrositeController extends Controller
         return to_route('microsites.index');
     }
 
-    public function destroy(int $id): RedirectResponse
+    public function destroy(int $id,DestroyMicrositeAction $destroyAction): RedirectResponse
     {
         $this->authorize(Abilities::DELETE->value, Microsite::class);
-        $this->micrositesRepository->delete($id);
+        $destroyAction->execute($id);
 
         return to_route('microsites.index');
     }
