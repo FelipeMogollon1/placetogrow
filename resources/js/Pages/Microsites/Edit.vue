@@ -35,7 +35,7 @@ const initialValues = {
 const form = useForm(initialValues)
 
 const submit = () => {
-    form.post(route('microsites.update', props.microsite.id))
+    form.post(route('microsites.custom_update', props.microsite.id))
 }
 
 const onSelectLogo = (e) => {
@@ -48,7 +48,6 @@ const onSelectLogo = (e) => {
 </script>
 
 <template>
-    <span>{{props.microsite.id}}</span>
     <Head title="Actualizar Micrositio"/>
     <AuthenticatedLayout>
         <template #header>
@@ -101,7 +100,7 @@ const onSelectLogo = (e) => {
                                 v-model="form.document_type"
                             >
                                 <option value="">Seleccione</option>
-                                <option v-for="(type, key) in props.arrayConstants.documentTypes" :key="key" :value="key">{{ type }}</option>
+                                <option v-for="(type, key) in props.arrayConstants.documentTypes" :key="key" :value="type">{{ type }}</option>
                             </select>
                             <InputError class="mt-2" :message="form.errors.document_type" />
                         </div>
@@ -143,7 +142,7 @@ const onSelectLogo = (e) => {
                                 v-model="form.currency"
                             >
                                 <option value="">Seleccione</option>
-                                <option v-for="(type, key) in props.arrayConstants.currencyTypes" :key="key" :value="key">{{ type }}</option>
+                                <option v-for="(type, key) in props.arrayConstants.currencyTypes" :key="key" :value="type">{{ type }}</option>
                             </select>
                             <InputError class="mt-2" :message="form.errors.currency" />
                         </div>

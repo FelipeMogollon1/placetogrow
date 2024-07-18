@@ -103,7 +103,7 @@ defineProps({
                                 v-model="form.document_type"
                             >
                                 <option value="">Seleccione</option>
-                                <option v-for="(type, key) in documentTypes" :key="key" :value="key">{{ type }}</option>
+                                <option v-for="(type, index) in documentTypes" :key="index" :value="type">{{ type }}</option>
                             </select>
                             <InputError class="mt-2" :message="form.errors.document_type" />
                         </div>
@@ -131,7 +131,7 @@ defineProps({
                                 v-model="form.microsite_type"
                             >
                                 <option value="">Seleccione</option>
-                                <option v-for="(type, key) in micrositesTypes" :key="key" :value="type">{{ type }}</option>
+                                <option v-for="(type, index) in micrositesTypes" :key="index" :value="type">{{ type }}</option>
                             </select>
                             <InputError class="mt-2" :message="form.errors.microsite_type" />
                         </div>
@@ -145,7 +145,7 @@ defineProps({
                                 v-model="form.currency"
                             >
                                 <option value="">Seleccione</option>
-                                <option v-for="(type, key) in currencyTypes" :key="key" :value="key">{{ type }}</option>
+                                <option v-for="(type, index) in currencyTypes" :key="index" :value="type">{{ type }}</option>
                             </select>
                             <InputError class="mt-2" :message="form.errors.currency" />
                         </div>

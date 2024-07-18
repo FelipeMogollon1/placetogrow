@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Persistence\Models;
 
 use Database\Factories\MicrositeFactory;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -34,9 +35,26 @@ class Microsite extends Model
         return $this->belongsTo(Category::class);
     }
 
-    protected static function newFactory()
+    public function scopeWithCategory($query, $id = null)
+    {
+        if ($id !== null) {
+            return $query->with('category')->where('id', $id);
+        }
+
+        return $query->join('categories', 'microsites.category_id', '=', 'categories.id')
+            ->select([
+                'microsites.id',
+                'microsites.name',
+                'microsites.microsite_type',
+                'microsites.logo',
+                'categories.name as category_name'
+            ]);
+    }
+
+    protected static function newFactory(): Factory|MicrositeFactory
     {
         return MicrositeFactory::new();
     }
+
 
 }
