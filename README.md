@@ -1,68 +1,89 @@
-<p align="center">
-
-
-<h2 align="center">Microsites</h2>
-
-
-</p>
+# Micrositios placetogrow
 
 
 
-<!-- TABLE OF CONTENTS -->
 ## Tabla de contenido
 
-* [Sobre el proyecto](#sobre-el-proyecto)
-* [Construido con](#construido-con)
-* [Prerequisitos](#prerequisitos)
-* [Instalación](#instalación)
+- [Acerca del proyecto](#Acerca-del-proyecto)
+- [Construido con](#construido-con)
+- [Prerequisitos](#prerequisitos)
+- [Instalación](#instalación)
+- [Modelo Entidad Relación](#modelo-entidad-relación)
 
+### Acerca del proyecto
 
-
-
+Microsites es una plataforma basada en Laravel diseñada para empoderar a los administradores con la capacidad de crear y administrar microsites para diversos tipos de pago, incluyendo facturas, suscripciones y donaciones. La plataforma prioriza una experiencia de usuario segura y directa, asegurando un procesamiento de pagos y una gestión de datos sin problemas.
 
 ### Construido con
-* [Laravel](https://laravel.com)
-* [VueJS](https://vuejs.org/)
+
+- [Laravel](https://laravel.com): Un robusto framework PHP para el desarrollo de aplicaciones web.
+- [Inertia.js](https://inertiajs.com): Un framework JavaScript para la construcción de aplicaciones modernas de una sola página.
+- [Vue.js](https://vuejs.org): Un framework JavaScript progresivo para la construcción de interfaces de usuario.
+- [Tailwind CSS](https://tailwindcss.com): Un framework CSS de primera utilidad para el prototipado rápido y el estilo.
 
 ### Prerequisitos
+Para ejecutar este proyecto de forma eficaz, necesitarás los siguientes prerrequisitos:
 
-* [MySQL](https://www.mysql.com/)
-* [PHP](https://www.php.net/)
-* [phpMyAdmin](https://www.phpmyadmin.net/) (opcional)
-* [Node.js](https://nodejs.org/es/)
-* [Composer](https://getcomposer.org/)
+- [MySQL](https://www.mysql.com/) o cualquier otro sistema de gestión de bases de datos compatible para almacenar los datos de la aplicación.
+- [PHP](https://www.php.net/) (versión : 8.2 o superior)
+- [Laravel](https://laravel.com/docs/11.x) (versión : 11.0 o superior)
+- [Node.js](https://nodejs.org/) (versión LTS recomendada)
+- [Composer](https://getcomposer.org/)
+- Entorno de desarrollo local configurado (Apache, Nginx, etc.)
 
 ### Instalación
 
-1. Clonar el repositorio
-   bash
+#### Clonar el repositorio
 
+1. **Configurar el entorno:**
+    - Asegúrese de tener PHP 8.2, Node.js, git, npm y Composer instalados en su máquina.
+    - Edite la conexión de la base de datos en el archivo .env.
+   
+2. **Clone the Repository:**
+    ```bash
+    git clone https://github.com/FelipeMogollon1/placetogrow.git
+    cd placetogrow
+    ```
+3. **Copy .env File:**
+   ```bash
+   cp .env.example .env
+   ```
 
-2. Instalar dependencias del backend:
-   bash
-   $ composer install
+4. **Install PHP Dependencies:**
+   ```bash
+   composer install
+   ```
 
-3. Generar archivo .env para configuración de las variables de entorno:
-   bash
-   $ cp .env.example .env
+5. **Install Node.js Dependencies:**
+   ```bash
+   npm install
+   ```
 
+6. **Generate Application Key:**
+   ```bash
+   php artisan key:generate
+   ```
 
->Ahora debemos configurar la base de datos en phpMyAdmin y en las variables de entorno que se encuentran en el archivo .env generado anteriormente. En este archivo también debemos configurar las credenciales de Mailtrap para probar la funcionalidad de verificación de email del usuario y poner los datos de la pasarela de pagos.
+7. **Run Migrations and Seeders:**
+   ```bash
+   php artisan migrate --seed
+   ```
 
-4. Generar la llave de la aplicación:
-   bash
-   $ php artisan key:generate
+8. **Link Storage:**
+   ```bash
+   php artisan storage:link
+   ```
 
+9. **Compile Assets:**
+   ```bash
+   npm run dev
+   ```
 
-5. Migraciones y alimentación de la base de datos:
-   bash
-   $ php artisan migrate --seed
+10. **Start the Application:**
+    ```bash
+    php artisan serve
+    ```
 
-6. Dependencias del frontend y construcción de assets:
-   bash
-   $ npm install
-   $ npm run dev
+### Modelo Entidad Relación
+#### [MER](https://lucid.app/lucidchart/10fb95bf-0255-4128-a140-e57546d8fb4d/edit?invitationId=inv_ac912b73-c96f-4386-acb9-28abf2053deb) : El proyecto Microsites emplea un modelo Entidad-Relación (MER) para representar la estructura de datos y las relaciones entre las entidades del sistema.
 
-- Despliegue:
-```bash
-$ php artisan serve
