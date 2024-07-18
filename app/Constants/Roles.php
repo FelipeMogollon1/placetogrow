@@ -4,6 +4,8 @@ namespace App\Constants;
 
 enum Roles: string
 {
+    case SA = 'sa';
+
     case ADMIN = 'admin';
     case GUEST = 'guest';
 

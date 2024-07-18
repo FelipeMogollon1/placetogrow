@@ -13,6 +13,7 @@ class UserSeeder extends Seeder
     {
         DB::table('users')->upsert($this->generateUsers(), 'email');
 
+        User::query()->where('email', 'sa@microsites.com')->first()->assignRole(Roles::SA);
         User::query()->where('email', 'admin@microsites.com')->first()->assignRole(Roles::ADMIN);
         User::query()->where('email', 'guest@microsites.com')->first()->assignRole(Roles::GUEST);
 
@@ -21,9 +22,15 @@ class UserSeeder extends Seeder
     public function generateUsers(): array
     {
         return [
-
             [
-                'name' => 'Admin',
+                'name' => 'super administrator',
+                'email' => 'sa@microsites.com',
+                'password' => bcrypt('password'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'administrator',
                 'email' => 'admin@microsites.com',
                 'password' => bcrypt('password'),
                 'created_at' => now(),
