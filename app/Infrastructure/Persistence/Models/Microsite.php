@@ -35,9 +35,26 @@ class Microsite extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function scopeWithCategory($query, $id = null)
+    {
+        if ($id !== null) {
+            return $query->with('category')->where('id', $id);
+        }
+
+        return $query->join('categories', 'microsites.category_id', '=', 'categories.id')
+            ->select([
+                'microsites.id',
+                'microsites.name',
+                'microsites.microsite_type',
+                'microsites.logo',
+                'categories.name as category_name'
+            ]);
+    }
+
     protected static function newFactory(): Factory|MicrositeFactory
     {
         return MicrositeFactory::new();
     }
+
 
 }

@@ -3,15 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Constants\Abilities;
-use App\Domain\Category\Actions\DestroyCategoryAction;
+use App\Constants\CurrencyTypes;
+use App\Constants\DocumentTypes;
+use App\Constants\MicrositesTypes;
 use App\Domain\Microsite\Actions\DestroyMicrositeAction;
 use App\Domain\Microsite\Actions\StoreMicrositeAction;
 use App\Domain\Microsite\Actions\UpdateMicrositeAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Microsite\StoreMicrositeRequest;
 use App\Http\Requests\Microsite\UpdateMicrositeRequest;
+use App\Infrastructure\Persistence\Models\Category;
 use App\Infrastructure\Persistence\Models\Microsite;
-use App\Infrastructure\Persistence\Repositories\EloquentMicrositeRepository;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -20,17 +22,11 @@ use Inertia\Response;
 class MicrositeController extends Controller
 {
     use AuthorizesRequests;
-    private $micrositesRepository;
-
-    public function __construct(EloquentMicrositeRepository $repository)
-    {
-        $this->micrositesRepository = $repository;
-    }
 
     public function index(): Response
     {
         $this->authorize(Abilities::VIEW_ANY->value, Microsite::class);
-        $microsites = $this->micrositesRepository->getAllWithCategories();
+        $microsites = Microsite::withCategory()->get();
 
         return Inertia::render('Microsites/Index', compact('microsites'));
     }
@@ -38,7 +34,7 @@ class MicrositeController extends Controller
     public function create(): Response
     {
         $this->authorize(Abilities::CREATE->value   , Microsite::class);
-        $arrayConstants = $this->micrositesRepository->getCommonData();
+        $arrayConstants = $this->getCommonData();
 
         return Inertia::render('Microsites/Create', $arrayConstants);
     }
@@ -54,7 +50,7 @@ class MicrositeController extends Controller
     public function show(string $id): Response
     {
         $this->authorize(Abilities::VIEW->value, Microsite::class);
-        $microsite = $this->micrositesRepository->getWithCategories($id);
+        $microsite = Microsite::withCategory($id)->firstOrFail()->toArray();
 
         return Inertia::render('Microsites/Show', compact('microsite'));
     }
@@ -62,8 +58,8 @@ class MicrositeController extends Controller
     public function edit(string $id): Response
     {
         $this->authorize(Abilities::EDIT->value, Microsite::class);
-        $microsite = $this->micrositesRepository->find($id);
-        $arrayConstants = $this->micrositesRepository->getCommonData();
+        $microsite = Microsite::findOrFail($id);
+        $arrayConstants = $this->getCommonData();
 
         return Inertia::render('Microsites/Edit', compact('microsite', 'arrayConstants'));
     }
@@ -86,7 +82,7 @@ class MicrositeController extends Controller
 
     public function welcomeIndex(): Response
     {
-        $microsites = $this->micrositesRepository->getAllWithCategories();
+        $microsites = Microsite::withCategory()->get();
 
         return Inertia::render('Welcome', compact('microsites'));
 
@@ -94,5 +90,15 @@ class MicrositeController extends Controller
     public function paymentForm(): Response
     {
         return Inertia::render('PaymentForm');
+    }
+
+    private function getCommonData(): array
+    {
+        return [
+            'documentTypes' => DocumentTypes::getDocumentTypes(),
+            'micrositesTypes' => MicrositesTypes::getMicrositesTypes(),
+            'currencyTypes' => CurrencyTypes::getCurrencyType(),
+            'categories' => Category::select('id', 'name')->get(),
+        ];
     }
 }
