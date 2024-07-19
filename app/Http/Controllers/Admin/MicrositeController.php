@@ -14,6 +14,7 @@ use App\Http\Requests\Microsite\StoreMicrositeRequest;
 use App\Http\Requests\Microsite\UpdateMicrositeRequest;
 use App\Infrastructure\Persistence\Models\Category;
 use App\Infrastructure\Persistence\Models\Microsite;
+use App\Infrastructure\Persistence\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -99,6 +100,7 @@ class MicrositeController extends Controller
             'micrositesTypes' => MicrositesTypes::getMicrositesTypes(),
             'currencyTypes' => CurrencyTypes::getCurrencyType(),
             'categories' => Category::select('id', 'name')->get(),
+            'users' => User::role('admin')->select('id', 'name')->get(),
         ];
     }
 }
