@@ -12,7 +12,7 @@ defineProps({
     }
 });
 
-const headers = ["Nombre"," Tipo", "Categoria"];
+const headers = ["Nombre"," Tipo", "Categoria","Administrador"];
 
 
 </script>
