@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\micrositeController;
+use App\Http\Controllers\Admin\MicrositeController;
 use Illuminate\Support\Facades\Route;
 
-Route::resource('v1/microsite', micrositeController::class);
+Route::resource('v1/microsite', MicrositeController::class);

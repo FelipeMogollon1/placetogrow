@@ -3,21 +3,23 @@
 namespace App\Domain\Microsite\Actions;
 
 use App\Infrastructure\Persistence\Models\Microsite;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 
 class UpdateMicrositeAction
 {
-    public function execute(int $id, array $data): RedirectResponse
+    public function execute(int $id, array $data): bool
     {
         $microsite = Microsite::find($id);
 
-        $data['logo'] = $data['logo'] ? $data['logo']->store('logo', ['disk' => 'public']) : $microsite->logo;
+        if (isset($data['logo']) && $data['logo']) {
 
-        $microsite->logo && $data['logo'] && Storage::disk('public')->delete($microsite->logo);
+            if ($microsite->logo) {
+                Storage::disk('public')->delete($microsite->logo);
+            }
 
-        $microsite->update($data);
+            $data['logo'] = $data['logo']->store('logo', ['disk' => 'public']);
+        }
 
-        return to_route('microsites.index');
+        return $microsite->update($data);
     }
 }

@@ -1,16 +1,16 @@
 <?php
 
-use App\Http\Controllers\Api\categoryController;
-use App\Http\Controllers\Api\micrositeController;
-use App\Http\Controllers\Api\userController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\MicrositeController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Roles\RoleController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', [micrositeController::class, 'welcomeIndex'])->name('Welcome');
+Route::get('/', [MicrositeController::class, 'welcomeIndex'])->name('Welcome');
 
-Route::get('payment',[micrositeController::class,'paymentForm'])->name('payment');
+Route::get('payment',[MicrositeController::class,'paymentForm'])->name('payment');
 
 Route::group(['middleware' => 'auth', 'verified'], function () {
 
@@ -19,10 +19,10 @@ Route::group(['middleware' => 'auth', 'verified'], function () {
     })->name('dashboard');
 
     Route::resource('/roles', RoleController::class);
-    Route::resource('/users', userController::class);
+    Route::resource('/users', UserController::class);
     Route::resource('/categories', CategoryController::class);
-    Route::resource('/microsites', micrositeController::class);
-    Route::post('/microsites/{id}', [micrositeController::class,'update'])->name('microsites.update');
+    Route::resource('/microsites', MicrositeController::class);
+    Route::post('/microsites/{id}', [MicrositeController::class,'update'])->name('microsites.custom_update');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

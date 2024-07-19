@@ -25,67 +25,64 @@ const microsite = ref(page.props.microsite);
             </div>
         </template>
 
-        <div class="grid grid-cols-3 m-10 bg-white rounded-2xl ">
+        <div class="container mx-auto p-10 my-5 bg-white rounded-2xl shadow-lg">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="flex flex-col p-4 bg-gray-50 rounded-lg shadow">
+                    <span class="text-gray-500 font-semibold">Slug:</span>
+                    <span class="font-bold">{{ microsite.slug }}</span>
+                </div>
 
-            <div class="grid grid-rows-2 m-10">
-                <span class="text-gray-400 font-bold">Slug:</span>
-                <span class="font-bold">{{microsite.slug}}</span>
+                <div class="flex flex-col p-4 bg-gray-50 rounded-lg shadow">
+                    <span class="text-gray-500 font-semibold">Nombre:</span>
+                    <span class="font-bold">{{ microsite.name }}</span>
+                </div>
+
+                <div class="flex flex-col p-4 bg-gray-50 rounded-lg shadow">
+                    <span class="text-gray-500 font-semibold">Tipo:</span>
+                    <span class="font-bold">{{ microsite.microsite_type }}</span>
+                </div>
+
+                <div class="flex flex-col p-4 bg-gray-50 rounded-lg shadow">
+                    <span class="text-gray-500 font-semibold">Tipo de documento:</span>
+                    <span class="font-bold">{{ microsite.document_type }}</span>
+                </div>
+
+                <div class="flex flex-col p-4 bg-gray-50 rounded-lg shadow">
+                    <span class="text-gray-500 font-semibold">Documento:</span>
+                    <span class="font-bold">{{ microsite.document }}</span>
+                </div>
+
+                <div class="flex flex-col p-4 bg-gray-50 rounded-lg shadow">
+                    <span class="text-gray-500 font-semibold">Moneda:</span>
+                    <span class="font-bold">{{ microsite.currency }}</span>
+                </div>
+
+                <div class="flex flex-col p-4 bg-gray-50 rounded-lg shadow">
+                    <span class="text-gray-500 font-semibold">Tiempo de expiración en segundos:</span>
+                    <span class="font-bold">{{ microsite.payment_expiration_time }}</span>
+                </div>
+
+                <div class="flex flex-col p-4 bg-gray-50 rounded-lg shadow">
+                    <span class="text-gray-500 font-semibold">Categoría:</span>
+                    <span class="font-bold">{{ microsite.category.name }}</span>
+                </div>
+
+                <div class="flex flex-col p-4 bg-gray-50 rounded-lg shadow">
+                    <span class="text-gray-500 font-semibold">Descripción de la categoría:</span>
+                    <span class="font-bold">{{ microsite.category.description }}</span>
+                </div>
+
+                <div class="flex flex-col p-4 bg-gray-50 rounded-lg shadow">
+                    <span class="text-gray-500 font-semibold">Fecha de habilitación:</span>
+                    <span class="font-bold">{{ microsite.enabled_at }}</span>
+                </div>
+
+                <div v-if="microsite.logo" class="flex flex-col p-4 bg-gray-50 rounded-lg shadow">
+                    <span class="text-gray-500 font-semibold">Logo:</span>
+                    <img class="w-20 h-20 mt-2 rounded-full shadow" :src="`/storage/${microsite.logo}`" alt="logo">
+                </div>
             </div>
-
-            <div class="grid grid-rows-2 m-10">
-                <span class="text-gray-400 font-bold">Nombre:</span>
-                <span class="font-bold">{{microsite.name}}</span>
-            </div>
-
-            <div class="grid grid-rows-2 m-10">
-                <span class="text-gray-400 font-bold">Tipo:</span>
-                <span class="font-bold">{{microsite.microsite_type}}</span>
-            </div>
-
-            <div class="grid grid-rows-2 m-10">
-                <span class="text-gray-400 font-bold">Tipo de documento:</span>
-                <span class="font-bold">{{microsite.document_type}}</span>
-            </div>
-
-            <div class="grid grid-rows-2 m-10">
-                <span class="text-gray-400 font-bold">Documento:</span>
-                <span class="font-bold">{{microsite.document}}</span>
-            </div>
-
-            <div class="grid grid-rows-2 m-10">
-                <span class="text-gray-400 font-bold">Moneda:</span>
-                <span class="font-bold">{{microsite.currency}}</span>
-            </div>
-
-            <div class="grid grid-rows-2 m-10">
-                <span class="text-gray-400 font-bold">Tiempo de expiración en segundos:</span>
-                <span class="font-bold">{{microsite.payment_expiration_time}}</span>
-            </div>
-
-            <div class="grid grid-rows-2 m-10">
-                <span class="text-gray-400 font-bold">Categoria:</span>
-                <span class="font-bold">{{microsite.category.name}}</span>
-            </div>
-
-            <div class="grid grid-rows-2 m-10">
-                <span class="text-gray-400 font-bold">Descripción de la categoria:</span>
-                <span class="font-bold">{{microsite.category.description}}</span>
-            </div>
-
-            <div class="grid grid-rows-2 m-10">
-                <span class="text-gray-400 font-bold">Fecha habilitación:</span>
-                <span class="font-bold">{{microsite.enabled_at}}</span>
-            </div>
-
-            <div v-if="microsite.logo" class="grid grid-rows-2 m-10">
-                <span class="text-gray-400 font-bold">Logo:</span>
-                <img class="w-10 h-10" :src="`/storage/${microsite.logo}`" alt="logo">
-            </div>
-
-            <div class="grid grid-rows-2 m-10">
-
-            </div>
-
         </div>
+
     </AuthenticatedLayout>
 </template>
