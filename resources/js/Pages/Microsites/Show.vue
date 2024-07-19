@@ -24,17 +24,22 @@ const microsite = ref(page.props.microsite);
                 </Link>
             </div>
         </template>
-
         <div class="container mx-auto p-10 my-5 bg-white rounded-2xl shadow-lg">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
                 <div class="flex flex-col p-4 bg-gray-50 rounded-lg shadow">
-                    <span class="text-gray-500 font-semibold">Slug:</span>
+                    <span class="text-gray-500 font-semibold">slug:</span>
                     <span class="font-bold">{{ microsite.slug }}</span>
                 </div>
 
                 <div class="flex flex-col p-4 bg-gray-50 rounded-lg shadow">
                     <span class="text-gray-500 font-semibold">Nombre:</span>
                     <span class="font-bold">{{ microsite.name }}</span>
+                </div>
+
+                <div class="flex flex-col p-4 bg-gray-50 rounded-lg shadow">
+                    <span class="text-gray-500 font-semibold">Administrador:</span>
+                    <span class="font-bold">{{ microsite.user.name }}</span>
                 </div>
 
                 <div class="flex flex-col p-4 bg-gray-50 rounded-lg shadow">

@@ -4,6 +4,7 @@ namespace App\Domain\Microsite\Actions;
 
 use App\Infrastructure\Persistence\Models\Category;
 use App\Infrastructure\Persistence\Models\Microsite;
+use App\Infrastructure\Persistence\Models\User;
 use Illuminate\Support\Str;
 
 class StoreMicrositeAction
@@ -15,6 +16,7 @@ class StoreMicrositeAction
         }
 
         $category = Category::find($data['category_id']);
+        $user = User::find($data['user_id']);
 
         return Microsite::create([
             'slug' => Str::slug($data['name'], '_') . '_' . Str::random(10, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'),
@@ -26,6 +28,7 @@ class StoreMicrositeAction
             'currency' => $data['currency'],
             'payment_expiration_time' => $data['payment_expiration_time'],
             'category_id' => $category->id,
+            'user_id' => $user->id,
         ]);
     }
 }

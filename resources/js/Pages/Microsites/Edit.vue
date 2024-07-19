@@ -29,7 +29,8 @@ const initialValues = {
     microsite_type: props.microsite.microsite_type,
     currency: props.microsite.currency,
     payment_expiration_time: props.microsite.payment_expiration_time,
-    category_id: props.microsite.category_id
+    category_id: props.microsite.category_id,
+    user_id: props.microsite.user_id,
 }
 
 const form = useForm(initialValues)
@@ -161,19 +162,34 @@ const onSelectLogo = (e) => {
                             <InputError class="mt-2" :message="form.errors.payment_expiration_time" />
                         </div>
 
-                            <div>
-                                <InputLabel for="category_id" value="Categoria" />
-                                <select
-                                    name="category_id"
-                                    id="category_id"
-                                    class="w-full mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                                    v-model="form.category_id"
-                                >
-                                    <option value="">Seleccione</option>
-                                    <option v-for="category in props.arrayConstants.categories" :key="category.id" :value="category.id">{{ category.name }}</option>
-                                </select>
-                                <InputError class="mt-2" :message="form.errors.category_id" />
-                            </div>
+                        <div>
+                            <InputLabel for="category_id" value="Categoria" />
+                            <select
+                                name="category_id"
+                                id="category_id"
+                                class="w-full mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                v-model="form.category_id"
+                            >
+                                <option value="">Seleccione</option>
+                                <option v-for="category in props.arrayConstants.categories" :key="category.id" :value="category.id">{{ category.name }}</option>
+                            </select>
+                            <InputError class="mt-2" :message="form.errors.category_id" />
+                        </div>
+
+                        <div>
+                            <InputLabel for="user_id" value="Administrador del micrositio" />
+                            <select
+                                name="user_id"
+                                id="user_id"
+                                class="w-full mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                v-model="form.user_id"
+                            >
+                                <option value="">Seleccione</option>
+                                <option v-for="user in props.arrayConstants.users" :key="user.id" :value="user.id">{{ user.name }}</option>
+                            </select>
+                            <InputError class="mt-2" :message="form.errors.user_id" />
+                        </div>
+
                         <div class="flex justify-center">
                             <PrimaryButton >
                                 Actualizar Micrositio

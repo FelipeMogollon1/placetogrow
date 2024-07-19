@@ -22,6 +22,7 @@ return new class () extends Migration {
             $table->enum('currency', CurrencyTypes::getCurrencyType());
             $table->unsignedBigInteger('payment_expiration_time');
             $table->foreignId('category_id')->constrained();
+            $table->foreignId('user_id')->nullable()->constrained();
             $table->timestamp('enabled_at')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();

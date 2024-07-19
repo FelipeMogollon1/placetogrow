@@ -27,6 +27,7 @@ class StoreMicrositeRequest extends FormRequest
             'currency' => ['required', Rule::in(CurrencyTypes::getCurrencyType())],
             'payment_expiration_time' => ['required','max:18446744073709551614'],
             'category_id' => ['required', 'integer'],
+            'user_id' => ['nullable', 'integer'],
         ];
     }
 

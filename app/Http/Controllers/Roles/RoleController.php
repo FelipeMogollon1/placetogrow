@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Roles;
 
+use App\Constants\Roles;
 use App\Domain\Role\Actions\DestroyRoleAction;
 use App\Domain\Role\Actions\StoreRoleAction;
 use App\Domain\Role\Actions\UpdateRoleAction;
@@ -26,8 +27,7 @@ class RoleController extends Controller
 
     public function create(): Response
     {
-        $permissions =  Permission::all();
-        return Inertia::render('Roles/Create', compact('permissions'));
+        return Inertia::render('Roles/Create', ['permissions' => Permission::all()]);
     }
 
     public function store(StoreRoleRequest $request, StoreRoleAction $storeAction): RedirectResponse
@@ -37,17 +37,23 @@ class RoleController extends Controller
         return to_route('roles.index');
     }
 
-    public function edit(string $id): Response
+    public function edit(string $id): Response|RedirectResponse
     {
         $role = Role::with('permissions')->find($id);
         $allPermissions = Permission::all();
+
+        if (in_array($role->getAttribute('name'), Roles::getAllRoles())) {
+            return to_route('roles.index');
+        }
 
         return Inertia::render('Roles/Edit', compact('role', 'allPermissions'));
     }
 
     public function update(UpdateRoleRequest $request, string $id, UpdateRoleAction $updateAction): RedirectResponse
     {
-        return $updateAction->execute($id, $request->validated());
+        $updateAction->execute($id, $request->validated());
+
+        return redirect()->route('roles.index');
     }
 
     public function destroy(Role $role, DestroyRoleAction $roleAction): RedirectResponse

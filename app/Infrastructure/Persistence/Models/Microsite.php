@@ -67,4 +67,5 @@ class Microsite extends Model
         return MicrositeFactory::new();
     }
 
+
 }
