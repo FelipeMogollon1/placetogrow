@@ -12,11 +12,12 @@ defineProps({
     }
 });
 
-const headers = ["Nombre","Email"];
+const headers = ["Nombre","Email","Rol"];
 
 </script>
 
 <template>
+    {{user}}
     <Head title="Usuarios index"/>
     <AuthenticatedLayout>
         <template #header>
