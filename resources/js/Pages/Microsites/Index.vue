@@ -1,6 +1,5 @@
 <script setup>
 import { Head, Link } from '@inertiajs/vue3';
-import {defineProps} from 'vue';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {route} from "ziggy-js";
 import SecondaryTable from "@/Layouts/Organisms/SecondaryTable.vue";

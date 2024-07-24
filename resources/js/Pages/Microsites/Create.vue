@@ -7,7 +7,6 @@ import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import FileInput from "@/Components/FileInput.vue";
-import {defineProps} from "vue";
 
 const initialValues = {
     name : "",

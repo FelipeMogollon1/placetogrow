@@ -1,5 +1,5 @@
 <script setup>
-import {defineProps, ref} from 'vue';
+import {ref} from 'vue';
 import {Link, usePage} from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 import {TrashIcon, PencilIcon, EyeIcon} from "@heroicons/vue/24/outline/index.js";
