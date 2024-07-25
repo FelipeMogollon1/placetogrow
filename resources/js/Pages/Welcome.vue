@@ -12,18 +12,52 @@ const props = defineProps({
 });
 
 const searchQuery = ref('');
+const currentPage = ref(1);
+const itemsPerPage = 8;
 
 const filteredMicrosites = computed(() => {
     return props.microsites.filter(microsite =>
         microsite.name.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
 });
+
+const paginatedMicrosites = computed(() => {
+    const start = (currentPage.value - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    return filteredMicrosites.value.slice(start, end);
+});
+
+const totalPages = computed(() => {
+    return Math.ceil(filteredMicrosites.value.length / itemsPerPage) || 1;
+});
+
+const changePage = (page) => {
+    if (page >= 1 && page <= totalPages.value) {
+        currentPage.value = page;
+    }
+};
+
+const goToPreviousPage = () => {
+    if (currentPage.value > 1) {
+        changePage(currentPage.value - 1);
+    }
+};
+
+const goToNextPage = () => {
+    if (currentPage.value < totalPages.value) {
+        changePage(currentPage.value + 1);
+    }
+};
+
+const isPreviousPageDisabled = computed(() => currentPage.value === 1);
+const isNextPageDisabled = computed(() => currentPage.value === totalPages.value);
+
 </script>
 
 <template>
     <Head title="Microsites" />
-    <div class="w-screen h-screen bg-gray-100">
-        <header class="rounded-md w-full flex justify-between items-center p-6 bg-white">
+    <div class="flex flex-col min-h-screen bg-white">
+        <header class="rounded-md w-full flex justify-between items-center p-10 bg-white">
             <div class="flex lg:justify-center lg:col-start-2 text-gray-700 dark:text-gray-800">
                 <GlobeAltIcon class="w-6 hover:text-gray-500" />
                 <h1 class="m-1 hover:text-gray-500">Microsites</h1>
@@ -31,31 +65,39 @@ const filteredMicrosites = computed(() => {
             <nav class="flex space-x-4">
                 <Link
                     :href="route('login')"
-                    class="bg-gray-100 rounded-md px-3 py-2 text-gray-800 dark:text-gray-800 transition hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus-visible:ring-[#FF2D20]"
+                    class="bg-gray-500 text-white rounded-full px-4 py-2 text-sm font-semibold transition transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                 >
                     Iniciar Sesión
                 </Link>
                 <Link
                     :href="route('register')"
-                    class="bg-gray-100 rounded-md px-3 py-2 text-gray-800 dark:text-gray-800 transition hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus-visible:ring-[#FF2D20]"
+                    class="bg-gray-500 text-white rounded-full px-4 py-2 text-sm font-semibold transition transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                 >
                     Registro
                 </Link>
             </nav>
         </header>
-        <div class="max-w-sm mx-auto relative my-6">
+
+        <div class="text-center mt-6 px-2 max-w-xl mx-auto my-3">
+            <h2 class="text-2xl font-bold text-gray-800 leading-snug">
+                Descubre cientos de comercios y realiza todos tus pagos en un solo lugar, de forma fácil y rápida
+            </h2>
+        </div>
+
+        <div class="max-w-sm mx-auto relative my-5">
             <input type="text"
                    v-model="searchQuery"
-                   class="py-3 px-10 block w-full border-gray-200 rounded-full text-sm"
+                   class="py-2 px-11 block w-full border-gray-400 rounded-full text-sm"
                    placeholder="Buscar micrositio">
             <MagnifyingGlassIcon class="absolute left-3 top-1/2 transform -translate-y-1/2 w-6 text-gray-500" />
         </div>
 
-        <main class="mx-4 md:mx-10 lg:mx-20 xl:mx-40 my-10">
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                <div v-for="microsite in filteredMicrosites" :key="microsite.id" class="bg-white shadow-md rounded-xl">
+        <main class="md:mx-10 lg:mx-20 xl:mx-40">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                <div v-for="microsite in paginatedMicrosites" :key="microsite.id"
+                     class="bg-white shadow-md rounded-xl transition-transform transform hover:-translate-y-1 hover:shadow-xl hover:bg-gray-100">
                     <div class="p-6">
-                        <div class="m-1" v-if="microsite.logo">
+                        <div class="m-1 rounded-lg overflow-hidden" v-if="microsite.logo">
                             <img class="w-full h-16 object-contain" :src="`/storage/${microsite.logo}`" alt="Logo">
                         </div>
                         <h5 class="text-xl font-semibold text-blue-gray-900">{{ microsite.name }}</h5>
@@ -73,8 +115,48 @@ const filteredMicrosites = computed(() => {
                     </div>
                 </div>
             </div>
+
+
+            <div class="flex items-center justify-center mt-6 space-x-2">
+                <button
+                    @click="goToPreviousPage"
+                    :disabled="isPreviousPageDisabled"
+                    class="flex items-center justify-center px-4 py-2 bg-gray-600 text-white rounded-full shadow-md hover:bg-gray-700 disabled:bg-gray-300 transition-colors duration-200"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <span class="sr-only">Anterior</span>
+                </button>
+
+                <span class="px-4 py-2 text-gray-800 bg-gray-100 border border-gray-300 rounded-full">
+                    Página {{ currentPage }} de {{ totalPages }}
+                </span>
+
+                <button
+                    @click="goToNextPage"
+                    :disabled="isNextPageDisabled"
+                    class="flex items-center justify-center px-4 py-2 bg-gray-600 text-white rounded-full shadow-md hover:bg-gray-700 disabled:bg-gray-300 transition-colors duration-200"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                    <span class="sr-only">Siguiente</span>
+                </button>
+            </div>
+
         </main>
     </div>
 
-</template>
+    <footer class="bg-white text-gray-800 py-6 mt-10 shadow-md">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center mb-4 md:mb-0">
 
+            </div>
+            <p class="text-sm text-gray-600">&copy; 2024 Microsites. Todos los derechos reservados.</p>
+            <div class="flex space-x-4">
+
+            </div>
+        </div>
+    </footer>
+</template>
