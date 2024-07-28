@@ -2,7 +2,10 @@
 import { ref, computed } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { route } from "ziggy-js";
-import { ArrowLongRightIcon, GlobeAltIcon, MagnifyingGlassIcon } from "@heroicons/vue/24/outline/index.js";
+import { ArrowLongRightIcon, MagnifyingGlassIcon, PhotoIcon } from "@heroicons/vue/24/outline/index.js";
+import LanguageDropdown from "@/Layouts/Atoms/LanguageDropdown.vue";
+import FooterIndex from "@/Layouts/Molecules/FooterIndex.vue";
+import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 
 const props = defineProps({
     microsites: {
@@ -55,32 +58,31 @@ const isNextPageDisabled = computed(() => currentPage.value === totalPages.value
 </script>
 
 <template>
-    <Head title="Microsites" />
+    <Head :title=" $t('welcome')" />
     <div class="flex flex-col min-h-screen bg-white">
         <header class="rounded-md w-full flex justify-between items-center p-10 bg-white">
-            <div class="flex lg:justify-center lg:col-start-2 text-gray-700 dark:text-gray-800">
-                <GlobeAltIcon class="w-6 hover:text-gray-500" />
-                <h1 class="m-1 hover:text-gray-500">Microsites</h1>
-            </div>
+            <ApplicationLogo/>
             <nav class="flex space-x-4">
+                <LanguageDropdown />
+
                 <Link
                     :href="route('login')"
                     class="bg-gray-500 text-white rounded-full px-4 py-2 text-sm font-semibold transition transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                 >
-                    Iniciar Sesión
+                    {{$t('login')}}
                 </Link>
                 <Link
                     :href="route('register')"
                     class="bg-gray-500 text-white rounded-full px-4 py-2 text-sm font-semibold transition transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
                 >
-                    Registro
+                    {{$t('register')}}
                 </Link>
             </nav>
         </header>
 
         <div class="text-center mt-6 px-2 max-w-xl mx-auto my-3">
             <h2 class="text-2xl font-bold text-gray-800 leading-snug">
-                Descubre cientos de comercios y realiza todos tus pagos en un solo lugar, de forma fácil y rápida
+                {{ $t('titleWelcome') }}
             </h2>
         </div>
 
@@ -88,20 +90,21 @@ const isNextPageDisabled = computed(() => currentPage.value === totalPages.value
             <input type="text"
                    v-model="searchQuery"
                    class="py-2 px-11 block w-full border-gray-400 rounded-full text-sm"
-                   placeholder="Buscar micrositio">
+                   :placeholder="$t('searchMicrosite')">
             <MagnifyingGlassIcon class="absolute left-3 top-1/2 transform -translate-y-1/2 w-6 text-gray-500" />
         </div>
 
         <main class="md:mx-10 lg:mx-20 xl:mx-40">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                 <div v-for="microsite in paginatedMicrosites" :key="microsite.id"
-                     class="bg-white shadow-md rounded-xl transition-transform transform hover:-translate-y-1 hover:shadow-xl hover:bg-gray-100">
-                    <div class="p-6">
-                        <div class="m-1 rounded-lg overflow-hidden" v-if="microsite.logo">
-                            <img class="w-full h-16 object-contain" :src="`/storage/${microsite.logo}`" alt="Logo">
+                     class="bg-gray-100 shadow rounded-xl transition-transform transform hover:-translate-y-1 hover:shadow-xl hover:bg-gray-200">
+                    <div class="p-5">
+                        <div class="m-1 rounded-lg overflow-hidden flex justify-center items-center ">
+                            <img v-if="microsite.logo" class="rounded-lg h-16 object-contain" :src="`/storage/${microsite.logo}`" alt="Logo">
+                            <PhotoIcon v-else class="w-full h-16 text-gray-400 object-contain hover:text-gray-600"/>
                         </div>
                         <h5 class="text-xl font-semibold text-blue-gray-900">{{ microsite.name }}</h5>
-                        <p class="text-base font-light text-inherit">{{ microsite.microsite_type }}</p>
+                        <p class="text-base font-light text-inherit">{{ $t(`micrositeTypes.${microsite.microsite_type}`) }}</p>
                         <p class="mt-1 text-sm text-gray-600">{{ microsite.category_name }}</p>
                     </div>
                     <div class="p-6 pt-0">
@@ -109,7 +112,7 @@ const isNextPageDisabled = computed(() => currentPage.value === totalPages.value
                             class="flex items-center justify-center px-5 py-2 text-xs font-bold text-center text-gray-900 uppercase rounded-lg transition-all select-none hover:bg-gray-900/10 active:bg-gray-900/20"
                             :href="route('payment')"
                         >
-                            Ingresar
+                            {{ $t('enter') }}
                             <ArrowLongRightIcon class="px-1 w-6 hover:text-gray-500" />
                         </a>
                     </div>
@@ -130,7 +133,7 @@ const isNextPageDisabled = computed(() => currentPage.value === totalPages.value
                 </button>
 
                 <span class="px-4 py-2 text-gray-800 bg-gray-100 border border-gray-300 rounded-full">
-                    Página {{ currentPage }} de {{ totalPages }}
+                    {{ $t('page') }} {{ currentPage }} {{ $t('of') }} {{ totalPages }}
                 </span>
 
                 <button
@@ -147,16 +150,6 @@ const isNextPageDisabled = computed(() => currentPage.value === totalPages.value
 
         </main>
     </div>
+    <FooterIndex/>
 
-    <footer class="bg-white text-gray-800 py-6 mt-10 shadow-md">
-        <div class="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
-            <div class="flex items-center mb-4 md:mb-0">
-
-            </div>
-            <p class="text-sm text-gray-600">&copy; 2024 Microsites. Todos los derechos reservados.</p>
-            <div class="flex space-x-4">
-
-            </div>
-        </div>
-    </footer>
 </template>
