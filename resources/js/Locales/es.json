@@ -1,0 +1,112 @@
+{
+    "about": "Acerca de",
+    "all_rights_reserved": "Todos los derechos reservados.",
+    "categories": "Categorias",
+    "contact": "Contacto",
+    "create_category": "",
+    "create_microsite": "Crear micrositio",
+    "create_rol": "",
+    "create_user": "",
+    "currency": "Moneda",
+    "currencies": {
+        "COP": "Peso colombiano",
+        "USD": "Dólar estadounidense"
+    },
+    "dashboard": "Panel",
+    "detail_microsite": "Detalle del Micrositio",
+    "documentType": {
+        "CC": "Cédula de ciudadanía",
+        "CE": "Cédula de Extranjería",
+        "NIT": "Número de Identificación Tributaria",
+        "PAS": "Pasaporte",
+        "RC": "Registro Civil",
+        "TI": "Tarjeta de identidad"
+    },
+    "errors": {
+        "internal_server_error": "Error interno del servidor",
+        "page_not_found": "Página no encontrada",
+        "unauthorized": "No autorizado"
+    },
+    "form": "Formulario",
+    "forgot_your_password": "¿Ha olvidado su contraseña?",
+    "home": "Inicio",
+    "language": {
+        "label": "Idioma",
+        "en": "Ingles",
+        "es": "Español"
+    },
+    "list_microsites": "Lista de Micrositios",
+    "login": "Iniciar sesión",
+    "logout": "Cerrar sesión",
+    "micrositeTypes": {
+        "donation": "Donación",
+        "invoice": "Factura",
+        "subscription": "Suscripción"
+    },
+    "microsites": "Micrositios",
+    "microsites_table": {
+        "actions": "Acciones",
+        "administrator": "Administrador",
+        "category": "Categoria",
+        "category_description": "Descripción de la categoría",
+        "date": "Fecha de habilitación:",
+        "date_qualification": "Fecha de habilitación",
+        "document": "Número de documento",
+        "document_type": "Tipo de documento",
+        "logo": "Logo",
+        "microsite_type": "Tipo de Micrositio",
+        "name": "Nombre",
+        "slug": "URL",
+        "time_expiration": "Tiempo de expiración en segundos",
+        "type": "Tipo"
+    },
+    "page": "Páginas",
+    "payment_expiration_time": "Tiempo de expiración en segundos",
+    "return": "Regresar",
+    "register": "Registrarse",
+    "remember_me": "Recuérdame",
+    "resource": {
+        "create": "Crear",
+        "destroy": "Eliminar",
+        "edit": "Editar",
+        "index": "Indice",
+        "show": "Mostrar",
+        "store": "Almacenar",
+        "update": "Actualizar"
+    },
+    "roles": "Roles",
+    "roles_table": {
+        "admin": "Administrador",
+        "guest": "Invitado",
+        "sa": "Super administrador"
+    },
+    "save": "Guardar",
+    "saved": "Guardado",
+    "searchMicrosite": "Buscar micrositio",
+    "updateMicrosite": "Actualizar micrositio",
+    "select": "seleccionar",
+    "titleWelcome": "Descubre cientos de comercios y realiza todos tus pagos en un solo lugar, de forma fácil y rápida",
+    "user": {
+        "label": "Usuarios",
+        "actions": "Acciones",
+        "already_registered": "¿Ya está registrado?",
+        "confirm_password": "Confirmar contraseña",
+        "cancel": "Cancelar",
+        "email": "Correo electrónico",
+        "name": "Nombre",
+        "password": "Contraseña",
+        "profile": "Mi perfil",
+        "profile_information": "Información del perfil",
+        "profile_information_additional": "Actualice la información de perfil y la dirección de correo electrónico de su cuenta.",
+        "settings": "Configuración",
+        "update_password": "Actualizar contraseña",
+        "update_password_additional": "Asegúrate de que tu cuenta utiliza una contraseña larga y aleatoria para mantener la seguridad.",
+        "current_password": "Contraseña actual",
+        "new_password": "Nueva contraseña",
+        "delete_account": "Eliminar cuenta",
+        "delete_account_additional": "Una vez eliminada su cuenta, todos sus recursos y datos se borrarán permanentemente. Antes de eliminar su cuenta, descargue los datos o la información que desee conservar.",
+        "are_you_sure_delete": "¿Seguro que quieres eliminar tu cuenta?",
+        "are_you_sure_delete_additional": "Una vez eliminada su cuenta, todos sus recursos y datos se borrarán permanentemente. Introduzca su contraseña para confirmar que desea eliminar definitivamente su cuenta."
+    },
+    "welcome_title": "Bienvenido a micrositios "
+}
