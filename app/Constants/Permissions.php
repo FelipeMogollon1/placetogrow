@@ -43,14 +43,10 @@ enum Permissions: string
 
     public static function getAdminPermissions(): array
     {
-        $permissions = self::cases();
-
-        $filteredPermissions = array_filter($permissions, function ($enum) {
-            $value = $enum->value;
-            return str_starts_with($value, 'microsites.');
-        });
-
-        return array_map(fn($enum) => $enum->value, $filteredPermissions);
+        return [
+            self::MICROSITES_INDEX->value,
+            self::MICROSITES_SHOW->value,
+        ];
     }
 
     public static function getGuestPermissions(): array
