@@ -43,7 +43,7 @@ class Microsite extends Model
 
     public function scopeWithCategory(Builder $query, $id = null): Builder
     {
-        return $query->with(['category', 'user'])->where('id', $id);
+        return $query->with(['category', 'user'])->where('id', $id)->orderBy('microsites.name', 'asc');
 
     }
 
@@ -59,7 +59,7 @@ class Microsite extends Model
                 'microsites.logo',
                 'categories.name as category_name',
                 'users.name as user_name',
-            ]);
+            ])->orderBy('microsites.name', 'asc');
     }
 
     protected static function newFactory(): Factory|MicrositeFactory
