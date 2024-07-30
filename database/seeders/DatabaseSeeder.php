@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Infrastructure\Persistence\Models\Form;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,6 +13,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleSeeder::class);
         $this->call(UserSeeder::class);
         $this->call(CategorySeeder::class);
+        $this->call(FormSeeder::class);
         $this->call(MicrositeSeeder::class);
 
     }

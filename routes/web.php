@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\FormController;
 use App\Http\Controllers\Admin\MicrositeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
@@ -18,6 +19,8 @@ Route::group(['middleware' => 'auth', 'verified'], function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
+    Route::resource('/forms', FormController::class);
+    Route::put('/forms/{id}', [FormController::class, 'update'])->name('forms.update');
     Route::resource('/roles', RoleController::class);
     Route::resource('/users', UserController::class);
     Route::resource('/categories', CategoryController::class);
