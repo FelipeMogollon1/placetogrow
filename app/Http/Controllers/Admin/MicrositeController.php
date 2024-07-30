@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Microsite\StoreMicrositeRequest;
 use App\Http\Requests\Microsite\UpdateMicrositeRequest;
 use App\Infrastructure\Persistence\Models\Category;
+use App\Infrastructure\Persistence\Models\Form;
 use App\Infrastructure\Persistence\Models\Microsite;
 use App\Infrastructure\Persistence\Models\User;
 use App\ViewModels\Microsites\MicrositeIndexViewModel;
@@ -48,15 +49,17 @@ class MicrositeController extends Controller
         $this->authorize(Abilities::STORE->value, Microsite::class);
         $storeAction->execute($request->validated());
 
-        return to_route('microsites.index');
+        return to_route('microsites.index')->with('success', 'User created.');
     }
 
     public function show(string $id): Response
     {
         $this->authorize(Abilities::VIEW->value, Microsite::class);
         $microsite = Microsite::withCategory($id)->firstOrFail()->toArray();
+        $configuration = Form::all();
+        $documentTypes = DocumentTypes::getDocumentTypes();
 
-        return Inertia::render('Microsites/Show', compact('microsite'));
+        return Inertia::render('Microsites/Show', compact('microsite','configuration',"documentTypes"));
     }
 
     public function edit(string $id): Response

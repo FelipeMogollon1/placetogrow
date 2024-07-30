@@ -28,6 +28,7 @@ class Microsite extends Model
         'payment_expiration_time',
         'category_id',
         'user_id',
+        'form_id',
         'enabled_at',
     ];
 
@@ -39,6 +40,11 @@ class Microsite extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function form(): BelongsTo
+    {
+        return $this->belongsTo(Form::class);
     }
 
     public function scopeWithCategory(Builder $query, $id = null): Builder

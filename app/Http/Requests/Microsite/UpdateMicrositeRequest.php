@@ -28,6 +28,7 @@ class UpdateMicrositeRequest extends FormRequest
             'payment_expiration_time' => ['nullable','max:18446744073709551614'],
             'category_id' => ['nullable', 'integer'],
             'user_id' => ['nullable', 'integer'],
+            'form_id' => ['nullable'],
         ];
     }
 
