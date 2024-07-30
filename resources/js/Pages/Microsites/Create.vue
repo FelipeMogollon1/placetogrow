@@ -73,7 +73,7 @@ defineProps({
             </div>
         </template>
 
-        <div class="pt-6">
+        <div class="pt-2 ">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-lg sm:rounded-lg">
                     <div class="p-6 text-gray-900">
@@ -83,7 +83,7 @@ defineProps({
                                 <TextInput
                                     id="name"
                                     type="text"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md"
+                                    class="mt-1 block w-full"
                                     v-model="form.name"
                                     autofocus
                                     autocomplete="name"
@@ -125,7 +125,7 @@ defineProps({
                                 <TextInput
                                     id="document"
                                     type="text"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md"
+                                    class="mt-1 block w-full"
                                     v-model="form.document"
                                     autofocus
                                     autocomplete="document"
@@ -167,7 +167,7 @@ defineProps({
                                 <TextInput
                                     id="payment_expiration_time"
                                     type="number"
-                                    class="mt-1 block w-full border border-gray-300 rounded-md"
+                                    class="mt-1 block w-full"
                                     v-model="form.payment_expiration_time"
                                     min="1"
                                     max="18000000000000000000"
@@ -198,7 +198,7 @@ defineProps({
                                 <InputError class="mt-2" :message="form.errors.logo" />
                             </div>
 
-                            <div class="col-span-1 flex justify-center sm:col-span-2">
+                            <div class="col-span-2 flex justify-center">
                                 <PrimaryButton>
                                     {{ $t('create_microsite') }}
                                 </PrimaryButton>
@@ -210,6 +210,3 @@ defineProps({
         </div>
     </AuthenticatedLayout>
 </template>
-
-
-
