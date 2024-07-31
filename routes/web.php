@@ -11,7 +11,8 @@ use Inertia\Inertia;
 
 Route::get('/', [MicrositeController::class, 'welcomeIndex'])->name('Welcome');
 
-Route::get('payment',[MicrositeController::class,'paymentForm'])->name('payment');
+Route::get('/microsites/{slug}/payment-form', [MicrositeController::class, 'paymentForm'])->name('microsites.paymentForm');
+
 
 Route::group(['middleware' => 'auth', 'verified'], function () {
 
@@ -20,7 +21,6 @@ Route::group(['middleware' => 'auth', 'verified'], function () {
     })->name('dashboard');
 
     Route::resource('/forms', FormController::class);
-    Route::put('/forms/{id}', [FormController::class, 'update'])->name('forms.update');
     Route::resource('/roles', RoleController::class);
     Route::resource('/users', UserController::class);
     Route::resource('/categories', CategoryController::class);

@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { route } from "ziggy-js";
-import { ArrowLongRightIcon, MagnifyingGlassIcon, PhotoIcon } from "@heroicons/vue/24/outline/index.js";
+import {ArrowLongRightIcon, EyeIcon, MagnifyingGlassIcon, PhotoIcon} from "@heroicons/vue/24/outline/index.js";
 import LanguageDropdown from "@/Layouts/Atoms/LanguageDropdown.vue";
 import FooterIndex from "@/Layouts/Molecules/FooterIndex.vue";
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
@@ -58,7 +58,7 @@ const isNextPageDisabled = computed(() => currentPage.value === totalPages.value
 </script>
 
 <template>
-    <Head :title=" $t('welcome')" />
+    <Head class="capitalize" :title=" $t('welcome')" />
     <div class="flex flex-col min-h-screen bg-white">
         <header class="rounded-md w-full flex justify-between items-center p-10 bg-white">
             <ApplicationLogo/>
@@ -67,13 +67,13 @@ const isNextPageDisabled = computed(() => currentPage.value === totalPages.value
 
                 <Link
                     :href="route('login')"
-                    class="bg-gray-500 text-white rounded-full px-4 py-2 text-sm font-semibold transition transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    class="bg-orange-400 text-white rounded-full px-4 py-2 text-sm font-semibold transition transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
                 >
                     {{$t('login')}}
                 </Link>
                 <Link
                     :href="route('register')"
-                    class="bg-gray-500 text-white rounded-full px-4 py-2 text-sm font-semibold transition transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    class="bg-orange-400 text-white rounded-full px-4 py-2 text-sm font-semibold transition transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
                 >
                     {{$t('register')}}
                 </Link>
@@ -89,9 +89,9 @@ const isNextPageDisabled = computed(() => currentPage.value === totalPages.value
         <div class="max-w-sm mx-auto relative my-5">
             <input type="text"
                    v-model="searchQuery"
-                   class="py-2 px-11 block w-full border-gray-400 rounded-full text-sm"
+                   class="py-2 px-11 block w-full border-orange-400 focus:ring-orange-500 rounded-full text-sm"
                    :placeholder="$t('searchMicrosite')">
-            <MagnifyingGlassIcon class="absolute left-3 top-1/2 transform -translate-y-1/2 w-6 text-gray-500" />
+            <MagnifyingGlassIcon class="absolute left-3 top-1/2 transform -translate-y-1/2 w-6 text-gray-600" />
         </div>
 
         <main class="md:mx-10 lg:mx-20 xl:mx-40">
@@ -108,13 +108,13 @@ const isNextPageDisabled = computed(() => currentPage.value === totalPages.value
                         <p class="mt-1 text-sm text-gray-600">{{ microsite.category_name }}</p>
                     </div>
                     <div class="p-6 pt-0">
-                        <a
-                            class="flex items-center justify-center px-5 py-2 text-xs font-bold text-center text-gray-900 uppercase rounded-lg transition-all select-none hover:bg-gray-900/10 active:bg-gray-900/20"
-                            :href="route('payment')"
-                        >
-                            {{ $t('enter') }}
+                        <Link
+                              class="flex items-center justify-center px-5 py-2 text-xs font-bold text-center text-gray-900 uppercase rounded-lg transition-all select-none hover:bg-gray-900/10 active:bg-gray-900/20"
+                              :href="route('microsites.paymentForm', microsite.slug)">
+                            {{ $t('enter') }} {{}}
                             <ArrowLongRightIcon class="px-1 w-6 hover:text-gray-500" />
-                        </a>
+                        </Link>
+
                     </div>
                 </div>
             </div>
