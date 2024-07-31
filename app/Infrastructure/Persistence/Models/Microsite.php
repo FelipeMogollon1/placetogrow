@@ -49,8 +49,15 @@ class Microsite extends Model
 
     public function scopeWithCategory(Builder $query, $id = null): Builder
     {
-        return $query->with(['category', 'user'])->where('id', $id)->orderBy('microsites.name', 'asc');
-
+        return $query
+            ->with(['category', 'user', 'form'])
+            ->when($id, function ($query, $id) {
+                return $query->where(function ($query) use ($id) {
+                    $query->where('id', $id)
+                        ->orWhere('form_id', $id);
+                });
+            })
+            ->orderBy('microsites.name', 'asc');
     }
 
     public function scopeAllWithCategories(Builder $query): Builder
@@ -63,6 +70,7 @@ class Microsite extends Model
                 'microsites.name',
                 'microsites.microsite_type',
                 'microsites.logo',
+                'microsites.slug',
                 'categories.name as category_name',
                 'users.name as user_name',
             ])->orderBy('microsites.name', 'asc');

@@ -56,10 +56,9 @@ class MicrositeController extends Controller
     {
         $this->authorize(Abilities::VIEW->value, Microsite::class);
         $microsite = Microsite::withCategory($id)->firstOrFail()->toArray();
-        $configuration = Form::all();
-        $documentTypes = DocumentTypes::getDocumentTypes();
+        $arrayConstants = $this->getCommonData();
 
-        return Inertia::render('Microsites/Show', compact('microsite','configuration',"documentTypes"));
+        return Inertia::render('Microsites/Show', compact('microsite','arrayConstants'));
     }
 
     public function edit(string $id): Response
@@ -94,9 +93,12 @@ class MicrositeController extends Controller
         return Inertia::render('Welcome', compact('microsites'));
 
     }
-    public function paymentForm(): Response
+    public function paymentForm(string $slug): Response
     {
-        return Inertia::render('PaymentForm');
+        $microsite = Microsite::where('slug', $slug)->with('form')->firstOrFail();
+        $arrayConstants = $this->getCommonData();
+
+        return Inertia::render('PaymentForm', compact('microsite','arrayConstants'));
     }
 
     private function getCommonData(): array
