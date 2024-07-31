@@ -27,7 +27,31 @@
         "page_not_found": "Página no encontrada",
         "unauthorized": "No autorizado"
     },
-    "form": "Formulario",
+    "form": {
+        "label": "Formulario",
+        "select_header": "Seleccione una cabecera",
+        "electronic_payments" : "Pagos electrónicos",
+        "additional_information" : "Información adicional",
+        "name": "Nombre",
+        "surname": "Apellido",
+        "email": "Correo electrónico",
+        "document": "Documento",
+        "document_type": "Tipo de documento",
+        "mobile": "Teléfono o Celular",
+        "reference": "Referencia",
+        "description": "Descripción",
+        "currency_type": "Tipo de moneda",
+        "amount": "Importe",
+        "company": "Empresa",
+        "start_payment": "Inicio pago",
+        "select_footer": "Seleccione un pie de página",
+        "fields": "Campos",
+        "periodicity": "Periodicidad",
+        "interval": "Intervalo",
+        "maxPeriods": "Periodos",
+        "notificationUrl": " Notificación Url"
+    },
+
     "forgot_your_password": "¿Ha olvidado su contraseña?",
     "home": "Inicio",
     "language": {
@@ -108,5 +132,8 @@
         "are_you_sure_delete": "¿Seguro que quieres eliminar tu cuenta?",
         "are_you_sure_delete_additional": "Una vez eliminada su cuenta, todos sus recursos y datos se borrarán permanentemente. Introduzca su contraseña para confirmar que desea eliminar definitivamente su cuenta."
     },
-    "welcome_title": "Bienvenido a micrositios "
+    "welcome": "Bienvenido",
+    "welcome_title": "Bienvenido a micrositios ",
+    "of": "de",
+    "enter": "Ingresar"
 }

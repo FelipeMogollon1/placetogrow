@@ -27,7 +27,6 @@
         "page_not_found": "Page Not Found",
         "unauthorized": "Unauthorized"
     },
-    "form": "Form",
     "forgot_your_password": "Forgot your password?",
     "home": "Home",
     "language": {
@@ -108,5 +107,32 @@
         "are_you_sure_delete": "Are you sure you want to delete your account?",
         "are_you_sure_delete_additional": "Once your account is deleted, all your resources and data will be permanently erased. Enter your password to confirm that you want to permanently delete your account."
     },
-    "welcome_title": "Welcome to microsites "
+    "welcome": "Welcome",
+    "welcome_title": "Welcome to microsites ",
+    "form": {
+        "label": "Form",
+        "select_header": "Select a Header",
+        "electronic_payments": "Electronic Payments",
+        "additional_information": "Additional Information",
+        "name": "Name",
+        "surname": "Surname",
+        "email": "Email",
+        "document": "Document",
+        "document_type": "Document Type",
+        "mobile": "Phone or Mobile",
+        "reference": "Reference",
+        "description": "Description",
+        "currency_type": "Currency Type",
+        "amount": "Amount",
+        "company": "Company",
+        "start_payment": "Start Payment",
+        "select_footer": "Select a Footer",
+        "fields": "Fields",
+        "periodicity": "Periodicity",
+        "interval": "Interval",
+        "maxPeriods": "Periods",
+        "notificationUrl": "Notification URL"
+    },
+    "of": "Of",
+    "enter": "Enter"
 }
