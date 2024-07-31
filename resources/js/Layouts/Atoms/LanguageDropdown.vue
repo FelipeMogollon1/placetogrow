@@ -1,5 +1,5 @@
 <template>
-    <div class="relative inline-block text-left" v-outside="closeDropdown">
+    <div ref="dropdown" class="relative inline-block text-left">
         <div>
             <button
                 @click="toggleDropdown"
@@ -58,6 +58,8 @@
 </template>
 
 <script>
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+
 export default {
     data() {
         return {
@@ -77,9 +79,18 @@ export default {
             this.$i18n.locale = language;
             this.isOpen = false;
         },
-        closeDropdown() {
-            this.isOpen = false;
+        handleClickOutside(event) {
+            const dropdown = this.$refs.dropdown;
+            if (dropdown && !dropdown.contains(event.target)) {
+                this.isOpen = false;
+            }
         },
-    }
+    },
+    mounted() {
+        document.addEventListener('click', this.handleClickOutside);
+    },
+    beforeUnmount() {
+        document.removeEventListener('click', this.handleClickOutside);
+    },
 };
 </script>

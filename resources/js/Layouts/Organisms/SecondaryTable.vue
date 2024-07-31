@@ -51,7 +51,7 @@ const onDeleteSuccess = (e) => {
                         <tbody class="bg-white divide-y divide-gray-200">
                         <tr v-for="(item, index) in microsites" :key="index" class="transition duration-300 ease-in-out hover:bg-gray-100">
                             <template v-for="(value, key) in item">
-                                <template v-if="key !== 'logo' && key !== 'id'">
+                                <template v-if="key !== 'logo' && key !== 'id' && key !== 'slug'">
                                     <td :key="key" class="px-6 py-3 whitespace text-sm text-gray-900">
                                        <span  v-if="key === 'microsite_type'" >
                                            {{ $t(`micrositeTypes.${value}`) }}

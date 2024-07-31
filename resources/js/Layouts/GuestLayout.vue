@@ -11,7 +11,7 @@ import FooterIndex from "@/Layouts/Molecules/FooterIndex.vue";
         <header class="bg-white shadow-md rounded-md w-full flex justify-between items-center p-6">
             <Link
                 :href="route('Welcome')"
-                class="flex items-center text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                class="flex items-center text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
             >
                 <ArrowSmallLeftIcon class="w-6 h-6 mr-2 text-gray-600 hover:text-gray-500"/>
                 {{$t('return')}}
@@ -22,7 +22,7 @@ import FooterIndex from "@/Layouts/Molecules/FooterIndex.vue";
             </nav>
         </header>
         <main class="flex-1 flex flex-col items-center justify-center bg-white p-6">
-            <div class="w-full sm:max-w-md bg-white shadow-lg rounded-lg overflow-hidden p-4">
+            <div class="w-full sm:max-w-md bg-white shadow-2xl rounded-lg overflow-hidden p-4">
                 <slot />
             </div>
         </main>
