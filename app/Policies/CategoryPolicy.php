@@ -3,7 +3,7 @@
 namespace App\Policies;
 
 use App\Constants\Permissions;
-use App\Models\User;
+use App\Infrastructure\Persistence\Models\User;
 
 class CategoryPolicy
 {

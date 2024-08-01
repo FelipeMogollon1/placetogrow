@@ -2,14 +2,15 @@
 
 namespace App\Constants;
 
-class Roles
+enum Roles: string
 {
-    public const ADMIN = 'admin';
-    public const GUEST = 'guest';
+    case SA = 'sa';
+
+    case ADMIN = 'admin';
+    case GUEST = 'guest';
 
     public static function getAllRoles(): array
     {
-        return (new \ReflectionClass(self::class))->getConstants();
+        return array_map(fn($enum) => $enum->value, self::cases());
     }
-
 }

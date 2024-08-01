@@ -19,6 +19,7 @@
         "barryvdh/laravel-debugbar": "^3.13",
         "fakerphp/faker": "^1.23",
         "friendsofphp/php-cs-fixer": "^3.59",
+        "laravel-lang/common": "^6.4",
         "laravel/breeze": "^2.1",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",
@@ -31,7 +32,8 @@
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
-            "Database\\Seeders\\": "database/seeders/"
+            "Database\\Seeders\\": "database/seeders/",
+            "App\\Infrastructure\\Persistence\\Models\\": "app/Infrastructure/Persistence/Models/"
         }
     },
     "autoload-dev": {

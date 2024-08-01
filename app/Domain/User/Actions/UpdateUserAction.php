@@ -2,7 +2,7 @@
 
 namespace App\Domain\User\Actions;
 
-use App\Models\User;
+use App\Infrastructure\Persistence\Models\User;
 use Illuminate\Http\RedirectResponse;
 
 class UpdateUserAction

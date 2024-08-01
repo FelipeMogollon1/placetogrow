@@ -55,7 +55,6 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
 import { Link } from "@inertiajs/vue3";
 import { route } from "ziggy-js";
 import { TrashIcon, PencilIcon } from "@heroicons/vue/24/outline/index.js";

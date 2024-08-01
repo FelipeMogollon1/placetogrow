@@ -2,15 +2,14 @@
 
 namespace App\Constants;
 
-class MicrositesTypes
+enum MicrositesTypes: string
 {
-    public const INVOICE = 'Factura';
-    public const SUBSCRIPTION = 'Suscripción';
-    public const DONATION = 'Donación';
+    case INVOICE = 'invoice';
+    case SUBSCRIPTION = 'subscription';
+    case DONATION = 'donation';
 
     public static function getMicrositesTypes(): array
     {
-        return (new \ReflectionClass(self::class))->getConstants();
+        return array_map(fn($enum) => $enum->value, self::cases());
     }
-
 }

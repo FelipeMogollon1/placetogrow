@@ -3,23 +3,30 @@
 namespace App\Domain\Microsite\Actions;
 
 use App\Infrastructure\Persistence\Models\Category;
+use App\Infrastructure\Persistence\Models\Form;
 use App\Infrastructure\Persistence\Models\Microsite;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Log;
+use App\Infrastructure\Persistence\Models\User;
+use GuzzleHttp\Promise\Create;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 
 class StoreMicrositeAction
 {
-    public function execute(array $data): RedirectResponse
+    public function execute(array $data): ?Microsite
     {
         if ($data['logo']) {
             $data['logo'] = $data['logo']->store('logo', ['disk' => 'public']);
         }
 
         $category = Category::find($data['category_id']);
+        $user = User::find($data['user_id']);
 
-        $microsite = Microsite::create([
-            'slug' => Str::slug($data['name'], '') . '' . Str::random(10, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'),
+        $form = Form::create([
+            'configuration' => $this->jsonForm($data['microsite_type']),
+        ]);
+
+        return Microsite::create([
+            'slug' => Str::slug($data['name'], '_') . '_' . Str::random(10, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'),
             'name' => $data['name'],
             'logo' => $data['logo'] ?? null,
             'document_type' => $data['document_type'],
@@ -28,14 +35,21 @@ class StoreMicrositeAction
             'currency' => $data['currency'],
             'payment_expiration_time' => $data['payment_expiration_time'],
             'category_id' => $category->id,
+            'user_id' => $user->id,
+            'form_id' => $form->id,
         ]);
-
-        Log::info('Microsite created successfully', [
-            'id' => $microsite->id,
-            'name' => $microsite->name,
-            'slug' => $microsite->slug,
-        ]);
-
-        return to_route('microsites.index');
     }
+
+    public function jsonForm(string $microsite_type): array
+    {
+        $filePath = base_path("app/Domain/Form/Json/{$microsite_type}.json");
+
+        if (!file_exists($filePath)) {
+            return [];
+        }
+
+        $json = file_get_contents($filePath);
+        return json_decode($json, true);
+    }
+
 }
