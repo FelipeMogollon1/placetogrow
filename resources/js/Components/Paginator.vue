@@ -1,172 +1,35 @@
 <template>
-    <nav class="flex items-center justify-between" role="navigation">
-
-        <div class="flex justify-between flex-1 sm:hidden">
-            <span v-if="onFirstPage"
-                  class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 cursor-default leading-5 rounded-md">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path clip-rule="evenodd"
-                          d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                          fill-rule="evenodd"/>
-                </svg>
-            </span>
-            <inertia-link v-else :href="previousPageUrl"
-                          class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 rounded-md hover:text-gray-500 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path clip-rule="evenodd"
-                          d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                          fill-rule="evenodd"/>
-                </svg>
-            </inertia-link>
-
-            <inertia-link v-if="hasMorePages" :href="nextPageUrl"
-                          class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 rounded-md hover:text-gray-500 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path clip-rule="evenodd"
-                          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                          fill-rule="evenodd"/>
-                </svg>
-            </inertia-link>
-            <span v-else
-                  class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 cursor-default leading-5 rounded-md">
-                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path clip-rule="evenodd"
-                          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                          fill-rule="evenodd"/>
-                </svg>
-            </span>
+    <div v-if="linksArray.length > 3">
+        <div class="flex flex-wrap -mb-1">
+            <template v-for="(link, key) in linksArray" :key="key">
+                <div v-if="link.url === null" class="border border-orange-200 mb-1 mr-1 px-4 py-3 text-gray-400 text-sm leading-4  rounded" v-html="link.label" />
+                <Link v-else class="border border-orange-300  mb-1 mr-1 px-4 py-3 focus:text-gray-700 text-sm leading-4 hover:bg-orange-300  focus:border-orange-500 rounded"
+                      :class="{ 'bg-white': link.active }"
+                      :href="link.url"
+                      v-html="link.label" />
+            </template>
         </div>
-
-          <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-            <div>
-                <p class="text-sm text-gray-700 leading-5">
-                    Showing
-                    <span class="font-medium">{{ firstItem }}</span>
-                    to
-                    <span class="font-medium">{{ lastItem }}</span>
-                    of
-                    <span class="font-medium">{{ total }}</span>
-                    results
-                </p>
-            </div>
-
-            <div>
-                <span class="relative z-0 inline-flex shadow-sm rounded-md">
-                    <span v-if="onFirstPage" aria-disabled="true"
-                          aria-hidden="true"
-                          class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 cursor-default rounded-l-md leading-5">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path clip-rule="evenodd"
-                                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                                  fill-rule="evenodd"/>
-                        </svg>
-                    </span>
-                    <inertia-link v-else :href="previousPageUrl"
-                                  class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md leading-5 hover:text-gray-400 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150"
-                                  rel="prev">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path clip-rule="evenodd"
-                                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                                  fill-rule="evenodd"/>
-                        </svg>
-                    </inertia-link>
-
-                    <div v-for="(page, index) in pages" :key="index">
-                        <inertia-link v-if="!isDots(page)"
-                                      :href="page.url"
-                                      :class="{'bg-blue-200': page.active}"
-                                      class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 leading-5 hover:text-gray-500 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-700 transition ease-in-out duration-150">
-                            {{ page.label }}
-                        </inertia-link>
-                        <span v-else-if="page.label === '...'" aria-disabled="true"
-                              class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-medium text-gray-700 bg-white border border-gray-300 cursor-default leading-5">
-                            {{ page.label }}
-                        </span>
-                    </div>
-
-                    <inertia-link v-if="hasMorePages" :href="nextPageUrl"
-                                  class="relative inline-flex items-center px-2 py-2 -ml-px text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md leading-5 hover:text-gray-400 focus:z-10 focus:outline-none focus:ring ring-gray-300 focus:border-blue-300 active:bg-gray-100 active:text-gray-500 transition ease-in-out duration-150">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path clip-rule="evenodd"
-                                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                  fill-rule="evenodd"/>
-                        </svg>
-                    </inertia-link>
-                    <span v-else aria-disabled="true"
-                          aria-hidden="true"
-                          class="relative inline-flex items-center px-2 py-2 -ml-px text-sm font-medium text-gray-500 bg-gray-100 border border-gray-300 cursor-default rounded-r-md leading-5">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                            <path clip-rule="evenodd"
-                                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                  fill-rule="evenodd"/>
-                        </svg>
-                    </span>
-                </span>
-            </div>
-        </div>
-    </nav>
-
-
+    </div>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import { Link } from '@inertiajs/vue3'
 
-export default defineComponent({
-    name: 'Paginator',
+export default {
+    components: {
+        Link,
+    },
     props: {
         paginator: {
             type: Object,
-            required: true,
-            default: () => ({
-                current_page: 1,
-                data: [],
-                first_page_url: null,
-                from: 1,
-                last_page: 1,
-                last_page_url: null,
-                links: [],
-                next_page_url: null,
-                path: '',
-                per_page: 5,
-                prev_page_url: null,
-                to: 1,
-                total: 0
-            })
-        }
-    },
-    methods: {
-        isDots(page) {
-            return page && page.label && page.label.includes('...');
+            default: () => []
+
         }
     },
     computed: {
-        pages() {
-            return this.paginator.links || [];
-        },
-        onFirstPage() {
-            return this.paginator.current_page === 1;
-        },
-        hasMorePages() {
-            return this.paginator.current_page < this.paginator.last_page;
-        },
-        nextPageUrl() {
-            return this.paginator.next_page_url || '#';
-        },
-        previousPageUrl() {
-            return this.paginator.prev_page_url || '#';
-        },
-        firstItem() {
-            return this.paginator.from;
-        },
-        lastItem() {
-            return this.paginator.to;
-        },
-        total() {
-            return this.paginator.total;
+        linksArray() {
+            return Object.values(this.paginator)
         }
     }
-});
+}
 </script>
-
-

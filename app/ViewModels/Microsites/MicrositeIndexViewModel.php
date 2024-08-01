@@ -34,19 +34,6 @@ class MicrositeIndexViewModel extends ViewModel
 
     public function toArray(): array
     {
-        $micrositesPaginator = $this->getMicrositesByUserRole();
-
-        return [
-            'microsites' => $micrositesPaginator->items(),
-            'pagination' => [
-                'total' => $micrositesPaginator->total(),
-                'per_page' => $micrositesPaginator->perPage(),
-                'current_page' => $micrositesPaginator->currentPage(),
-                'last_page' => $micrositesPaginator->lastPage(),
-                'from' => $micrositesPaginator->firstItem(),
-                'to' => $micrositesPaginator->lastItem(),
-                'links' => $micrositesPaginator->links(),
-            ],
-        ];
+        return $this->getMicrositesByUserRole()->toArray();
     }
 }

@@ -1,10 +1,9 @@
 <script setup>
-import { ref } from 'vue';
-import { Link, usePage } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import { TrashIcon, PencilIcon, EyeIcon } from '@heroicons/vue/24/outline';
 import Paginator from '@/Components/Paginator.vue';
-import {PhotoIcon} from "@heroicons/vue/24/outline/index.js";
+import { PhotoIcon } from "@heroicons/vue/24/outline/index.js";
 
 const props = defineProps({
     data: {
@@ -21,15 +20,7 @@ const props = defineProps({
     }
 });
 
-const microsites = ref(props.data);
-const paginator = ref(props.paginator);
-
-const onDeleteSuccess = (e) => {
-    microsites.value = e.props.microsites;
-    paginator.value = e.props.paginator;
-};
 </script>
-
 
 <template>
     <div class="flex flex-col mt-8">
@@ -49,15 +40,14 @@ const onDeleteSuccess = (e) => {
                         </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="(item, index) in microsites" :key="index" class="transition duration-300 ease-in-out hover:bg-gray-100">
+                        <tr v-for="(item, index) in data" :key="index" class="transition duration-300 ease-in-out hover:bg-gray-100">
                             <template v-for="(value, key) in item">
                                 <template v-if="key !== 'logo' && key !== 'id' && key !== 'slug'">
                                     <td :key="key" class="px-6 py-3 whitespace text-sm text-gray-900">
-                                       <span  v-if="key === 'microsite_type'" >
-                                           {{ $t(`micrositeTypes.${value}`) }}
-                                       </span >
+                                        <span v-if="key === 'microsite_type'">
+                                            {{ $t(`micrositeTypes.${value}`) }}
+                                        </span>
                                         <span v-else>{{ value }}</span>
-
                                     </td>
                                 </template>
                             </template>
@@ -75,7 +65,7 @@ const onDeleteSuccess = (e) => {
                                     <Link v-if="can('microsites.show')" class="mx-1" :href="route('microsites.show', item.id)">
                                         <EyeIcon class="w-6 hover:text-gray-500"/>
                                     </Link>
-                                    <Link v-if="can('microsites.destroy')" @succes="onDeleteSuccess" :href="route('microsites.destroy', item.id)" method="delete" as="button">
+                                    <Link v-if="can('microsites.destroy')"  :href="route('microsites.destroy', item.id)" method="delete" as="button">
                                         <TrashIcon class="w-6 hover:text-red-500"/>
                                     </Link>
                                 </div>
@@ -84,9 +74,13 @@ const onDeleteSuccess = (e) => {
                         </tbody>
                     </table>
                 </div>
+
             </div>
         </div>
     </div>
-    <Paginator :paginator="paginator"/>
-</template>
 
+    <div class="flex justify-center">
+        <Paginator :paginator="paginator.links"/>
+    </div>
+
+</template>

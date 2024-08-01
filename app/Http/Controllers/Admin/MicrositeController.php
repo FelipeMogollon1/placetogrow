@@ -13,7 +13,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Microsite\StoreMicrositeRequest;
 use App\Http\Requests\Microsite\UpdateMicrositeRequest;
 use App\Infrastructure\Persistence\Models\Category;
-use App\Infrastructure\Persistence\Models\Form;
 use App\Infrastructure\Persistence\Models\Microsite;
 use App\Infrastructure\Persistence\Models\User;
 use App\ViewModels\Microsites\MicrositeIndexViewModel;
@@ -32,8 +31,11 @@ class MicrositeController extends Controller
         /** @var User $user */
         $user = Auth::user();
         $this->authorize(Abilities::VIEW_ANY->value, Microsite::class);
+        $microsites = (new MicrositeIndexViewModel($user));
 
-        return Inertia::render('Microsites/Index', new MicrositeIndexViewModel($user));
+        return Inertia::render('Microsites/Index', [
+          'microsites'  => $microsites
+        ]);
     }
 
     public function create(): Response
