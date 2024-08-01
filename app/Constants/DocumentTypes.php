@@ -5,11 +5,12 @@ namespace App\Constants;
 enum DocumentTypes: string
 {
     case CC = 'CC';
-    case NIT = 'NIT';
-    case NIP = 'NIP';
     case TI = 'TI';
     case CE = 'CE';
-    case PPT = 'PPT';
+    case NIT = 'NIT';
+    case PAS = 'PAS';
+    case RC = 'RC';
+
 
     public static function getDocumentTypes(): array
     {

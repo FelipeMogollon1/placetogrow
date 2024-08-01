@@ -6,7 +6,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { defineProps, ref, watch, computed } from "vue";
+import { watch, computed } from "vue";
 
 const props = defineProps({
     role: {

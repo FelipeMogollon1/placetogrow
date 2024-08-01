@@ -1,0 +1,84 @@
+{
+    "type": "invoice",
+    "head": "",
+    "footer": "",
+    "additional_information": "",
+    "fields": [
+        {
+            "type": "text",
+            "name": "name",
+            "error_message_key": "errors.name",
+            "active": "true",
+            "required": "false"
+        },
+        {
+            "type": "text",
+            "name": "surname",
+            "error_message_key": "errors.surname",
+            "active": "true",
+            "required": "false"
+        },
+        {
+            "type": "email",
+            "name": "email",
+            "error_message_key": "errors.email",
+            "active": "true",
+            "required": "false"
+        },
+        {
+            "type": "select",
+            "name": "document_type",
+            "error_message_key": "errors.document_type",
+            "active": "false"
+        },
+        {
+            "type": "text",
+            "name": "document",
+            "error_message_key": "errors.document",
+            "active": "true",
+            "required": "false"
+        },
+        {
+            "type": "number",
+            "name": "mobile",
+            "error_message_key": "errors.mobile",
+            "active": "false",
+            "required": "false"
+        },
+        {
+            "type": "text",
+            "name": "reference",
+            "error_message_key": "errors.reference",
+            "active": "true",
+            "required": "true"
+        },
+        {
+            "type": "text",
+            "name": "description",
+            "error_message_key": "errors.description",
+            "active": "true",
+            "required": "true"
+        },
+        {
+            "type": "select",
+            "name": "currency_type",
+            "error_message_key": "errors.currency_type",
+            "active": "true",
+            "required": "true"
+        },
+        {
+            "type": "number",
+            "name": "amount",
+            "error_message_key": "errors.amount",
+            "active": "true",
+            "required": "true"
+        },
+        {
+            "type": "text",
+            "name": "company",
+            "error_message_key": "errors.company",
+            "active": "false",
+            "required": "false"
+        }
+    ]
+}

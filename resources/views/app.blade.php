@@ -14,16 +14,14 @@
         <!-- Scripts -->
         @routes
         @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
+        <script type="text/javascript">
+            window.Laravel = {
+                csrfToken: "{{ csrf_token() }}",
+            }
+        </script>
         @inertiaHead
     </head>
     <body class="font-sans antialiased">
         @inertia
-        <script type="text/javascript">
-            window.Laravel = {
-                csrfToken: "{{ csrf_token() }}",
-                jsPermissions: {!! auth()->check() && auth()->user()->jsPermissions() ? auth()->user()->jsPermissions() : 'null' !!}
-            }
-
-        </script>
     </body>
 </html>

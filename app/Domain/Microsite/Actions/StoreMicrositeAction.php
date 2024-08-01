@@ -3,7 +3,11 @@
 namespace App\Domain\Microsite\Actions;
 
 use App\Infrastructure\Persistence\Models\Category;
+use App\Infrastructure\Persistence\Models\Form;
 use App\Infrastructure\Persistence\Models\Microsite;
+use App\Infrastructure\Persistence\Models\User;
+use GuzzleHttp\Promise\Create;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 
 class StoreMicrositeAction
@@ -15,6 +19,11 @@ class StoreMicrositeAction
         }
 
         $category = Category::find($data['category_id']);
+        $user = User::find($data['user_id']);
+
+        $form = Form::create([
+            'configuration' => $this->jsonForm($data['microsite_type']),
+        ]);
 
         return Microsite::create([
             'slug' => Str::slug($data['name'], '_') . '_' . Str::random(10, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'),
@@ -26,6 +35,21 @@ class StoreMicrositeAction
             'currency' => $data['currency'],
             'payment_expiration_time' => $data['payment_expiration_time'],
             'category_id' => $category->id,
+            'user_id' => $user->id,
+            'form_id' => $form->id,
         ]);
     }
+
+    public function jsonForm(string $microsite_type): array
+    {
+        $filePath = base_path("app/Domain/Form/Json/{$microsite_type}.json");
+
+        if (!file_exists($filePath)) {
+            return [];
+        }
+
+        $json = file_get_contents($filePath);
+        return json_decode($json, true);
+    }
+
 }

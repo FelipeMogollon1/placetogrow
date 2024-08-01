@@ -41,6 +41,14 @@ enum Permissions: string
         return array_map(fn($enum) => $enum->value, self::cases());
     }
 
+    public static function getAdminPermissions(): array
+    {
+        return [
+            self::MICROSITES_INDEX->value,
+            self::MICROSITES_SHOW->value,
+        ];
+    }
+
     public static function getGuestPermissions(): array
     {
         return [

@@ -14,8 +14,11 @@ use App\Http\Requests\Microsite\StoreMicrositeRequest;
 use App\Http\Requests\Microsite\UpdateMicrositeRequest;
 use App\Infrastructure\Persistence\Models\Category;
 use App\Infrastructure\Persistence\Models\Microsite;
+use App\Infrastructure\Persistence\Models\User;
+use App\ViewModels\Microsites\MicrositeIndexViewModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -25,10 +28,14 @@ class MicrositeController extends Controller
 
     public function index(): Response
     {
+        /** @var User $user */
+        $user = Auth::user();
         $this->authorize(Abilities::VIEW_ANY->value, Microsite::class);
-        $microsites = Microsite::withCategory()->get();
+        $microsites = (new MicrositeIndexViewModel($user));
 
-        return Inertia::render('Microsites/Index', compact('microsites'));
+        return Inertia::render('Microsites/Index', [
+          'microsites'  => $microsites
+        ]);
     }
 
     public function create(): Response
@@ -44,15 +51,16 @@ class MicrositeController extends Controller
         $this->authorize(Abilities::STORE->value, Microsite::class);
         $storeAction->execute($request->validated());
 
-        return to_route('microsites.index');
+        return to_route('microsites.index')->with('success', 'User created.');
     }
 
     public function show(string $id): Response
     {
         $this->authorize(Abilities::VIEW->value, Microsite::class);
         $microsite = Microsite::withCategory($id)->firstOrFail()->toArray();
+        $arrayConstants = $this->getCommonData();
 
-        return Inertia::render('Microsites/Show', compact('microsite'));
+        return Inertia::render('Microsites/Show', compact('microsite','arrayConstants'));
     }
 
     public function edit(string $id): Response
@@ -82,14 +90,17 @@ class MicrositeController extends Controller
 
     public function welcomeIndex(): Response
     {
-        $microsites = Microsite::withCategory()->get();
+        $microsites = Microsite::AllWithCategories()->get();
 
         return Inertia::render('Welcome', compact('microsites'));
 
     }
-    public function paymentForm(): Response
+    public function paymentForm(string $slug): Response
     {
-        return Inertia::render('PaymentForm');
+        $microsite = Microsite::where('slug', $slug)->with('form')->firstOrFail();
+        $arrayConstants = $this->getCommonData();
+
+        return Inertia::render('Form/PaymentForm', compact('microsite','arrayConstants'));
     }
 
     private function getCommonData(): array
@@ -99,6 +110,7 @@ class MicrositeController extends Controller
             'micrositesTypes' => MicrositesTypes::getMicrositesTypes(),
             'currencyTypes' => CurrencyTypes::getCurrencyType(),
             'categories' => Category::select('id', 'name')->get(),
+            'users' => User::role('admin')->select('id', 'name')->get(),
         ];
     }
 }
