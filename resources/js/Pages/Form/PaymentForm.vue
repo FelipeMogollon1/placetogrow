@@ -7,6 +7,7 @@ import {ArrowSmallLeftIcon, PhotoIcon} from "@heroicons/vue/24/outline/index.js"
 import LanguageDropdown from "@/Layouts/Atoms/LanguageDropdown.vue";
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 import FooterIndex from "@/Layouts/Molecules/FooterIndex.vue";
+import {route} from "ziggy-js";
 
 const page = usePage();
 const microsite = ref(page.props.microsite || {});
@@ -35,6 +36,19 @@ const form = useForm({
 });
 
 const formErrors = ref(form.errors);
+
+function submitForm() {
+    form.post(route('forms.store'), {
+        onSuccess: () => {
+            form.reset();
+            alert('Microsite created successfully.');
+        },
+        onError: () => {
+            alert('Failed to create microsite.');
+        }
+    });
+}
+
 </script>
 
 <template>
@@ -54,7 +68,8 @@ const formErrors = ref(form.errors);
             </nav>
         </header>
 
-        <main class="flex-grow flex items-center justify-center bg-gray-50">
+        <form @submit.prevent="submitForm" method="POST" >
+           <main class="flex-grow flex items-center justify-center bg-gray-50">
             <div id="form" class="bg-white grid grid-cols-1 md:grid-cols-2 gap-4 p-4 m-4 rounded-2xl shadow-lg w-full max-w-4xl">
 
                 <template v-for="field in form.configuration.head" :key="field.head">
@@ -81,27 +96,28 @@ const formErrors = ref(form.errors);
                     </div>
                 </div>
 
-                <template v-for="field in form.configuration.fields" :key="field.name">
-                    <div v-if="field.active === 'true'" class="mb-2">
-                        <InputComponent
-                            :type="field.type"
-                            :name="field.name"
-                            v-model="field.value"
-                            :placeholder="field.name"
-                            :label="field.name"
-                            :errorMessage="formErrors[field.name]"
-                            :options="field.options"
-                            :constants="getConstants(field.name)"
-                            inputClass="w-full mt-1 text-sm border-gray-300 rounded-md py-1 px-2"
-                        />
-                    </div>
-                </template>
+                    <template v-for="field in form.configuration.fields" :key="field.name">
+                        <div v-if="field.active === 'true'" class="mb-2">
+                            <InputComponent
+                                :type="field.type"
+                                :name="field.name"
+                                v-model="name"
+                                :placeholder="field.name"
+                                :label="field.name"
+                                :errorMessage="formErrors[field.name]"
+                                :options="field.options"
+                                :constants="getConstants(field.name)"
+                                :autocomplete="field.name"
+                                inputClass="w-full mt-1 text-sm border-gray-300 rounded-md py-1 px-2"
+                            />
+                        </div>
+                    </template>
 
-                <div class="col-span-1 flex justify-center sm:col-span-2">
-                    <PrimaryButton class="text-sm py-1 px-3">
-                        {{ $t('form.start_payment') }}
-                    </PrimaryButton>
-                </div>
+                    <div class="col-span-1 flex justify-center sm:col-span-2">
+                        <PrimaryButton class="text-sm py-1 px-3">
+                            {{ $t('form.start_payment') }}
+                        </PrimaryButton>
+                    </div>
 
                 <template v-for="field in form.configuration.footer" :key="field.head">
                     <div class="col-span-2 flex items-center justify-center w-full">
@@ -118,6 +134,7 @@ const formErrors = ref(form.errors);
 
             </div>
         </main>
+        </form>
         <FooterIndex />
     </div>
 </template>

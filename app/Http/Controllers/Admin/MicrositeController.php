@@ -100,7 +100,7 @@ class MicrositeController extends Controller
         $microsite = Microsite::where('slug', $slug)->with('form')->firstOrFail();
         $arrayConstants = $this->getCommonData();
 
-        return Inertia::render('PaymentForm', compact('microsite','arrayConstants'));
+        return Inertia::render('Form/PaymentForm', compact('microsite','arrayConstants'));
     }
 
     private function getCommonData(): array
