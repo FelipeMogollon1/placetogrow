@@ -121,7 +121,7 @@ function submitForm() {
 
                 <template v-for="field in form.configuration.footer" :key="field.head">
                     <div class="col-span-2 flex items-center justify-center w-full">
-                        <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 border-gray-600 hover:border-gray-500">
+                        <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 hover:border-gray-500">
                             <div class="flex flex-col items-center justify-center">
                                 <PhotoIcon class="w-12 h-12 text-gray-400"/>
                                 <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">{{ $t('form.select_footer') }}</span></p>

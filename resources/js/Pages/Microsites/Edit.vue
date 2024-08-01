@@ -1,5 +1,5 @@
 <script setup>
-import {Head, Link, useForm, usePage} from '@inertiajs/vue3';
+import {Head, Link, useForm} from '@inertiajs/vue3';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {route} from "ziggy-js";
 import InputLabel from "@/Components/InputLabel.vue";

@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import { route } from "ziggy-js";
-import {ArrowLongRightIcon, EyeIcon, MagnifyingGlassIcon, PhotoIcon} from "@heroicons/vue/24/outline/index.js";
+import {ArrowLongRightIcon, MagnifyingGlassIcon, PhotoIcon} from "@heroicons/vue/24/outline/index.js";
 import LanguageDropdown from "@/Layouts/Atoms/LanguageDropdown.vue";
 import FooterIndex from "@/Layouts/Molecules/FooterIndex.vue";
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
