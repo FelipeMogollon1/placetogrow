@@ -29,9 +29,13 @@ class UpdateMicrositeAction
 
         if (isset($data['microsite_type'])) {
 
-            $form = Form::create([
-                'configuration' => $this->jsonForm($data['microsite_type']),
-            ]);
+            $form = Form::where('id', $microsite->form_id)->first();
+            if ($form) {
+                $form->update([
+                    'configuration' => $this->jsonForm($data['microsite_type']),
+                ]);
+            }
+
             $data['form_id'] = $form->id;
         }
 
