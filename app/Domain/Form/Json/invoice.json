@@ -29,7 +29,8 @@
             "type": "select",
             "name": "document_type",
             "error_message_key": "errors.document_type",
-            "active": "false"
+            "active": "true",
+            "required": "false"
         },
         {
             "type": "text",
@@ -49,15 +50,15 @@
             "type": "text",
             "name": "reference",
             "error_message_key": "errors.reference",
-            "active": "true",
-            "required": "true"
+            "active": "false",
+            "required": "false"
         },
         {
             "type": "text",
             "name": "description",
             "error_message_key": "errors.description",
-            "active": "true",
-            "required": "true"
+            "active": "false",
+            "required": "false"
         },
         {
             "type": "select",
@@ -72,13 +73,6 @@
             "error_message_key": "errors.amount",
             "active": "true",
             "required": "true"
-        },
-        {
-            "type": "text",
-            "name": "company",
-            "error_message_key": "errors.company",
-            "active": "false",
-            "required": "false"
         }
     ]
 }
