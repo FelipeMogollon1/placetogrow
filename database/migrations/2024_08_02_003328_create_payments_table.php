@@ -28,7 +28,9 @@ return new class extends Migration
             $table->timestamp('paid_at')->nullable();
             $table->enum('currency', CurrencyTypes::getCurrencyType())->nullable();
             $table->enum('status', PaymentStatus::getPaymentStatus())->nullable();
-            $table->unsignedInteger('process_identifier')->nullable();
+            $table->string('process_url')->nullable();
+            $table->string('request_id')->nullable();
+            $table->string('process_identifier')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('microsite_id');
             $table->foreign('user_id')->references('id')->on('users');
