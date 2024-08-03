@@ -36,6 +36,11 @@ enum Permissions: string
     case ROLES_UPDATE = 'roles.update';
     case ROLES_DESTROY = 'roles.destroy';
 
+
+    case PAYMENTS_INDEX = 'payments.index';
+    case PAYMENTS_SHOW = 'payments.show';
+
+
     public static function getAllPermissions(): array
     {
         return array_map(fn($enum) => $enum->value, self::cases());
@@ -46,13 +51,16 @@ enum Permissions: string
         return [
             self::MICROSITES_INDEX->value,
             self::MICROSITES_SHOW->value,
+            self::PAYMENTS_INDEX->value,
+            self::PAYMENTS_SHOW->value,
         ];
     }
 
     public static function getGuestPermissions(): array
     {
         return [
-            self::MICROSITES_INDEX->value,
+            self::PAYMENTS_INDEX->value,
+            self::PAYMENTS_SHOW->value,
         ];
     }
 }
