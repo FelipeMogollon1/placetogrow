@@ -134,5 +134,32 @@
         "notificationUrl": "Notification URL"
     },
     "of": "Of",
-    "enter": "Enter"
+    "enter": "Enter",
+    "payment": {
+        "payments_title": "Payments",
+        "reference": "Reference",
+        "receipt": "Receipt",
+        "payer_name": "First Name",
+        "payer_surname": "Last Name",
+        "payer_email": "Email",
+        "payer_phone": "Phone or Mobile",
+        "payer_company": "Company",
+        "payer_document_type": "Document Type",
+        "payer_document": "Document",
+        "description": "Description",
+        "amount": "Amount",
+        "currency": "Currency",
+        "status": "Status",
+        "process_identifier": "Process Identifier",
+        "additional_data": "Additional Data",
+        "microsite_name": "Microsite"
+    },
+    "payment_status": {
+        "PENDING" : "Pending",
+        "APPROVED" : "Approved",
+        "REJECTED" : "Rejected",
+        "APPROVED_PARTIAL" : "Partially Approved",
+        "PARTIAL_EXPIRED" : "Partially Expired",
+        "UNKNOWN" :"Unknown"
+    }
 }

@@ -17,6 +17,7 @@ const formConfig = ref(page.props.microsite.form || {});
 const documentTypes = ref(page.props.arrayConstants.documentTypes || {});
 const currencyTypes =ref(page.props.arrayConstants.currencyTypes || {});
 const currency = ref(page.props.microsite.currency || {});
+const microsite_id = ref(page.props.microsite.id || {});
 
 const initialValues = {
     payer_name : "",
@@ -28,7 +29,8 @@ const initialValues = {
     reference: "",
     description: "",
     currency: currency,
-    amount: ""
+    amount: "",
+    microsite_id : microsite_id
 }
 
 const form = useForm(initialValues)
@@ -59,7 +61,7 @@ const submit = () => {
            <main class="flex-grow flex items-center justify-center bg-gray-50">
             <div id="form" class="bg-white  p-4 m-4 rounded-2xl shadow-lg w-full max-w-4xl">
 
-                 <div v-for="field in formConfig.configuration.head" :key="field.head" class="m-3" >
+                 <div v-if="formConfig.configuration.head === 'null' " class="m-3" >
                     <div  class="col-span-2 flex items-center justify-center w-full">
                         <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 hover:border-gray-500">
                             <div class="flex flex-col items-center justify-center">
@@ -71,6 +73,9 @@ const submit = () => {
                         </label>
                     </div>
                 </div>
+                <p v-else class="flex justify-center mt-2 text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight text-gray-600 ">
+                    {{microsite.name}}
+                </p>
 
                 <div class="col-span-2 flex">
                     <div class="text-lg font-semibold">

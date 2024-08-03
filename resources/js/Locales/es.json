@@ -135,5 +135,32 @@
     "welcome": "Bienvenido",
     "welcome_title": "Bienvenido a micrositios ",
     "of": "de",
-    "enter": "Ingresar"
+    "enter": "Ingresar",
+    "payment": {
+        "payments_title": "Pagos",
+        "reference": "Referencia",
+        "receipt": "Recibo",
+        "payer_name": "Nombre",
+        "payer_surname":"Apellido",
+        "payer_email":"Email",
+        "payer_phone":"Teléfono o Móvil",
+        "payer_company":"Empresa",
+        "payer_document_type":"Tipo de Documento",
+        "payer_document":"Docuemento",
+        "description":"Descripción",
+        "amount":"Monto",
+        "currency":"Moneda",
+        "status":"Estado",
+        "process_identifier":"Identificador Proceso",
+        "additional_data":"Datos Adicionales",
+        "microsite_name": "Micrositio"
+    },
+    "payment_status": {
+        "PENDING" : "Pendiente",
+        "APPROVED" : "Aprobado",
+        "REJECTED" : "Rechazado",
+        "APPROVED_PARTIAL" : "Aprobado Parcialmente",
+        "PARTIAL_EXPIRED" : "Vencido Parcialmente",
+        "UNKNOWN" :"Desconocido"
+    }
 }

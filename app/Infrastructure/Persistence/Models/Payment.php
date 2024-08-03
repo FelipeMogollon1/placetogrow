@@ -35,6 +35,8 @@ class Payment extends Model
         'paid_at',
         'currency',
         'status',
+        'process_url',
+        'request_id',
         'process_identifier',
         'user_id',
         'microsite_id',
