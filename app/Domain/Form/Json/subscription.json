@@ -49,8 +49,8 @@
             "type": "text",
             "name": "reference",
             "error_message_key": "errors.reference",
-            "active": "true",
-            "required": "true"
+            "active": "false",
+            "required": "false"
         },
         {
             "type": "text",
