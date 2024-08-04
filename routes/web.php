@@ -10,6 +10,10 @@ use App\Http\Controllers\Roles\RoleController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::get('/back', function () {
+    return Inertia::render('Payment/BackBusiness');
+})->name('back');
+
 Route::get('/', [MicrositeController::class, 'welcomeIndex'])->name('Welcome');
 
 Route::get('/microsites/{slug}/payment-form', [MicrositeController::class, 'paymentForm'])->name('microsites.paymentForm');
@@ -28,6 +32,7 @@ Route::group(['middleware' => 'auth', 'verified'], function () {
     Route::resource('/categories', CategoryController::class);
     Route::resource('/microsites', MicrositeController::class);
     Route::post('/microsites/{id}', [MicrositeController::class,'update'])->name('microsites.custom_update');
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
