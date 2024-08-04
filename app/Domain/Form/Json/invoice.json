@@ -9,35 +9,35 @@
             "name": "name",
             "error_message_key": "errors.name",
             "active": "true",
-            "required": "false"
+            "required": "true"
         },
         {
             "type": "text",
             "name": "surname",
             "error_message_key": "errors.surname",
             "active": "true",
-            "required": "false"
+            "required": "true"
         },
         {
             "type": "email",
             "name": "email",
             "error_message_key": "errors.email",
             "active": "true",
-            "required": "false"
+            "required": "true"
         },
         {
             "type": "select",
             "name": "document_type",
             "error_message_key": "errors.document_type",
             "active": "true",
-            "required": "false"
+            "required": "true"
         },
         {
             "type": "text",
             "name": "document",
             "error_message_key": "errors.document",
             "active": "true",
-            "required": "false"
+            "required": "true"
         },
         {
             "type": "number",
