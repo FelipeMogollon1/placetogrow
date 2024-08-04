@@ -22,9 +22,10 @@ class CategoryController extends Controller
     public function index(): Response
     {
         $this->authorize(Abilities::VIEW_ANY->value, Category::class);
-        $categories = Category::select(['id', 'name', 'description'])->get();
 
-        return Inertia::render('Categories/Index', compact('categories'));
+        return Inertia::render('Categories/Index', [
+            'categories' => Category::select(['id', 'name', 'description'])->orderby('name', 'asc')->paginate(5)
+        ]);
     }
 
     public function create(): Response
