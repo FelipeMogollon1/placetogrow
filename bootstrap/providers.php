@@ -2,5 +2,5 @@
 
 return [
     App\Providers\AppServiceProvider::class,
-    App\Providers\ServicePaymentGatewayProvider::class,
+    \App\Providers\PaymentServiceProvider::class,
 ];

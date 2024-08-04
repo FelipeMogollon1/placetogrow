@@ -10,6 +10,7 @@ use Dnetix\Redirection\PlacetoPay;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use Throwable;
 
 class PlacetopayGateway implements PaymentGatewayContract
@@ -40,28 +41,43 @@ class PlacetopayGateway implements PaymentGatewayContract
         }
 
         $totalPrice = $payment->amount;
+
+        $payerData = array_filter([
+            'document' => $payment->payer_document,
+            'documentType' => $payment->payer_document_type,
+            'name' => $payment->payer_name,
+            'surname' => $payment->payer_surname,
+            'email' => $payment->payer_email,
+        ], function ($value) {
+            return $value !== null && $value !== '';
+        });
+
         try {
             $requestData = [
+                'payer' => $payerData,
                 'payment' => [
-                    'reference' => '12321313',
+                    'reference' => $payment->reference,
                     'description' => $payment->description,
                     'amount' => [
-                        'currency' => 'COP',
+                        'currency' => $payment->currency,
                         'total' => $totalPrice,
                     ],
                 ],
                 'expiration' => date('c', strtotime('+30 minutes')),
-                'returnUrl' => route('Welcome'),
+                'returnUrl' => route('back'),
                 'ipAddress' => $request->ip(),
                 'userAgent' => $request->userAgent(),
             ];
             $response = $this->placetopay->request($requestData);
+
             if ($response->isSuccessful()) {
                 $payment->status = PaymentStatus::PENDING->value;
                 $payment->process_identifier = $response->processUrl();
                 $payment->request_id = $response->requestId();
+
             } elseif($response->status()->isRejected()) {
                 $payment->status = PaymentStatus::REJECTED->value;
+
             }
             $payment->save();
             return $response;
