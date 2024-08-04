@@ -108,7 +108,7 @@
     "saved": "Guardado",
     "searchMicrosite": "Buscar micrositio",
     "updateMicrosite": "Actualizar micrositio",
-    "select": "seleccionar",
+    "select": "Seleccionar",
     "titleWelcome": "Descubre cientos de comercios y realiza todos tus pagos en un solo lugar, de forma fácil y rápida",
     "user": {
         "label": "Usuarios",
@@ -130,7 +130,11 @@
         "delete_account": "Eliminar cuenta",
         "delete_account_additional": "Una vez eliminada su cuenta, todos sus recursos y datos se borrarán permanentemente. Antes de eliminar su cuenta, descargue los datos o la información que desee conservar.",
         "are_you_sure_delete": "¿Seguro que quieres eliminar tu cuenta?",
-        "are_you_sure_delete_additional": "Una vez eliminada su cuenta, todos sus recursos y datos se borrarán permanentemente. Introduzca su contraseña para confirmar que desea eliminar definitivamente su cuenta."
+        "are_you_sure_delete_additional": "Una vez eliminada su cuenta, todos sus recursos y datos se borrarán permanentemente. Introduzca su contraseña para confirmar que desea eliminar definitivamente su cuenta.",
+        "update_user": "Actualizar usuario",
+        "list_users": "Lista de usuarios",
+        "roles": "Roles",
+        "create_user": "Crear usuario"
     },
     "welcome": "Bienvenido",
     "welcome_title": "Bienvenido a micrositios ",
