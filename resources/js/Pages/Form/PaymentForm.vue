@@ -26,7 +26,6 @@ const initialValues = {
     payer_document_type : "CC",
     payer_document : "",
     payer_phone : "",
-    reference: "",
     description: "",
     currency: currency,
     amount: "",
@@ -58,11 +57,13 @@ const submit = () => {
         </header>
 
 
-           <main class="flex-grow flex items-center justify-center bg-gray-50">
-            <div id="form" class="bg-white  p-4 m-4 rounded-2xl shadow-lg w-full max-w-4xl">
-
-                 <div v-if="formConfig.configuration.head === 'null' " class="m-3" >
-                    <div  class="col-span-2 flex items-center justify-center w-full">
+           <main class="flex-grow flex items-center justify-center bg-white my-6">
+            <div id="form" class="bg-white p-4 m-4 rounded-2xl shadow-2xl border border-gray-100 w-full max-w-4xl">
+                 <div  class="m-3" >
+                     <p v-if="formConfig.configuration.head === '' || formConfig.configuration.head === null " class="flex justify-center mt-2 text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight text-gray-700 ">
+                         {{microsite.name}}
+                     </p>
+                    <div v-else class="col-span-2 flex items-center justify-center w-full">
                         <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 hover:border-gray-500">
                             <div class="flex flex-col items-center justify-center">
                                 <PhotoIcon class="w-12 h-12 text-gray-400"/>
@@ -73,26 +74,26 @@ const submit = () => {
                         </label>
                     </div>
                 </div>
-                <p v-else class="flex justify-center mt-2 text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight text-gray-600 ">
-                    {{microsite.name}}
-                </p>
 
-                <div class="col-span-2 flex">
-                    <div class="text-lg font-semibold">
+
+                <div class="col-span-2 flex text-gray-600 pt-2">
+                    <div class="text-2xl font-semibold">
                         {{ $t('form.electronic_payments') }}
                     </div>
                 </div>
-                <div class="col-span-2 flex">
-                    <div class="text-md pb-2">
-                        {{ $t('form.additional_information') }}
+                <div class="col-span-2 flex pt-1 pb-6 text-gray-500">
+                    <div v-if="formConfig.configuration.additional_information === '' || formConfig.configuration.additional_information === null " class="text-md pb-2">
+                        {{ $t('payment.additional_data') }}
+                    </div>
+                    <div v-else class="text-md pb-2">
+                        {{formConfig.configuration.additional_information}}
                     </div>
                 </div>
 
                 <form @submit.prevent="submit" class="grid grid-cols-1 md:grid-cols-2 gap-4  " >
                     <template v-for="field in formConfig.configuration.fields" :key="field.name">
-                        <div v-if="field.active === 'true'" class="mb-2">
-
-                            <div v-if="field.type === 'text' && field.name === 'name' && field.active === 'true'">
+                        <template v-if="field.active === 'true'" class="mb-2">
+                            <div v-if="field.type === 'text' && field.name === 'name'">
                                 <InputLabel for="name" :value="$t(`form.${field.name}`)" />
                                 <TextInput
                                     id="name"
@@ -105,8 +106,7 @@ const submit = () => {
                                 />
                                 <InputError class="mt-2" :message="form.errors.payer_name" />
                             </div>
-
-                            <div v-if="field.type === 'text' && field.name === 'surname' && field.active === 'true'">
+                            <div v-if="field.type === 'text' && field.name === 'surname'">
                                 <InputLabel for="surname" :value="$t(`form.${field.name}`)" />
                                 <TextInput
                                     :id="field.name"
@@ -119,22 +119,7 @@ const submit = () => {
                                 />
                                 <InputError class="mt-2" :message="form.errors.payer_surname" />
                             </div>
-
-                            <div v-if="field.type === 'email' && field.name === 'email' && field.active === 'true'">
-                                <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
-                                <TextInput
-                                    :id="field.name"
-                                    type="email"
-                                    class="mt-1 block w-full"
-                                    v-model="form.payer_email"
-                                    autofocus
-                                    autocomplete="email"
-                                    :placeholder="$t(`form.${field.name}`)"
-                                />
-                                <InputError class="mt-2" :message="form.errors.payer_email" />
-                            </div>
-
-                            <div v-if="field.type === 'select' && field.name === 'document_type' && field.active === 'true'">
+                            <div v-if="field.type === 'select' && field.name === 'document_type'">
                                 <InputLabel for="name" :value="$t('microsites_table.document_type')" />
                                 <select
                                     :name="field.name"
@@ -147,8 +132,7 @@ const submit = () => {
                                 </select>
                                 <InputError class="mt-2" :message="form.errors.payer_document_type" />
                             </div>
-
-                            <div v-if="field.type === 'text' && field.name === 'document' && field.active === 'true'">
+                            <div v-if="field.type === 'text' && field.name === 'document'">
                                 <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
                                 <TextInput
                                     :id="field.name"
@@ -161,8 +145,7 @@ const submit = () => {
                                 />
                                 <InputError class="mt-2" :message="form.errors.payer_document" />
                             </div>
-
-                            <div v-if="field.type === 'number' && field.name === 'mobile' && field.active === 'true'">
+                            <div v-if="field.type === 'number' && field.name === 'mobile' ">
                                 <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
                                 <TextInput
                                     :id="field.name"
@@ -175,22 +158,7 @@ const submit = () => {
                                 />
                                 <InputError class="mt-2" :message="form.errors.payer_phone" />
                             </div>
-
-                            <div v-if="field.type === 'text' && field.name === 'reference' && field.active === 'true'">
-                                <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
-                                <TextInput
-                                    :id="field.name"
-                                    type="text"
-                                    class="mt-1 block w-full"
-                                    v-model="form.reference"
-                                    autofocus
-                                    :autocomplete="field.name"
-                                    :placeholder="$t(`form.${field.name}`)"
-                                />
-                                <InputError class="mt-2" :message="form.errors.reference" />
-                            </div>
-
-                            <div v-if="field.type === 'text' && field.name === 'description' && field.active === 'true'">
+                            <div v-if="field.type === 'text' && field.name === 'description'">
                                 <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
                                 <TextInput
                                     :id="field.name"
@@ -203,8 +171,7 @@ const submit = () => {
                                 />
                                 <InputError class="mt-2" :message="form.errors.description" />
                             </div>
-
-                            <div v-if="field.type === 'select' && field.name === 'currency_type' && field.active === 'true'">
+                            <div v-if="field.type === 'select' && field.name === 'currency_type' ">
                                 <InputLabel for="name" :value="$t('currency')" />
                                 <select
                                     :name="field.name"
@@ -217,8 +184,7 @@ const submit = () => {
                                 </select>
                                 <InputError class="mt-2" :message="form.errors.currency" />
                             </div>
-
-                            <div v-if="field.type === 'number' && field.name === 'amount' && field.active === 'true'">
+                            <div v-if="field.type === 'number' && field.name === 'amount' ">
                                 <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
                                 <TextInput
                                     :id="field.name"
@@ -231,8 +197,21 @@ const submit = () => {
                                 />
                                 <InputError class="mt-2" :message="form.errors.amount" />
                             </div>
+                            <div v-if="field.type === 'email' && field.name === 'email' ">
+                                <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
+                                <TextInput
+                                    :id="field.name"
+                                    type="email"
+                                    class="mt-1 block w-full"
+                                    v-model="form.payer_email"
+                                    autofocus
+                                    autocomplete="email"
+                                    :placeholder="$t(`form.${field.name}`)"
+                                />
+                                <InputError class="mt-2" :message="form.errors.payer_email" />
+                            </div>
+                        </template>
 
-                        </div>
                     </template>
 
                     <div class="col-span-1 flex justify-center sm:col-span-2">
@@ -242,7 +221,7 @@ const submit = () => {
                     </div>
                 </form>
 
-                 <footer v-for="field in formConfig.configuration.footer" :key="field.head" class="m-3">
+                 <footer v-if="formConfig.configuration.additional_information === '' ||  formConfig.configuration.footer !== null " class="m-3">
                     <div class="col-span-2 flex items-center justify-center w-full">
                         <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 hover:border-gray-500">
                             <div class="flex flex-col items-center justify-center">

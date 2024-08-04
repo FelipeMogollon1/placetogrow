@@ -22,7 +22,7 @@ import FooterIndex from "@/Layouts/Molecules/FooterIndex.vue";
             </nav>
         </header>
         <main class="flex-1 flex flex-col items-center justify-center bg-white p-6">
-            <div class="w-full sm:max-w-md bg-white shadow-2xl rounded-lg overflow-hidden p-4">
+            <div class="w-full sm:max-w-md bg-white border border-gray-100 shadow-2xl rounded-lg overflow-hidden p-4">
                 <slot />
             </div>
         </main>
