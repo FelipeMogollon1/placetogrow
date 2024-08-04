@@ -169,5 +169,74 @@
         "APPROVED_PARTIAL" : "Aprobado Parcialmente",
         "PARTIAL_EXPIRED" : "Vencido Parcialmente",
         "UNKNOWN" :"Desconocido"
+    },
+    "role": {
+        "label": "Roles",
+        "name": "Nombre",
+        "create_role": "Crear rol",
+        "update_role": "Actualizar Rol",
+        "description": "Administrador general",
+        "list_role": "Listar de roles",
+        "group": {
+            "users": "Usuarios",
+            "microsites": "Micrositios",
+            "categories": "Categorías",
+            "roles": "Roles",
+            "payments": "Pagos"
+        },
+        "permissions": {
+            "index": "Listar",
+            "show": "Ver detalle",
+            "create": "Crear",
+            "store": "Guardar",
+            "edit": "Editar",
+            "update": "Actualizar",
+            "destroy": "Eliminar"
+        },
+        "users": {
+            "index": "Listar",
+            "show": "Ver detalle",
+            "create": "Crear",
+            "store": "Guardar",
+            "edit": "Editar",
+            "update": "Actualizar",
+            "destroy": "Eliminar"
+        },
+        "microsites": {
+            "index": "Listar",
+            "show": "Ver detalle",
+            "create": "Crear",
+            "store": "Guardar",
+            "edit": "Editar",
+            "update": "Actualizar",
+            "destroy": "Eliminar"
+        },
+        "categories": {
+            "index": "Listar",
+            "show": "Ver detalle",
+            "create": "Crear",
+            "store": "Guardar",
+            "edit": "Editar",
+            "update": "Actualizar",
+            "destroy": "Eliminar"
+        },
+        "roles": {
+            "index": "Listar",
+            "show": "Ver detalle",
+            "create": "Crear",
+            "store": "Guardar",
+            "edit": "Editar",
+            "update": "Actualizar",
+            "destroy": "Eliminar"
+        },
+        "payments": {
+            "index": "Listar",
+            "show": "Ver detalle",
+            "create": "Crear",
+            "store": "Guardar",
+            "edit": "Editar",
+            "update": "Actualizar",
+            "destroy": "Eliminar"
+        }
     }
 }

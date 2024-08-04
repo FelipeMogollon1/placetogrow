@@ -169,5 +169,74 @@
         "APPROVED_PARTIAL" : "Partially Approved",
         "PARTIAL_EXPIRED" : "Partially Expired",
         "UNKNOWN" : "Unknown"
+    },
+    "role": {
+        "label": "Roles",
+        "name": "Name",
+        "create_role": "Create role",
+        "update_role": "Update Role",
+        "description": "General Administrator",
+        "list_role": "List roles",
+        "group": {
+            "users": "Users",
+            "microsites": "Microsites",
+            "categories": "Categories",
+            "roles": "Roles",
+            "payments": "Payments"
+        },
+        "permissions": {
+            "index": "List",
+            "show": "View detail",
+            "create": "Create",
+            "store": "Save",
+            "edit": "Edit",
+            "update": "Update",
+            "destroy": "Delete"
+        },
+        "users": {
+            "index": "List",
+            "show": "View detail",
+            "create": "Create",
+            "store": "Save",
+            "edit": "Edit",
+            "update": "Update",
+            "destroy": "Delete"
+        },
+        "microsites": {
+            "index": "List",
+            "show": "View detail",
+            "create": "Create",
+            "store": "Save",
+            "edit": "Edit",
+            "update": "Update",
+            "destroy": "Delete"
+        },
+        "categories": {
+            "index": "List",
+            "show": "View detail",
+            "create": "Create",
+            "store": "Save",
+            "edit": "Edit",
+            "update": "Update",
+            "destroy": "Delete"
+        },
+        "roles": {
+            "index": "List",
+            "show": "View detail",
+            "create": "Create",
+            "store": "Save",
+            "edit": "Edit",
+            "update": "Update",
+            "destroy": "Delete"
+        },
+        "payments": {
+            "index": "List",
+            "show": "View details",
+            "create": "Create",
+            "store": "Save",
+            "edit": "Edit",
+            "update": "Update",
+            "destroy": "Delete"
+        }
     }
 }
