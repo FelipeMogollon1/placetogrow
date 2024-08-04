@@ -27,29 +27,60 @@ const getConstants = (field) => {
     }
 };
 
-const form = useForm({
+const initialValues = {
     id: formConfig.id,
-    configuration: formConfig.configuration
-});
+    configuration: formConfig.configuration,
+    head: null,
+    footer: null
+}
+
+const form = useForm(initialValues)
 
 const formErrors = ref(form.errors);
-const updateFieldValue = (name, value) => {
-    const field = form.configuration.fields.find(field => field.name === name);
-    if (field) {
-        field.value = value;
-    }
-};
 
 const toggleFieldActive = (field) => {
     field.active = field.active === 'true' ? 'false' : 'true';
 };
 
+const selectedImage = ref(null);
+
+const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            selectedImage.value = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+    const files = event.target.files
+    console.log(files[0])
+    if(files.length){
+        form.head = files[0]
+    }
+};
+
+const selectedFooterImage = ref(null);
+
+const handleFooterFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            selectedFooterImage.value = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    const files = event.target.files
+console.log(files[0])
+    if(files.length){
+        form.footer = files[0]
+    }
+};
+
 const submit = () => {
-    form.put(route('forms.update', { id: form.id }), {
-        onError: (errors) => {
-            console.log(errors);
-        },
-    });
+    form.post(route('forms.custom_update', form.id))
 };
 
 watch(formConfig, (newConfig) => {
@@ -140,16 +171,21 @@ watch(formConfig, (newConfig) => {
                 <div class="flex justify-center items-center">
                     <div id="form" class="container bg-white grid grid-cols-2 md:grid-cols-2 gap-4 sm:grid-cols-1 p-4 m-4 rounded-2xl shadow-lg">
 
-                        <div class="col-span-2 flex items-center justify-center w-full">
-                            <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 hover:border-gray-500">
-                                <div class="flex flex-col items-center justify-center">
+
+                        <div class="col-span-2 flex items-center justify-center w-full h-28 border-2 border-orange-300 border-dashed rounded-lg cursor-pointer bg-orange-50 hover:bg-orange-50 hover:border-orange-500">
+                            <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-full">
+                                <div v-if="selectedImage" class="flex items-center justify-center w-full h-full">
+                                    <img :src="selectedImage" class="w-full h-full object-cover rounded-lg"/>
+                                </div>
+                                <div v-else class="flex flex-col items-center justify-center w-full h-full">
                                     <PhotoIcon class="w-12 h-12 text-gray-400"/>
                                     <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">{{ $t('form.select_header') }}</span></p>
                                     <p class="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
                                 </div>
-                                <input id="dropzone-file" type="file" class="hidden" />
+                                <input id="dropzone-file" type="file" class="hidden" @change="handleFileChange" />
                             </label>
                         </div>
+
 
                         <div class="col-span-2 flex">
                             <div class="text-lg font-semibold">
@@ -158,7 +194,7 @@ watch(formConfig, (newConfig) => {
                         </div>
                         <div class="col-span-2 flex">
                             <div class="text-md pb-2">
-                                {{ $t('form.additional_information') }}
+                                 {{ $t('form.additional_information') }}
                             </div>
                         </div>
 
@@ -185,15 +221,19 @@ watch(formConfig, (newConfig) => {
                         </div>
 
                         <div class="col-span-2 flex items-center justify-center w-full">
-                            <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 hover:border-gray-500">
-                                <div class="flex flex-col items-center justify-center">
+                            <label for="dropzone-footer" class="flex flex-col items-center justify-center w-full h-28 border-2 border-orange-300 border-dashed rounded-lg cursor-pointer bg-orange-50 hover:bg-orange-50 hover:border-orange-500">
+                                <div v-if="selectedFooterImage" class="flex items-center justify-center w-full h-full">
+                                    <img :src="selectedFooterImage" class="w-full h-full object-cover rounded-lg"/>
+                                </div>
+                                <div v-else class="flex flex-col items-center justify-center">
                                     <PhotoIcon class="w-12 h-12 text-gray-400"/>
                                     <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">{{ $t('form.select_footer') }}</span></p>
                                     <p class="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
                                 </div>
-                                <input id="dropzone-file" type="file" class="hidden" />
+                                <input id="dropzone-footer" type="file" class="hidden" @change="handleFooterFileChange" />
                             </label>
                         </div>
+
                     </div>
 
                     <div id="fields" class="bg-white px-2 py-3 rounded-2xl shadow-lg">

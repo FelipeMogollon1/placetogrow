@@ -27,12 +27,12 @@ Route::group(['middleware' => 'auth', 'verified'], function () {
     })->name('dashboard');
 
     Route::resource('/forms', FormController::class);
+    Route::post('/forms/{id}', [FormController::class,'update'])->name('forms.custom_update');
     Route::resource('/roles', RoleController::class);
     Route::resource('/users', UserController::class);
     Route::resource('/categories', CategoryController::class);
     Route::resource('/microsites', MicrositeController::class);
     Route::post('/microsites/{id}', [MicrositeController::class,'update'])->name('microsites.custom_update');
-
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

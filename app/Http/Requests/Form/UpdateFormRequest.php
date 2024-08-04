@@ -23,6 +23,9 @@ class UpdateFormRequest extends FormRequest
                 'array',
                 new ValidateFormConfiguration()
             ],
+            'footer' => ['nullable'],
+            'head' => ['nullable'],
+            'additional_information' => ['nullable'],
         ];
     }
 }
