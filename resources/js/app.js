@@ -11,7 +11,7 @@ import LaravelPermissionToVueJS from 'laravel-permission-to-vuejs'
 import en from './Locales/en.json';
 import es from './Locales/es.json';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'Bootcamp PHP';
 
 const i18n = createI18n({
     locale: 'es',

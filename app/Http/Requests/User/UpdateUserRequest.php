@@ -14,10 +14,19 @@ class UpdateUserRequest extends FormRequest
 
     public function rules(): array
     {
+        $userId = $this->route('user')->id;
+
         return [
             'name' => 'string|max:255',
-            'email' => 'string|lowercase|email|max:255|unique:'.User::class,
+            'email' => [
+                'string',
+                'lowercase',
+                'email',
+                'max:255',
+                'unique:users,email,' . $userId,
+            ],
             'password' => ['required', 'confirmed'],
+            'role' => 'required|string',
         ];
     }
 }
