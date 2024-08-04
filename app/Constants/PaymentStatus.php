@@ -11,8 +11,8 @@ enum PaymentStatus: string
     case PARTIAL_EXPIRED = 'PARTIAL_EXPIRED';
     case UNKNOWN = 'UNKNOWN';
 
-    public static function toArray(): array
+    public static function getPaymentStatus(): array
     {
-        return array_column(self::cases(), 'value');
+        return array_map(fn($enum) => $enum->value, self::cases());
     }
 }
