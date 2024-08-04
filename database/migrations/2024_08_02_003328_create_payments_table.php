@@ -37,6 +37,7 @@ return new class extends Migration
             $table->foreign('microsite_id')->references('id')->on('microsites');
             $table->json('additional_data')->nullable();
             $table->timestamps();
+            $table->unique(['payer_document', 'payer_document_type'], 'UNIQUE_PERSONS_PAYMENTS');
         });
     }
 

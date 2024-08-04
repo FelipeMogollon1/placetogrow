@@ -27,6 +27,7 @@ return new class () extends Migration {
             $table->timestamp('enabled_at')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
+            $table->unique(['document', 'document_type'], 'UNIQUE_PERSONS_MICROSITES');
         });
     }
 
