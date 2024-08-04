@@ -238,5 +238,13 @@
             "update": "Update",
             "destroy": "Delete"
         }
+    },
+    "category": {
+        "label" : "Categories",
+        "create_category": "Create category",
+        "list_category": "List of categories",
+        "update_category": "Update category",
+        "name": "Name",
+        "description": "Description"
     }
 }
