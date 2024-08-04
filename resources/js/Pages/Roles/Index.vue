@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {route} from "ziggy-js";
 import RolTable from "@/Layouts/Organisms/RolTable.vue";
+import UserTable from "@/Layouts/Organisms/UserTable.vue";
 
 
 defineProps({
@@ -12,13 +13,13 @@ defineProps({
     }
 });
 
-const headers = ["Nombre"];
+const headers = ["name"];
 
 
 </script>
 
 <template>
-    <Head title="Roles Index" />
+    <Head title="Roles" />
     <AuthenticatedLayout>
         <template #header>
             <div class="flex justify-between items-center">
@@ -33,7 +34,7 @@ const headers = ["Nombre"];
             </div>
         </template>
 
-        <RolTable :data="roles" :headers="headers" />
+        <RolTable :data="roles.data" :paginator="roles" :headers="headers" />
 
     </AuthenticatedLayout>
 </template>

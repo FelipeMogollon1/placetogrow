@@ -22,7 +22,9 @@ class RoleController extends Controller
 
     public function index(): Response
     {
-        return Inertia::render('Roles/Index', ['roles' => Role::all()]);
+           return Inertia::render('Roles/Index', [
+            'roles' => Role::orderBy('name')->paginate(5)
+        ]);
     }
 
     public function create(): Response
