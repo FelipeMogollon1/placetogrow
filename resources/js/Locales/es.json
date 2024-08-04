@@ -238,5 +238,13 @@
             "update": "Actualizar",
             "destroy": "Eliminar"
         }
+    },
+    "category": {
+        "label" : "Categorias",
+        "create_category": "Crear categoria",
+        "list_category": "Lista de categorias",
+        "update_category": "Actualizar categoria",
+        "name": "Nombre",
+        "description": "Descripción"
     }
 }
