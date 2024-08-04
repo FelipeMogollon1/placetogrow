@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Constants\Abilities;
+use App\Domain\User\Actions\DestroyUserAction;
 use App\Domain\User\Actions\StoreUserAction;
 use App\Domain\User\Actions\UpdateUserAction;
 use App\Http\Controllers\Controller;
@@ -21,9 +22,11 @@ class UserController extends Controller
     public function index(): Response
     {
         $this->authorize(Abilities::VIEW_ANY->value, User::class);
-        $users = User::with('roles')->get();
+        $users = User::with('roles')->paginate(5);
 
-        return Inertia::render('Users/Index', compact('users'));
+        return Inertia::render('Users/Index', [
+            'users' => $users,
+        ]);
     }
 
     public function create(): Response
@@ -36,8 +39,9 @@ class UserController extends Controller
     public function store(StoreUserRequest $request, StoreUserAction $storeAction): RedirectResponse
     {
         $this->authorize(Abilities::STORE->value, User::class);
+        $storeAction->execute($request->validated());
 
-        return $storeAction->execute($request->validated());
+        return to_route('users.index');
     }
 
     public function edit(string $id): Response
@@ -49,18 +53,28 @@ class UserController extends Controller
         return Inertia::render('Users/Edit', compact('user','roles'));
     }
 
-    public function update(UpdateUserRequest $request, string $id, UpdateUserAction $updateAction): RedirectResponse
+    public function update(UpdateUserRequest $request,User $user, UpdateUserAction $updateAction): RedirectResponse
     {
         $this->authorize(Abilities::UPDATE->value, User::class);
+        $updateAction->execute($user->id, $request->validated());
 
-        return $updateAction->execute($id, $request->validated());
+        return to_route('users.index');
     }
 
-    public function destroy(User $user): RedirectResponse
+    public function destroy(User $user, DestroyUserAction $action): RedirectResponse
     {
         $this->authorize(Abilities::DELETE->value, User::class);
+
+        if ($action->execute($user)) {
+            return redirect()
+                ->route('users.index')
+                ->with('error', 'The user cannot be deleted because they have microsites assigned.');
+        }
+
         $user->delete();
 
-        return redirect()->route('users.index');
+        return redirect()
+            ->route('users.index')
+            ->with('success', 'User successfully deleted.');
     }
 }
