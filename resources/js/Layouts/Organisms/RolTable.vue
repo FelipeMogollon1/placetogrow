@@ -63,7 +63,7 @@ const statusColors = {
                                 @click="sortData(header)"
                                 :class="{ 'cursor-pointer': true, 'bg-gray-300': sortKey === header }"
                             >
-                                {{ $t(`rol.${header}`) }}
+                                {{ $t(`role.${header}`) }}
                                 <span v-if="sortKey === header">
                                     {{ sortOrder === 'asc' ? '▲' : '▼' }}
                                 </span>
@@ -84,16 +84,7 @@ const statusColors = {
                                 :key="header"
                                 class="px-6 py-3 whitespace text-sm text-gray-900"
                             >
-                                <template v-if="header === 'status'">
-                                    <span-form :color="statusColors[item[header]]">
-                                        {{ $t(`payment_status.${item[header]}`) }}
-                                    </span-form>
-                                </template>
-
-                                <span v-else>
-                                    {{ item[header] }}
-                                </span>
-
+                                {{ item[header] }}
                             </td>
                             <td>
                                 <div v-if="!['sa', 'admin', 'guest'].includes(item.name)" class="text-gray-400 flex justify-center">
