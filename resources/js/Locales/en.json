@@ -151,8 +151,11 @@
         "currency": "Currency",
         "status": "Status",
         "process_identifier": "Process Identifier",
-        "additional_data": "Additional Data",
-        "microsite_name": "Microsite"
+        "additional_data": "Pay securely from anywhere, anytime, thanks to our 24/7 payment system.",
+        "microsite_name": "Microsite",
+        "payment_list": "Payment List",
+        "payment_detailer": "Payment Detail",
+        "paid_at": "Paid At"
     },
     "payment_status": {
         "PENDING" : "Pending",

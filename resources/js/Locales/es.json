@@ -146,14 +146,17 @@
         "payer_phone":"Teléfono o Móvil",
         "payer_company":"Empresa",
         "payer_document_type":"Tipo de Documento",
-        "payer_document":"Docuemento",
+        "payer_document":"Documento",
         "description":"Descripción",
         "amount":"Monto",
         "currency":"Moneda",
         "status":"Estado",
         "process_identifier":"Identificador Proceso",
-        "additional_data":"Datos Adicionales",
-        "microsite_name": "Micrositio"
+        "additional_data":"Pague con total seguridad desde cualquier lugar, en cualquier momento, gracias a nuestro sistema de pago disponible 24/7.",
+        "microsite_name": "Micrositio",
+        "payment_list" : "Lista de pagos",
+        "payment_detailer": "Detalle del pago",
+        "paid_at" : "Pagado en"
     },
     "payment_status": {
         "PENDING" : "Pendiente",
