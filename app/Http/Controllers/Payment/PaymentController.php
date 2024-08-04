@@ -29,8 +29,16 @@ class PaymentController extends Controller
     public function store (StorePaymentRequest $request,StorePaymentAction $action, PlacetopayGateway $gateway ): \Symfony\Component\HttpFoundation\Response
     {
         $payment = $action->execute($request->validated());
+
         $response = $gateway->createSession($payment, $request);
 
         return  Inertia::location($response->processUrl());
+    }
+
+    public function show(string $id): Response
+    {
+        $payment = Payment::with('microsite')->findOrFail($id);
+
+        return Inertia::render('Payment/Show', compact('payment'));
     }
 }
