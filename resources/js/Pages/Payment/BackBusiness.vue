@@ -1,14 +1,35 @@
 <script setup>
-import GuestLayout from "@/Layouts/GuestLayout.vue";
 import { Link } from "@inertiajs/vue3";
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 import {ArrowSmallLeftIcon} from "@heroicons/vue/24/outline/index.js";
 import LanguageDropdown from "@/Layouts/Atoms/LanguageDropdown.vue";
 import FooterIndex from "@/Layouts/Molecules/FooterIndex.vue";
+import SpanForm from "@/Layouts/Atoms/SpanForm.vue";
 
 function printPage() {
     window.print();
 }
+
+defineProps({
+    microsite: {
+        type: Array,
+        default: () => []
+    },
+    payment: {
+        type: Array,
+        default: () => []
+    }
+});
+
+const statusColors = {
+    PENDING: 'yellow',
+    APPROVED: 'green',
+    REJECTED: 'red',
+    APPROVED_PARTIAL: 'cyan',
+    PARTIAL_EXPIRED: 'orange',
+    UNKNOWN: 'blue'
+};
+
 </script>
 
 <template>
@@ -30,42 +51,51 @@ function printPage() {
         <div id="form" class="bg-white p-4 m-4 rounded-3xl border border-gray-200 w-full max-w-4xl">
             <application-logo />
             <div class="m-3 text-3xl">
-                <span class="block font-extrabold">Comprobante</span>
-                <span class="block"> de pago en línea</span>
+                <span class="block font-extrabold">{{ $t('voucher.label') }}</span>
+                <span class="block"> {{ $t('voucher.pay') }}</span>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-2 gap-4 m-5 ">
                     <div class="pb-1">
-                        <dt class="text-sm font-medium leading-6 text-gray-400">Pago realizado por:</dt>
-                        <dd class="text-sm leading-6 text-gray-700 font-semibold">Nombre</dd>
+                        <dt class="text-sm font-medium leading-6 text-gray-400">{{ $t('voucher.PaymentMade') }}</dt>
+                        <dd class="text-sm leading-6 text-gray-700 font-semibold">{{ payment.payer_name }} {{ payment.payer_surname }}</dd>
                     </div>
                     <div class="pb-1">
-                        <dt class="text-sm font-medium leading-6 text-gray-400">Nro. de factura:</dt>
-                        <dd class="text-sm leading-6 text-gray-700 font-semibold">Nombre</dd>
+                        <dt class="text-sm font-medium leading-6 text-gray-400">{{ $t('voucher.InvoiceNumber') }}</dt>
+                        <dd class="text-sm leading-6 text-gray-700 font-semibold">{{ payment.request_id }}</dd>
                     </div>
                     <div class="pb-1">
-                        <dt class="text-sm font-medium leading-6 text-gray-400">Descripción del pago:</dt>
-                        <dd class="text-sm leading-6 text-gray-700 font-semibold">Nombre</dd>
+                        <dt class="text-sm font-medium leading-6 text-gray-400">{{ $t('voucher.PaymentDescription') }}</dt>
+                        <dd class="text-sm leading-6 text-gray-700 font-semibold">{{ payment.description }}</dd>
                     </div>
                     <div class="pb-1">
-                        <dt class="text-sm font-medium leading-6 text-gray-400">Nro. de referencia:</dt>
-                        <dd class="text-sm leading-6 text-gray-700 font-semibold">Nombre</dd>
+                        <dt class="text-sm font-medium leading-6 text-gray-400">{{ $t('voucher.Reference') }}</dt>
+                        <dd class="text-sm leading-6 text-gray-700 font-semibold">{{ payment.reference }}</dd>
                     </div>
                     <div class="pb-1">
-                        <dt class="text-sm font-medium leading-6 text-gray-400">Fecha y hora de la transacción:</dt>
-                        <dd class="text-sm leading-6 text-gray-700 font-semibold">Nombre</dd>
+                        <dt class="text-sm font-medium leading-6 text-gray-400">{{ $t('voucher.date') }}</dt>
+                        <dd class="text-sm leading-6 text-gray-700 font-semibold">{{ payment.created_at }}</dd>
+                    </div>
+
+                    <div class="pb-1">
+                        <dt class="text-sm font-medium leading-6 text-gray-400">{{ $t('voucher.currency') }}</dt>
+                        <dd class="text-sm leading-6 text-gray-700 font-semibold">{{ payment.currency }}</dd>
                     </div>
                     <div class="pb-1">
-                        <dt class="text-sm font-medium leading-6 text-gray-400">Nro. de comprobante:</dt>
-                        <dd class="text-sm leading-6 text-gray-700 font-semibold">Nombre</dd>
+                        <dt class="text-sm font-medium leading-6 text-gray-400">{{ $t('voucher.paid') }}</dt>
+                        <dd class="text-sm leading-6 text-gray-700 font-semibold">{{ payment.amount }}</dd>
                     </div>
                     <div class="pb-1">
-                        <dt class="text-sm font-medium leading-6 text-gray-400">Valor pagado:</dt>
-                        <dd class="text-sm leading-6 text-gray-700 font-semibold">Nombre</dd>
+                        <dt class="text-sm font-medium leading-6 text-gray-400">{{ $t('voucher.product') }}</dt>
+                        <dd class="text-sm leading-6 text-gray-700 font-semibold">{{ microsite.name }}</dd>
                     </div>
                     <div class="pb-1">
-                        <dt class="text-sm font-medium leading-6 text-gray-400">Producto:</dt>
-                        <dd class="text-sm leading-6 text-gray-700 font-semibold">Nombre</dd>
+                        <dt class="text-sm font-medium leading-6 text-gray-400">{{ $t('voucher.state') }}</dt>
+                        <dd class="text-sm leading-6 text-gray-700 font-semibold">
+                            <span-form :color="statusColors[payment.status]">
+                                {{ $t(`payment_status.${payment.status}`) }}
+                            </span-form>
+                        </dd>
                     </div>
                 </div>
 

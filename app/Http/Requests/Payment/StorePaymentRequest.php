@@ -5,7 +5,9 @@ namespace App\Http\Requests\Payment;
 use App\Constants\CurrencyTypes;
 use App\Constants\DocumentTypes;
 use App\Constants\PaymentStatus;
+use App\Rules\Payment\DocumentNumber;
 use App\Rules\Payment\UniqueDocumentCombination;
+use Database\Factories\PaymentFactory;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StorePaymentRequest extends FormRequest
@@ -29,12 +31,11 @@ class StorePaymentRequest extends FormRequest
             'payer_company' => ['nullable', 'string'],
             'payer_document_type' => [
                 'nullable',
-                'string',
                 'in:' . implode(',', DocumentTypes::getDocumentTypes())
             ],
             'payer_document' => [
                 'nullable',
-                'string',
+                new DocumentNumber($this->input('payer_document_type')),
                 new UniqueDocumentCombination($this->input('payer_document_type'))
             ],
             'description' => ['nullable', 'string'],
@@ -47,5 +48,10 @@ class StorePaymentRequest extends FormRequest
             'microsite_id' => ['nullable', 'exists:microsites,id'],
             'additional_data' => ['nullable', 'json'],
         ];
+    }
+
+    protected static function newFactory(): PaymentFactory
+    {
+        return PaymentFactory::new();
     }
 }
