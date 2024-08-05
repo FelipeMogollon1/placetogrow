@@ -132,11 +132,11 @@ const submit = () => {
                                 </select>
                                 <InputError class="mt-2" :message="form.errors.payer_document_type" />
                             </div>
-                            <div v-if="field.type === 'text' && field.name === 'document'">
+                            <div v-if="field.type === 'number' && field.name === 'document'">
                                 <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
                                 <TextInput
                                     :id="field.name"
-                                    type="text"
+                                    type="number"
                                     class="mt-1 block w-full"
                                     v-model="form.payer_document"
                                     autofocus
@@ -189,6 +189,7 @@ const submit = () => {
                                 <TextInput
                                     :id="field.name"
                                     type="number"
+                                    step="0.01"
                                     class="mt-1 block w-full"
                                     v-model="form.amount"
                                     autofocus
@@ -221,7 +222,7 @@ const submit = () => {
                     </div>
                 </form>
 
-                 <footer v-if="formConfig.configuration.additional_information === '' ||  formConfig.configuration.footer !== null " class="m-3">
+                 <footer v-if="formConfig.configuration.footer !== null " class="m-3">
                     <div class="col-span-2 flex items-center justify-center w-full">
                         <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 hover:border-gray-500">
                             <div class="flex flex-col items-center justify-center">

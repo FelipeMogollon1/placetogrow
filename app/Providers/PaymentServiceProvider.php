@@ -3,24 +3,21 @@
 namespace App\Providers;
 
 use App\Contracts\PaymentGatewayContract;
+use App\PaymentGateway\PlacetopayGateway;
 use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
 
 class PaymentServiceProvider extends ServiceProvider
 {
 
-    public function register(): void
-    {
 
-    }
-
-    public function boot()
+    public function boot(): void
     {
             $this->app->bind(PaymentGatewayContract::class, function () {
             $service = config('payment.services.current');
-            $gateway = config('payment.services.'.$service);
-            $gatewayClass = Arr::get($gateway, 'class');
-            return (new $gatewayClass())->connection(Arr::get($gateway, 'settings'));
+
+            return (app(PlacetopayGateway::class))
+                ->connection(Arr::get(config('payment.services.'.$service), 'settings'));
         });
     }
 }

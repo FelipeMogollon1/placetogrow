@@ -10,36 +10,20 @@ use Dnetix\Redirection\PlacetoPay;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Str;
 use Throwable;
 
 class PlacetopayGateway implements PaymentGatewayContract
 {
-    protected ?PlacetoPay $placetopay = null;
+    public PlacetoPay $placetopay;
 
-    public function connection(): self
+    public function connection(array $settings): self
     {
-        $service = config('payment.services.current');
-        $gateway = config('payment.services.'.$service);
-        $settings = Arr::get($gateway, 'settings');
-
-        $this->placetopay = new PlacetoPay([
-            'login' => Arr::get($settings, 'login'),
-            'tranKey' => Arr::get($settings, 'tranKey'),
-            'baseUrl' => Arr::get($settings, 'baseUrl'),
-            'timeout' => 10,
-        ]);
+        $this->placetopay = $this->getPaymentPlacetoPay($settings);
         return $this;
     }
 
-    public function createSession(Payment $payment, Request $request): RedirectResponse
+     public function createSession(Payment $payment, Request $request): RedirectResponse
     {
-        $this->connection();
-
-        if (!$this->placetopay) {
-            throw new \Exception('PlacetoPay not initialized');
-        }
-
         $totalPrice = $payment->amount;
 
         $payerData = array_filter([
@@ -64,7 +48,7 @@ class PlacetopayGateway implements PaymentGatewayContract
                     ],
                 ],
                 'expiration' => date('c', strtotime('+30 minutes')),
-                'returnUrl' => route('back'),
+                'returnUrl' => route('returnBusiness', $payment->id),
                 'ipAddress' => $request->ip(),
                 'userAgent' => $request->userAgent(),
             ];
@@ -75,7 +59,7 @@ class PlacetopayGateway implements PaymentGatewayContract
                 $payment->process_identifier = $response->processUrl();
                 $payment->request_id = $response->requestId();
 
-            } elseif($response->status()->isRejected()) {
+            } else {
                 $payment->status = PaymentStatus::REJECTED->value;
 
             }
@@ -90,7 +74,8 @@ class PlacetopayGateway implements PaymentGatewayContract
 
     public function queryPayment(Payment $payment): Payment
     {
-        $this->connection();
+//        $this->connection();
+
         $response = $this->placetopay->query($payment->request_id);
 
         if ($response->isSuccessful()) {
@@ -104,5 +89,15 @@ class PlacetopayGateway implements PaymentGatewayContract
             $payment->save();
         }
         return $payment;
+    }
+
+    public function getPaymentPlacetoPay(array $settings):PlacetoPay
+    {
+        return new PlacetoPay([
+            'login' => Arr::get($settings, 'login'),
+            'tranKey' => Arr::get($settings, 'tranKey'),
+            'baseUrl' => Arr::get($settings, 'baseUrl'),
+            'timeout' => 10,
+        ]);
     }
 }
