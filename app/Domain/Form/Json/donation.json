@@ -32,7 +32,7 @@
             "active": "true"
         },
         {
-            "type": "text",
+            "type": "number",
             "name": "document",
             "error_message_key": "errors.document",
             "active": "true",
