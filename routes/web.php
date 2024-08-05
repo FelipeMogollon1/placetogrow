@@ -10,15 +10,13 @@ use App\Http\Controllers\Roles\RoleController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/back', function () {
-    return Inertia::render('Payment/BackBusiness');
-})->name('back');
-
 Route::get('/', [MicrositeController::class, 'welcomeIndex'])->name('Welcome');
 
 Route::get('/microsites/{slug}/payment-form', [MicrositeController::class, 'paymentForm'])->name('microsites.paymentForm');
 
 Route::resource('/payments', PaymentController::class);
+
+Route::get('/returnBusiness/{payment}', [PaymentController::class,'returnBusiness'])->name('returnBusiness');
 
 Route::group(['middleware' => 'auth', 'verified'], function () {
 

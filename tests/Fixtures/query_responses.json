@@ -1,0 +1,31 @@
+{
+    "approved": {
+        "requestId": 1,
+        "status": {
+            "status": "APPROVED",
+            "reason": "00",
+            "message": "La petición ha sido aprobada exitosamente",
+            "date": "2022-07-27T14:51:27-05:00"
+        },
+        "payment": [
+            {
+                "status": {
+                    "status": "APPROVED",
+                    "reason": "00",
+                    "message": "La petición ha sido aprobada exitosamente",
+                    "date": "2022-07-27T14:51:27-05:00"
+                },
+                "receipt": "052617800175"
+            }
+        ]
+    },
+    "rejected": {
+        "requestId": 1,
+        "status": {
+            "status": "REJECTED",
+            "reason": "00",
+            "message": "La petición ha sido rechazada",
+            "date": "2022-07-27T14:51:27-05:00"
+        }
+    }
+}

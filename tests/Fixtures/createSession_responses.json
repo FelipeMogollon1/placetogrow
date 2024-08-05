@@ -1,0 +1,20 @@
+{
+    "successful": {
+        "status": {
+            "status": "OK",
+            "reason": "PC",
+            "message": "La petición se ha procesado correctamente",
+            "date": "2021-11-30T15:08:27-05:00"
+        },
+        "requestId": 1,
+        "processUrl": "https://checkout-co.placetopay.com/session/1/cc9b8690b1f7228c78b759ce27d7e80a"
+    },
+    "failed": {
+        "status": {
+            "status": "FAILED",
+            "reason": 401,
+            "message": "Autenticación fallida 102",
+            "date": "2021-11-30T15:12:25-05:00"
+        }
+    }
+}
