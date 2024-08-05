@@ -18,10 +18,10 @@ class UpdateCategoryTest extends TestCase
         $this->seed();
 
         $user = User::factory()->create();
-        $user->assignRole(Roles::ADMIN);
+        $user->assignRole(Roles::SA->value);
 
         $adminRole = $user->roles()->first();
-        $adminRole->givePermissionTo(Permissions::CATEGORIES_EDIT);
+        $adminRole->givePermissionTo(Permissions::CATEGORIES_EDIT->value);
 
         $category = Category::factory()->create([
             'name' => 'name categories new',

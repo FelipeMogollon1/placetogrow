@@ -25,10 +25,10 @@ class StoreMicrositeTest extends TestCase
         Storage::fake('public');
 
         $user = User::factory()->create();
-        $user->assignRole(Roles::ADMIN);
+        $user->assignRole(Roles::SA->value);
 
         $adminRole = $user->roles()->first();
-        $adminRole->givePermissionTo(Permissions::MICROSITES_STORE);
+        $adminRole->givePermissionTo(Permissions::MICROSITES_STORE->value);
 
         $logo = UploadedFile::fake()->image('logo.jpg');
 
@@ -37,12 +37,13 @@ class StoreMicrositeTest extends TestCase
         $microsite = [
             'name' => 'andres',
             'logo' => $logo,
-            'document_type' => DocumentTypes::CC,
+            'document_type' => DocumentTypes::CC->value,
             'document' => '1321657',
-            'microsite_type' => MicrositesTypes::INVOICE,
-            'currency' => CurrencyTypes::COP,
+            'microsite_type' => MicrositesTypes::INVOICE->value,
+            'currency' => CurrencyTypes::COP->value,
             'payment_expiration_time' => 12,
             'category_id' => $category->id,
+            'user_id'=> $user->id
         ];
 
         $response = $this->actingAs($user)
@@ -55,12 +56,13 @@ class StoreMicrositeTest extends TestCase
         $this->assertDatabaseHas('microsites', [
             'name' => 'andres',
             'logo' => 'logo/' . $logo->hashName(),
-            'document_type' => DocumentTypes::CC,
+            'document_type' => DocumentTypes::CC->value,
             'document' => '1321657',
-            'microsite_type' => MicrositesTypes::INVOICE,
-            'currency' => CurrencyTypes::COP,
+            'microsite_type' => MicrositesTypes::INVOICE->value,
+            'currency' => CurrencyTypes::COP->value,
             'payment_expiration_time' => 12,
             'category_id' => $category->id,
+            'user_id'=> $user->id
         ]);
     }
 }

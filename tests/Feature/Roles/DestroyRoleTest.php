@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Roles;
 
+use App\Constants\Permissions;
+use App\Constants\Roles;
 use App\Infrastructure\Persistence\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
@@ -13,12 +15,16 @@ class DestroyRoleTest extends TestCase
 
     public function test_can_destroy_role(): void
     {
-        $user = User::factory()->create();
+        $this->seed();
 
-        $role = Role::findOrCreate('super_admin', 'web');
+        $user = User::factory()->create();
+        $user->assignRole(Roles::ADMIN);
+
+        $adminRole = $user->roles()->first();
+        $adminRole->givePermissionTo(Permissions::ROLES_DESTROY);
 
         $response = $this->actingAs($user)
-            ->delete(route('roles.destroy', $role->id));
+            ->delete(route('roles.destroy', $adminRole->id));
 
         $response->assertRedirect(route('roles.index'));
 
