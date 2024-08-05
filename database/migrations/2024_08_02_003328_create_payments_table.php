@@ -15,14 +15,14 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->string('reference')->unique()->nullable();
-            $table->string('receipt')->nullable();
+            $table->string('receipt')->unique()->nullable();
             $table->string('payer_name')->nullable();
             $table->string('payer_surname')->nullable();
             $table->string('payer_email')->nullable();
             $table->string('payer_phone')->nullable();
             $table->string('payer_company')->nullable();
             $table->enum('payer_document_type', DocumentTypes::getDocumentTypes())->nullable();
-            $table->string('payer_document')->unique()->nullable();
+            $table->string('payer_document')->nullable();
             $table->string('description')->nullable();
             $table->unsignedBigInteger('amount')->nullable();
             $table->timestamp('paid_at')->nullable();
@@ -37,7 +37,6 @@ return new class extends Migration
             $table->foreign('microsite_id')->references('id')->on('microsites');
             $table->json('additional_data')->nullable();
             $table->timestamps();
-            $table->unique(['payer_document', 'payer_document_type'], 'UNIQUE_PERSONS_PAYMENTS');
         });
     }
 
