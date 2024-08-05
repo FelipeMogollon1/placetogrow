@@ -40,7 +40,7 @@ class MicrositeController extends Controller
 
     public function create(): Response
     {
-        $this->authorize(Abilities::CREATE->value   , Microsite::class);
+        $this->authorize(Abilities::CREATE->value, Microsite::class);
         $arrayConstants = $this->getCommonData();
 
         return Inertia::render('Microsites/Create', $arrayConstants);
