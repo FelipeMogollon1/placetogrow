@@ -246,5 +246,18 @@
         "update_category": "Update category",
         "name": "Name",
         "description": "Description"
+    },
+    "voucher": {
+        "label": "Receipt",
+        "pay": "online payment",
+        "PaymentMade": "Payment made by",
+        "InvoiceNumber" : "Invoice number",
+        "PaymentDescription": "Payment Description",
+        "Reference": "Reference number",
+        "date": "Date and time of the transaction",
+        "currency": "Currency",
+        "paid": "Value paid",
+        "product" : "Product",
+        "state": "State"
     }
 }

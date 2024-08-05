@@ -246,5 +246,18 @@
         "update_category": "Actualizar categoria",
         "name": "Nombre",
         "description": "Descripción"
+    },
+    "voucher": {
+        "label": "Comprobante",
+        "pay": "de pago en línea",
+        "PaymentMade": "Pago realizado por",
+        "InvoiceNumber" : "Nro. de factura",
+        "PaymentDescription": "Descripción del pago",
+        "Reference": "Nro. de referencia",
+        "date": "Fecha y hora de la transacción",
+        "currency": "Moneda",
+        "paid": "Valor pagado",
+        "product" : "Producto",
+        "state": "Estado"
     }
 }
