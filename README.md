@@ -83,6 +83,23 @@ Para ejecutar este proyecto de forma eficaz, necesitarás los siguientes prerreq
     ```bash
     php artisan serve
     ```
+## Configuración
+
+1. Configurar la base de datos en phpMyAdmin y en el archivo .env generado anteriormente.
+
+2. Configurar las credenciales de Mailtrap en el archivo .env para probar la funcionalidad de verificación de email del usuario.
+
+3. Configurar los datos de la pasarela de pagos en el archivo .env. Las variables necesarias para la pasarela de pagos PlacetoPay son:
+   ```env
+   PLACETOPAY_LOGIN=
+   PLACETOPAY_TRANKEY=
+   PLACETOPAY_BASE_URL=
+
+4. El usuario super administrator por defecto es:
+
+   Email: sa@microsites.com
+   Contraseña: password
+
 
 ### Modelo Entidad Relación
 #### [MER](https://lucid.app/lucidchart/10fb95bf-0255-4128-a140-e57546d8fb4d/edit?invitationId=inv_ac912b73-c96f-4386-acb9-28abf2053deb) : El proyecto Microsites emplea un modelo Entidad-Relación (MER) para representar la estructura de datos y las relaciones entre las entidades del sistema.
