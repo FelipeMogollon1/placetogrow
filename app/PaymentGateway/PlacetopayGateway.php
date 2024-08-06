@@ -74,8 +74,6 @@ class PlacetopayGateway implements PaymentGatewayContract
 
     public function queryPayment(Payment $payment): Payment
     {
-//        $this->connection();
-
         $response = $this->placetopay->query($payment->request_id);
 
         if ($response->isSuccessful()) {
