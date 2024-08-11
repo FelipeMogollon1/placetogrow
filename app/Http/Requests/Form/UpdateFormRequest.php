@@ -24,7 +24,7 @@ class UpdateFormRequest extends FormRequest
                 new ValidateFormConfiguration()
             ],
             'footer' => ['nullable'],
-            'head' => ['nullable'],
+            'header' => ['nullable'],
             'additional_information' => ['nullable'],
         ];
     }

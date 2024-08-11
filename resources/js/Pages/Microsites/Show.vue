@@ -29,9 +29,9 @@ const getConstants = (field) => {
 
 const initialValues = {
     id: formConfig.id,
-    configuration: formConfig.configuration,
-    head: null,
-    footer: null
+    header: null,
+    footer: null,
+    configuration: formConfig.configuration
 }
 
 const form = useForm(initialValues)
@@ -44,38 +44,39 @@ const toggleFieldActive = (field) => {
 
 const selectedImage = ref(null);
 
-const handleFileChange = (event) => {
-    const file = event.target.files[0];
+const handleHeaderFileChange = (e) => {
+    const file = e.target.files[0];
     if (file) {
         const reader = new FileReader();
-        reader.onload = (e) => {
-            selectedImage.value = e.target.result;
+        reader.onload = (event) => {
+            selectedImage.value = event.target.result;
         };
         reader.readAsDataURL(file);
     }
-    const files = event.target.files
-    console.log(files[0])
-    if(files.length){
-        form.head = files[0]
+    const filesHeader = e.target.files
+
+    if(filesHeader.length){
+        form.header = filesHeader[0]
     }
+
 };
 
 const selectedFooterImage = ref(null);
 
-const handleFooterFileChange = (event) => {
-    const file = event.target.files[0];
+const handleFooterFileChange = (e) => {
+
+    const file = e.target.files[0];
     if (file) {
         const reader = new FileReader();
-        reader.onload = (e) => {
-            selectedFooterImage.value = e.target.result;
+        reader.onload = (event) => {
+            selectedFooterImage.value = event.target.result;
         };
         reader.readAsDataURL(file);
     }
 
-    const files = event.target.files
-console.log(files[0])
-    if(files.length){
-        form.footer = files[0]
+    const filesFooter = e.target.files
+    if(filesFooter.length){
+        form.footer = filesFooter[0]
     }
 };
 
@@ -171,18 +172,22 @@ watch(formConfig, (newConfig) => {
                 <div class="flex justify-center items-center">
                     <div id="form" class="container bg-white grid grid-cols-2 md:grid-cols-2 gap-4 sm:grid-cols-1 p-4 m-4 rounded-2xl shadow-lg">
 
-
-                        <div class="col-span-2 flex items-center justify-center w-full h-28 border-2 border-orange-300 border-dashed rounded-lg cursor-pointer bg-orange-50 hover:bg-orange-50 hover:border-orange-500">
+                        <div class="col-span-2 flex items-center justify-center w-full h-40 border-2 border-orange-300 border-dashed rounded-lg cursor-pointer bg-orange-50 hover:bg-orange-50 hover:border-orange-500">
                             <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-full">
                                 <div v-if="selectedImage" class="flex items-center justify-center w-full h-full">
-                                    <img :src="selectedImage" class="w-full h-full object-cover rounded-lg"/>
+                                    <img :src="selectedImage" class="w-full h-full object-cover rounded-lg" :alt="$t('form.select_header')"/>
                                 </div>
+
+                                <div v-else-if="microsite.form.header !== null" class="flex items-center justify-center w-full h-full">
+                                    <img :src="`/storage/${microsite.form.header}`" class="w-full h-full object-cover rounded-lg" :alt="$t('form.select_header')"/>
+                                </div>
+
                                 <div v-else class="flex flex-col items-center justify-center w-full h-full">
                                     <PhotoIcon class="w-12 h-12 text-gray-400"/>
                                     <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">{{ $t('form.select_header') }}</span></p>
                                     <p class="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
                                 </div>
-                                <input id="dropzone-file" type="file" class="hidden" @change="handleFileChange" />
+                                <input id="dropzone-file" type="file" class="hidden" @change="handleHeaderFileChange" />
                             </label>
                         </div>
 
@@ -221,10 +226,15 @@ watch(formConfig, (newConfig) => {
                         </div>
 
                         <div class="col-span-2 flex items-center justify-center w-full">
-                            <label for="dropzone-footer" class="flex flex-col items-center justify-center w-full h-28 border-2 border-orange-300 border-dashed rounded-lg cursor-pointer bg-orange-50 hover:bg-orange-50 hover:border-orange-500">
+                            <label for="dropzone-footer" class="flex flex-col items-center justify-center w-full h-40 border-2 border-orange-300 border-dashed rounded-lg cursor-pointer bg-orange-50 hover:bg-orange-50 hover:border-orange-500">
                                 <div v-if="selectedFooterImage" class="flex items-center justify-center w-full h-full">
-                                    <img :src="selectedFooterImage" class="w-full h-full object-cover rounded-lg"/>
+                                    <img :src="selectedFooterImage" class="w-full h-full object-cover rounded-lg" :alt="$t('form.select_footer')"/>
                                 </div>
+
+                                <div v-else-if="microsite.form.footer !== null" class="flex items-center justify-center w-full h-full">
+                                    <img :src="`/storage/${microsite.form.footer}`" class="w-full h-full object-cover rounded-lg" :alt="$t('form.select_header')"/>
+                                </div>
+
                                 <div v-else class="flex flex-col items-center justify-center">
                                     <PhotoIcon class="w-12 h-12 text-gray-400"/>
                                     <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">{{ $t('form.select_footer') }}</span></p>
@@ -238,7 +248,7 @@ watch(formConfig, (newConfig) => {
 
                     <div id="fields" class="bg-white px-2 py-3 rounded-2xl shadow-lg">
                         <div v-if="form.configuration && form.configuration.fields && form.configuration.fields.length > 0">
-                            <h3 class="mb-4 font-semibold text-gray-900">Fields</h3>
+                            <h3 class="mb-4 font-semibold text-gray-900">{{ $t('form.fields') }}</h3>
                             <ul class="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
                                 <li v-for="field in form.configuration.fields" :key="field.name" class="w-full border-b border-gray-200 rounded-t-lg">
                                     <div class="flex items-center ps-3">
@@ -248,7 +258,10 @@ watch(formConfig, (newConfig) => {
                                             :disabled = "field.required === 'true'"
                                             :checked="field.active === 'true'"
                                             @change="toggleFieldActive(field)"
-                                            class="w-4 h-4 text-orange-400 bg-gray-50 border-orange-500 rounded focus:ring-orange-500 focus:ring-2"
+                                            :class="{
+                                                'w-4 h-4 text-orange-400 bg-gray-50 border-orange-500 rounded focus:ring-orange-500 focus:ring-2': field.required !== 'true',
+                                                'w-4 h-4 text-gray-200 bg-gray-50 border-gray-500 rounded focus:ring-gray-500 focus:ring-2': field.required === 'true'
+                                            }"
                                         >
                                         <label
                                             :for="'checkbox-' + field.name"

@@ -12,14 +12,14 @@ class UpdateFormAction
     {
         $form = Form::findOrFail($id);
 
-        if (isset($data['head']) && $data['head']) {
-            if ($form->head) {
-                Storage::disk('public')->delete($form->head);
+        if (isset($data['header']) && $data['header']) {
+            if ($form->header) {
+                Storage::disk('public')->delete($form->header);
             }
 
-            $data['head'] = $data['head']->store('head', ['disk' => 'public']);
+            $data['header'] = $data['header']->store('header', ['disk' => 'public']);
         } else {
-            unset($data['head']);
+            unset($data['header']);
         }
 
         if (isset($data['footer']) && $data['footer']) {

@@ -26,6 +26,7 @@ const initialValues = {
     payer_document_type : "CC",
     payer_document : "",
     payer_phone : "",
+    reference: "",
     description: "",
     currency: currency,
     amount: "",
@@ -59,20 +60,17 @@ const submit = () => {
 
            <main class="flex-grow flex items-center justify-center bg-white my-6">
             <div id="form" class="bg-white p-4 m-4 rounded-2xl shadow-2xl border border-gray-100 w-full max-w-4xl">
-                 <div  class="m-3" >
-                     <p v-if="formConfig.configuration.head === '' || formConfig.configuration.head === null " class="flex justify-center mt-2 text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight text-gray-700 ">
+
+                <div class="col-span-2 flex items-center justify-center w-full h-40 rounded-lg cursor-pointer">
+
+                     <div v-if="microsite.form.header !== null" class="flex items-center justify-center w-full h-full">
+                         <img :src="`/storage/${microsite.form.header}`" class="w-full h-full object-cover rounded-lg" :alt="$t('form.select_header')"/>
+                     </div>
+
+                     <p v-else class="flex justify-center mt-2 text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight text-gray-700 ">
                          {{microsite.name}}
                      </p>
-                    <div v-else class="col-span-2 flex items-center justify-center w-full">
-                        <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 hover:border-gray-500">
-                            <div class="flex flex-col items-center justify-center">
-                                <PhotoIcon class="w-12 h-12 text-gray-400"/>
-                                <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">{{ $t('form.select_header') }}</span></p>
-                                <p class="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
-                            </div>
-                            <input id="dropzone-file" type="file" class="hidden" />
-                        </label>
-                    </div>
+
                 </div>
 
 
@@ -90,9 +88,10 @@ const submit = () => {
                     </div>
                 </div>
 
-                <form @submit.prevent="submit" class="grid grid-cols-1 md:grid-cols-2 gap-4  " >
+                <form @submit.prevent="submit" class="grid grid-cols-1 md:grid-cols-2 gap-4" >
                     <template v-for="field in formConfig.configuration.fields" :key="field.name">
                         <template v-if="field.active === 'true'" class="mb-2">
+
                             <div v-if="field.type === 'text' && field.name === 'name'">
                                 <InputLabel for="name" :value="$t(`form.${field.name}`)" />
                                 <TextInput
@@ -106,6 +105,7 @@ const submit = () => {
                                 />
                                 <InputError class="mt-2" :message="form.errors.payer_name" />
                             </div>
+
                             <div v-if="field.type === 'text' && field.name === 'surname'">
                                 <InputLabel for="surname" :value="$t(`form.${field.name}`)" />
                                 <TextInput
@@ -119,6 +119,7 @@ const submit = () => {
                                 />
                                 <InputError class="mt-2" :message="form.errors.payer_surname" />
                             </div>
+
                             <div v-if="field.type === 'select' && field.name === 'document_type'">
                                 <InputLabel for="name" :value="$t('microsites_table.document_type')" />
                                 <select
@@ -132,6 +133,7 @@ const submit = () => {
                                 </select>
                                 <InputError class="mt-2" :message="form.errors.payer_document_type" />
                             </div>
+
                             <div v-if="field.type === 'number' && field.name === 'document'">
                                 <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
                                 <TextInput
@@ -145,6 +147,7 @@ const submit = () => {
                                 />
                                 <InputError class="mt-2" :message="form.errors.payer_document" />
                             </div>
+
                             <div v-if="field.type === 'number' && field.name === 'mobile' ">
                                 <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
                                 <TextInput
@@ -158,6 +161,21 @@ const submit = () => {
                                 />
                                 <InputError class="mt-2" :message="form.errors.payer_phone" />
                             </div>
+
+                            <div v-if="field.type === 'text' && field.name === 'reference' ">
+                                <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
+                                <TextInput
+                                    :id="field.name"
+                                    type="number"
+                                    class="mt-1 block w-full"
+                                    v-model="form.reference"
+                                    autofocus
+                                    :autocomplete="field.name"
+                                    :placeholder="$t(`form.${field.name}`)"
+                                />
+                                <InputError class="mt-2" :message="form.errors.reference" />
+                            </div>
+
                             <div v-if="field.type === 'text' && field.name === 'description'">
                                 <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
                                 <TextInput
@@ -171,6 +189,7 @@ const submit = () => {
                                 />
                                 <InputError class="mt-2" :message="form.errors.description" />
                             </div>
+
                             <div v-if="field.type === 'select' && field.name === 'currency_type' ">
                                 <InputLabel for="name" :value="$t('currency')" />
                                 <select
@@ -184,6 +203,7 @@ const submit = () => {
                                 </select>
                                 <InputError class="mt-2" :message="form.errors.currency" />
                             </div>
+
                             <div v-if="field.type === 'number' && field.name === 'amount' ">
                                 <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
                                 <TextInput
@@ -198,6 +218,7 @@ const submit = () => {
                                 />
                                 <InputError class="mt-2" :message="form.errors.amount" />
                             </div>
+
                             <div v-if="field.type === 'email' && field.name === 'email' ">
                                 <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
                                 <TextInput
@@ -211,6 +232,7 @@ const submit = () => {
                                 />
                                 <InputError class="mt-2" :message="form.errors.payer_email" />
                             </div>
+
                         </template>
 
                     </template>
@@ -222,17 +244,15 @@ const submit = () => {
                     </div>
                 </form>
 
-                 <footer v-if="formConfig.configuration.footer !== null " class="m-3">
-                    <div class="col-span-2 flex items-center justify-center w-full">
-                        <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-28 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 hover:border-gray-500">
-                            <div class="flex flex-col items-center justify-center">
-                                <PhotoIcon class="w-12 h-12 text-gray-400"/>
-                                <p class="mb-2 text-sm text-gray-500"><span class="font-semibold">{{ $t('form.select_footer') }}</span></p>
-                                <p class="text-xs text-gray-500">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
-                            </div>
-                            <input id="dropzone-file" type="file" class="hidden" />
-                        </label>
-                    </div>
+                 <footer v-if="formConfig.footer !== null " class="m-3">
+                     <div class="col-span-2 flex items-center justify-center w-full h-40 rounded-lg cursor-pointer ">
+
+                         <div v-if="formConfig.footer !== null" class="flex items-center justify-center w-full h-full">
+                             <img :src="`/storage/${formConfig.footer}`" class="w-full h-full object-cover rounded-lg" :alt="$t('form.select_footer')"/>
+                         </div>
+
+                     </div>
+
                 </footer>
 
             </div>
