@@ -1,7 +1,5 @@
 {
     "type": "invoice",
-    "head": "",
-    "footer": "",
     "additional_information": "",
     "fields": [
         {

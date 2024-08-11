@@ -1,26 +1,24 @@
 {
     "type": "subscription",
-    "head": "",
-    "footer": "",
     "additional_information": "",
     "fields": [
         {
             "type": "text",
             "name": "name",
             "active": "true",
-            "required": "false"
+            "required": "true"
         },
         {
             "type": "text",
             "name": "surname",
             "active": "true",
-            "required": "false"
+            "required": "true"
         },
         {
             "type": "email",
             "name": "email",
             "active": "true",
-            "required": "false"
+            "required": "true"
         },
         {
             "type": "select",
@@ -32,7 +30,7 @@
             "type": "number",
             "name": "document",
             "active": "true",
-            "required": "false"
+            "required": "true"
         },
         {
             "type": "number",
