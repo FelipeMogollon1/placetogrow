@@ -10,6 +10,8 @@ return new class extends Migration
     {
         Schema::create('forms', function (Blueprint $table) {
             $table->id();
+            $table->string('header')->nullable();
+            $table->string('footer')->nullable();
             $table->json('configuration');
             $table->timestamps();
         });
