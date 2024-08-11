@@ -10,7 +10,8 @@
     "currency": "Currency",
     "currencies": {
         "COP": "Colombian Peso",
-        "USD": "US Dollar"
+        "USD": "US Dollar",
+        "BOTH": "Both"
     },
     "dashboard": "Panel",
     "detail_microsite": "Microsite Detail",
