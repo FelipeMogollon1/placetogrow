@@ -30,10 +30,25 @@ const initialValues = {
     description: "",
     currency: currency,
     amount: "",
-    microsite_id : microsite_id
+    microsite_id : microsite_id,
+    color: formConfig.color
 }
 
 const form = useForm(initialValues)
+
+const colorOptions = {
+    yellow: 'yellow',
+    orange: 'orange',
+    green: 'green',
+    lime: 'lime',
+    fuchsia: 'fuchsia',
+    pink: 'pink',
+    blue: 'blue',
+    red: 'red',
+    violet: 'violet',
+    cyan : 'cyan',
+    gray: 'gray'
+};
 
 const submit = () => {
     form.post(route('payments.store'))
@@ -42,7 +57,7 @@ const submit = () => {
 
 <template>
     <div class="flex flex-col min-h-screen">
-        <Head :title="$t('form.electronic_payments')" />
+        <Head :title="microsite.name" />
         <header class="bg-white shadow-md rounded-md w-full h-16 flex justify-between items-center p-6">
             <Link
                 :href="route('Welcome')"
@@ -56,8 +71,6 @@ const submit = () => {
                 <LanguageDropdown />
             </nav>
         </header>
-
-
            <main class="flex-grow flex items-center justify-center bg-white my-6">
             <div id="form" class="bg-white p-4 m-4 rounded-2xl shadow-2xl border border-gray-100 w-full max-w-4xl">
 
@@ -125,7 +138,7 @@ const submit = () => {
                                 <select
                                     :name="field.name"
                                     :id="field.name"
-                                    class="w-full mt-1 border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-md shadow-sm"
+                                    class="w-full mt-1 border-gray-300 focus:border-gray-500 focus:ring-gray-500 rounded-md shadow-sm"
                                     v-model="form.payer_document_type"
                                 >
                                     <option value="">{{ $t('select') }}</option>
@@ -195,7 +208,7 @@ const submit = () => {
                                 <select
                                     :name="field.name"
                                     :id="field.name"
-                                    class="w-full mt-1 border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-md shadow-sm"
+                                    class="w-full mt-1 border-gray-300 focus:border-gray-500 focus:ring-gray-500 rounded-md shadow-sm"
                                     v-model="form.currency"
                                 >
                                     <option value="">{{ $t('select') }}</option>
@@ -238,7 +251,7 @@ const submit = () => {
                     </template>
 
                     <div class="col-span-1 flex justify-center sm:col-span-2">
-                        <PrimaryButton class="text-sm py-1 px-3">
+                        <PrimaryButton class="text-sm py-1 px-3" :color="colorOptions[formConfig.color]">
                             {{ $t('form.start_payment') }}
                         </PrimaryButton>
                     </div>
@@ -247,7 +260,7 @@ const submit = () => {
                  <footer v-if="formConfig.footer !== null " class="m-3">
                      <div class="col-span-2 flex items-center justify-center w-full h-40 rounded-lg cursor-pointer ">
 
-                         <div v-if="formConfig.footer !== null" class="flex items-center justify-center w-full h-full">
+                         <div v-if="true" class="flex items-center justify-center w-full h-full">
                              <img :src="`/storage/${formConfig.footer}`" class="w-full h-full object-cover rounded-lg" :alt="$t('form.select_footer')"/>
                          </div>
 

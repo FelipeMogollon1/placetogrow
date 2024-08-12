@@ -31,6 +31,7 @@ const initialValues = {
     id: formConfig.id,
     header: null,
     footer: null,
+    color: formConfig.color ?? "",
     configuration: formConfig.configuration
 }
 
@@ -80,14 +81,33 @@ const handleFooterFileChange = (e) => {
     }
 };
 
-const submit = () => {
-    form.post(route('forms.custom_update', form.id))
-};
-
 watch(formConfig, (newConfig) => {
     form.configuration = newConfig.configuration;
 }, { deep: true });
 
+const colorOptions = {
+    yellow: 'yellow',
+    orange: 'orange',
+    green: 'green',
+    lime: 'lime',
+    fuchsia: 'fuchsia',
+    pink: 'pink',
+    blue: 'blue',
+    red: 'red',
+    violet: 'violet',
+    cyan : 'cyan',
+    gray: 'gray'
+};
+
+const selectedColor = ref(form.color);
+
+watch(selectedColor, (newColor) => {
+    form.color = newColor;
+});
+
+const submit = () => {
+    form.post(route('forms.custom_update', form.id))
+};
 </script>
 
 <template>
@@ -214,13 +234,13 @@ watch(formConfig, (newConfig) => {
                                     :errorMessage="formErrors[field.name]"
                                     :options="field.options"
                                     :constants="getConstants(field.name)"
-                                    inputClass="w-full mt-1 text-sm border-gray-300 rounded-md py-1 px-2"
+                                    inputClass="w-full mt-1 text-sm border-gray-300 focus:border-gray-500 focus:ring-gray-500 rounded-md py-1 px-2"
                                 />
                             </div>
                         </template>
 
                         <div class="col-span-1 flex justify-center sm:col-span-2">
-                            <PrimaryButton disabled class="text-sm py-1 px-3">
+                            <PrimaryButton disabled class="text-sm py-1 px-3" :color="selectedColor">
                                 {{ $t('form.start_payment') }}
                             </PrimaryButton>
                         </div>
@@ -272,11 +292,23 @@ watch(formConfig, (newConfig) => {
                                     </div>
                                 </li>
                             </ul>
+                            <h3 class="my-4 font-semibold text-gray-900">{{$t('form.button_color')}}</h3>
+                            <ul class="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
+                                <li  class="w-full border-b border-gray-200 rounded-t-lg">
+                                    <select
+                                        id="color-select"
+                                        v-model="selectedColor"
+                                        class="w-full border border-gray-50 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                    >
+                                        <option value="">{{ $t('select') }}</option>
+                                        <option v-for="(label, value) in colorOptions" :key="value" :value="value">
+                                            {{ $t(`form.${label}`) }}
+                                        </option>
+                                    </select>
+                                </li>
+                            </ul>
                         </div>
 
-                        <div v-else>
-                            <p class="text-gray-500 text-center">No fields available.</p>
-                        </div>
                         <div class="flex justify-center pt-4">
                             <PrimaryButton @click="submit">
                                 {{ $t('save') }}
