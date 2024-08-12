@@ -4,6 +4,7 @@ import { route } from 'ziggy-js';
 import { TrashIcon, PencilIcon, EyeIcon } from '@heroicons/vue/24/outline';
 import Paginator from '@/Components/Paginator.vue';
 import { PhotoIcon } from "@heroicons/vue/24/outline/index.js";
+import SpanForm from "@/Layouts/Atoms/SpanForm.vue";
 
 const props = defineProps({
     data: {
@@ -19,6 +20,12 @@ const props = defineProps({
         required: true
     }
 });
+
+const statusColors = {
+    donation: 'violet',
+    invoice: 'orange',
+    subscription: 'cyan'
+};
 
 </script>
 
@@ -45,9 +52,11 @@ const props = defineProps({
                                 <template v-if="key !== 'logo' && key !== 'id' && key !== 'slug'">
                                     <td :key="key" class="px-6 py-3 whitespace text-sm text-gray-900">
                                         <span v-if="key === 'microsite_type'">
-                                            {{ $t(`micrositeTypes.${value}`) }}
+                                            <span-form class="capitalize" :color="statusColors[value]">
+                                                    {{ $t(`micrositeTypes.${value}`) }}
+                                            </span-form>
                                         </span>
-                                        <span v-else>{{ value }}</span>
+                                        <span v-else class="capitalize">{{ value }}</span>
                                     </td>
                                 </template>
                             </template>
