@@ -50,7 +50,19 @@
         "periodicity": "Periodicidad",
         "interval": "Intervalo",
         "maxPeriods": "Periodos",
-        "notificationUrl": " Notificación Url"
+        "notificationUrl": " Notificación Url",
+        "button_color": "Color del Botón",
+        "yellow": "Amarillo",
+        "orange": "Naranja",
+        "green": "Verde",
+        "lime": "Lima",
+        "fuchsia": "Fucsia",
+        "pink": "Rosa",
+        "blue": "Azul",
+        "red": "Rojo",
+        "violet": "Violeta",
+        "cyan" : "Cian",
+        "gray": "Gris"
     },
 
     "forgot_your_password": "¿Ha olvidado su contraseña?",

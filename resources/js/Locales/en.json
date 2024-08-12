@@ -50,7 +50,19 @@
         "periodicity": "Periodicity",
         "interval": "Interval",
         "maxPeriods": "Periods",
-        "notificationUrl": "Notification Url"
+        "notificationUrl": "Notification Url",
+        "button_color": "Button Color",
+        "yellow": "Yellow",
+        "orange": "Orange",
+        "green": "Green",
+        "lime": "Lime",
+        "fuchsia": "Fuchsia",
+        "pink": "Pink",
+        "blue": "Blue",
+        "red": "Red",
+        "violet": "Violet",
+        "cyan": "Cyan",
+        "gray": "Gray"
     },
 
     "forgot_your_password": "Forgot your password?",
