@@ -36,7 +36,7 @@ const submit = () => {
 </script>
 
 <template>
-    <Head title="Actualizar categoria"/>
+    <Head :title="$t('user.update_user')"/>
 
     <AuthenticatedLayout>
         <template #header>
@@ -66,7 +66,7 @@ const submit = () => {
                                     v-model="form.name"
                                     autofocus
                                     autocomplete="name"
-                                    placeholder="Pedro Jose"
+                                    :placeholder="$t('user.name')"
                                 />
                                 <InputError class="mt-2" :message="form.errors.name" />
                             </div>
@@ -99,7 +99,12 @@ const submit = () => {
                                         v-for="role in props.roles"
                                         :value="role.name"
                                     >
-                                        {{role.name}}
+                                        <template class="capitalize" v-if="['admin', 'guest', 'sa'].includes(role.name)">
+                                            {{ $t(`roles_table.${role.name}`) }}
+                                        </template>
+                                        <template class="capitalize" v-else>
+                                            {{ role.name }}
+                                        </template>
                                     </option>
 
                                 </select>
