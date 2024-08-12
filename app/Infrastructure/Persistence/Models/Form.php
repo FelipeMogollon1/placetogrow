@@ -24,6 +24,7 @@ class Form extends Model
         'configuration',
         'header',
         'footer',
+        'color'
     ];
 
     /**
@@ -35,6 +36,7 @@ class Form extends Model
         'configuration' => 'array',
         'header'=> 'string',
         'footer'=> 'string',
+        'color'=> 'string'
     ];
 
     public function microsite(): HasOne

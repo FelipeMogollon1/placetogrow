@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('header')->nullable();
             $table->string('footer')->nullable();
+            $table->string('color')->nullable();
             $table->json('configuration');
             $table->timestamps();
         });
