@@ -28,13 +28,13 @@
                 {{ $t(`documentType.${constant}`) }}
             </option>
 
-            <option v-if="name === 'currency_type'" v-for="(constant, index) in constants" :key="index" :value="constant">
+            <option v-if="name === 'currency_type' && currency === 'BOTH' " v-for="(constant, index) in constants.filter(constant => constant !== 'BOTH')" :key="index" :value="constant">
                 {{ $t(`currencies.${constant}`) }}
             </option>
 
         </select>
 
-        <!-- Error Message -->
+
         <p v-if="errorMessage" class="text-red-500 text-xs mt-1">{{ errorMessage }}</p>
 
     </div>

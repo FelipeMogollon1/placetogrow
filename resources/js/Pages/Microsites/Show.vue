@@ -234,6 +234,7 @@ const submit = () => {
                                     :errorMessage="formErrors[field.name]"
                                     :options="field.options"
                                     :constants="getConstants(field.name)"
+                                    :currency="microsite.currency"
                                     inputClass="w-full mt-1 text-sm border-gray-300 focus:border-gray-500 focus:ring-gray-500 rounded-md py-1 px-2"
                                 />
                             </div>
