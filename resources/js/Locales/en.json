@@ -94,11 +94,11 @@
         "microsite_type": "Microsite type",
         "name": "Name",
         "slug": "URL",
-        "time_expiration": "Expiration time in seconds",
+        "time_expiration": "Expiration time in minutes",
         "type": "Type"
     },
     "page": "Pages",
-    "payment_expiration_time": "Expiration time in seconds",
+    "payment_expiration_time": "Expiration time in minutes",
     "return": "Return",
     "register": "Register",
     "remember_me": "Remember me",

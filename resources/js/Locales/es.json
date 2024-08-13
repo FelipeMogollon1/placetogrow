@@ -94,11 +94,11 @@
         "microsite_type": "Tipo de Micrositio",
         "name": "Nombre",
         "slug": "URL",
-        "time_expiration": "Tiempo de expiración en segundos",
+        "time_expiration": "Tiempo de expiración en minutos",
         "type": "Tipo"
     },
     "page": "Páginas",
-    "payment_expiration_time": "Tiempo de expiración en segundos",
+    "payment_expiration_time": "Tiempo de expiración en minutos",
     "return": "Regresar",
     "register": "Registrarse",
     "remember_me": "Recuérdame",
