@@ -151,7 +151,7 @@ const submit = () => {
                                 <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
                                 <TextInput
                                     :id="field.name"
-                                    type="number"
+                                    type="text"
                                     class="mt-1 block w-full"
                                     v-model="form.payer_document"
                                     autofocus
@@ -171,6 +171,7 @@ const submit = () => {
                                     autofocus
                                     :autocomplete="field.name"
                                     :placeholder="$t(`form.${field.name}`)"
+                                    pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                                 />
                                 <InputError class="mt-2" :message="form.errors.payer_phone" />
                             </div>
@@ -179,7 +180,7 @@ const submit = () => {
                                 <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
                                 <TextInput
                                     :id="field.name"
-                                    type="number"
+                                    type="text"
                                     class="mt-1 block w-full"
                                     v-model="form.reference"
                                     autofocus
@@ -236,7 +237,7 @@ const submit = () => {
                                 <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
                                 <TextInput
                                     :id="field.name"
-                                    type="email"
+                                    type="text"
                                     class="mt-1 block w-full"
                                     v-model="form.payer_email"
                                     autofocus

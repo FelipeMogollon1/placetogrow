@@ -6,65 +6,57 @@ use App\Constants\CurrencyTypes;
 use App\Constants\DocumentTypes;
 use App\Constants\PaymentStatus;
 use App\Rules\Payment\DocumentNumber;
-use App\Rules\Payment\UniqueDocumentCombination;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class StorePaymentRequest extends FormRequest
 {
-
     public function authorize(): bool
     {
         return true;
     }
 
-
     public function rules(): array
     {
         return [
-            'reference' => ['nullable', 'string', 'unique:payments,reference'],
+            'reference' => ['nullable', 'string'],
             'receipt' => ['nullable', 'string'],
-            'payer_name' => [
-                'nullable',
-                'string',
-                Rule::requiredIf($this->hasAnyPayerFields())
-            ],
-            'payer_surname' => [
-                'nullable',
-                'string',
-                Rule::requiredIf($this->hasAnyPayerFields())
-            ],
+            'payer_name' => ['nullable', 'string', $this->payerFieldsRule()],
+            'payer_surname' => ['nullable', 'string', $this->payerFieldsRule()],
             'payer_email' => [
                 'nullable',
                 'email',
-                Rule::requiredIf($this->hasAnyPayerFields())
+                'regex:/^[^@]+@[^@]+\.[a-zA-Z]{2,}$/',
+                $this->payerFieldsRule()
             ],
-            'payer_phone' => ['nullable', 'numeric', 'min:10'],
+            'payer_phone' => ['nullable', 'numeric', 'digits_between:7,10'],
             'payer_company' => ['nullable', 'string'],
             'payer_document_type' => [
                 'nullable',
-                'in:' . implode(',', DocumentTypes::getDocumentTypes()),
-                Rule::requiredIf($this->hasAnyPayerFields())
+                'string',
+                Rule::in(DocumentTypes::getDocumentTypes()),
+                $this->payerFieldsRule(),
             ],
             'payer_document' => [
                 'nullable',
-                new DocumentNumber($this->input('payer_document_type')),
-                new UniqueDocumentCombination($this->input('payer_document_type')),
-                Rule::requiredIf($this->hasAnyPayerFields())
+                'string',
+                $this->getDocumentValidationRule(),
+                $this->payerFieldsRule(),
             ],
-
             'description' => ['nullable', 'string'],
-            'currency' => ['required', 'string', 'in:' . implode(',', CurrencyTypes::getCurrencyType())],
-            'amount' => [
+            'currency' => [
+                'required',
+                'string',
+                Rule::in(CurrencyTypes::getCurrencyType()),
+            ],
+            'amount' => array_merge([
                 'required',
                 'numeric',
-                'min:0',
+                'min:1',
                 'max:999999999',
-                Rule::requiredIf($this->hasAnyMountCurrency())
-            ],
+            ], $this->amountRule()),
             'paid_at' => ['nullable', 'date'],
-            'status' => ['nullable', 'string', 'in:' . implode(',', PaymentStatus::getPaymentStatus())],
+            'status' => ['nullable', 'string', Rule::in(PaymentStatus::getPaymentStatus())],
             'process_identifier' => ['nullable', 'integer'],
             'user_id' => ['nullable', 'exists:users,id'],
             'microsite_id' => ['nullable', 'exists:microsites,id'],
@@ -72,28 +64,36 @@ class StorePaymentRequest extends FormRequest
         ];
     }
 
+
+    private function payerFieldsRule(): string
+    {
+        return Rule::requiredIf($this->hasAnyPayerFields());
+    }
+
     private function hasAnyPayerFields(): bool
     {
-        return $this->input('payer_name') !== null ||
-                $this->input('payer_surname') !== null ||
-                $this->input('payer_email') !== null ||
-                $this->input('payer_document_type') !== null ||
-                $this->input('payer_document') !== null;
+        return $this->has('payer_name') ||
+            $this->has('payer_surname') ||
+            $this->has('payer_email') ||
+            $this->has('payer_document_type') ||
+            $this->has('payer_document');
     }
 
-    private function hasAnyMountCurrency(): bool
+    private function amountRule(): array
     {
-        $currency = $this->input('currency');
-        $amount = $this->input('amount');
+        $rules = [];
 
-        $isValidCurrency = in_array($currency, CurrencyTypes::getCurrencyType());
-        $isAmountValid = floatval($amount) > 99999;
-
-        Log::info('Currency: ' . $currency);
-        Log::info('Amount: ' . $amount);
-        Log::info('Currency valid: ' . ($isValidCurrency ? 'true' : 'false'));
-        Log::info('Amount greater than 99999: ' . ($isAmountValid ? 'true' : 'false'));
-
-        return $isValidCurrency && $isAmountValid;
+        if ($this->input('currency') === CurrencyTypes::USD->value) {
+            $rules[] = 'max:99999';
+        }else if ($this->input('currency') === CurrencyTypes::COP->value)
+            $rules[] = 'max:999999999';
+        return $rules;
     }
+
+    private function getDocumentValidationRule(): DocumentNumber
+    {
+        $documentType = $this->input('payer_document_type');
+        return new DocumentNumber($documentType);
+    }
+
 }
