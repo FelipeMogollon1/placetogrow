@@ -4,6 +4,7 @@ namespace App\PaymentGateway;
 
 use App\Constants\PaymentStatus;
 use App\Contracts\PaymentGatewayContract;
+use App\Infrastructure\Persistence\Models\Microsite;
 use App\Infrastructure\Persistence\Models\Payment;
 use Dnetix\Redirection\Message\RedirectResponse;
 use Dnetix\Redirection\PlacetoPay;
@@ -24,7 +25,9 @@ class PlacetopayGateway implements PaymentGatewayContract
 
      public function createSession(Payment $payment, Request $request): RedirectResponse
     {
-        $totalPrice = $payment->amount;
+       $microsite = Microsite::findOrFail($payment->microsite_id);
+
+       $totalPrice = $payment->amount;
 
         $payerData = array_filter([
             'document' => $payment->payer_document,
@@ -47,7 +50,7 @@ class PlacetopayGateway implements PaymentGatewayContract
                         'total' => $totalPrice,
                     ],
                 ],
-                'expiration' => date('c', strtotime('+30 minutes')),
+                'expiration' => date('c', strtotime('+ '.$microsite->payment_expiration_time.' minutes')),
                 'returnUrl' => route('returnBusiness', $payment->id),
                 'ipAddress' => $request->ip(),
                 'userAgent' => $request->userAgent(),
