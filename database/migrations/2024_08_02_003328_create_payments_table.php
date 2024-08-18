@@ -14,8 +14,8 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->string('reference')->unique()->nullable();
-            $table->string('receipt')->unique()->nullable();
+            $table->string('reference')->nullable();
+            $table->string('receipt')->nullable();
             $table->string('payer_name')->nullable();
             $table->string('payer_surname')->nullable();
             $table->string('payer_email')->nullable();
