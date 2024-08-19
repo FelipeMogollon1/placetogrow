@@ -89,7 +89,7 @@ const isNextPageDisabled = computed(() => currentPage.value === totalPages.value
         <div class="max-w-sm mx-auto relative my-5">
             <input type="text"
                    v-model="searchQuery"
-                   class="py-2 px-11 block w-full border-orange-400 focus:ring-orange-500 rounded-full text-sm"
+                   class="py-2 px-11 block w-full border-gray-300 focus:border-gray-500 focus:ring-gray-500 rounded-full text-sm"
                    :placeholder="$t('searchMicrosite')">
             <MagnifyingGlassIcon class="absolute left-3 top-1/2 transform -translate-y-1/2 w-6 text-gray-600" />
         </div>
@@ -97,17 +97,21 @@ const isNextPageDisabled = computed(() => currentPage.value === totalPages.value
         <main class="md:mx-10 lg:mx-20 xl:mx-40">
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                 <div v-for="microsite in paginatedMicrosites" :key="microsite.id"
-                     class="bg-gray-100 shadow rounded-xl transition-transform transform hover:-translate-y-1 hover:shadow-xl hover:bg-gray-200">
-                    <div class="p-5">
-                        <div class="m-1 rounded-lg overflow-hidden flex justify-center items-center ">
+                     class="bg-gray-50 shadow border border-gray-300 rounded-xl transition-transform transform hover:-translate-y-1 hover:shadow-2xl hover:border-gray-200 hover:bg-gray-100">
+                    <div class="p-4 flex justify-between items-center">
+
+                        <div class="pb-1 text-gray-700">
+                            <p class="text-xl font-bold ">{{ microsite.name }}</p>
+                            <p class="text-md font-light text-inherit">{{ $t(`micrositeTypes.${microsite.microsite_type}`) }}</p>
+                            <p class="text-sm">{{ microsite.category_name }}</p>
+                        </div>
+
+                        <div class="rounded-lg overflow-hidden">
                             <img v-if="microsite.logo" class="rounded-lg h-16 object-contain" :src="`/storage/${microsite.logo}`" alt="Logo">
                             <PhotoIcon v-else class="w-full h-16 text-gray-400 object-contain hover:text-gray-600"/>
                         </div>
-                        <h5 class="text-xl font-semibold text-blue-gray-900">{{ microsite.name }}</h5>
-                        <p class="text-base font-light text-inherit">{{ $t(`micrositeTypes.${microsite.microsite_type}`) }}</p>
-                        <p class="mt-1 text-sm text-gray-600">{{ microsite.category_name }}</p>
                     </div>
-                    <div class="p-6 pt-0">
+                    <div class="pb-4">
                         <Link
                               class="flex items-center justify-center px-5 py-2 text-xs font-bold text-center text-gray-900 uppercase rounded-lg transition-all select-none hover:bg-gray-900/10 active:bg-gray-900/20"
                               :href="route('microsites.paymentForm', microsite.slug)">
