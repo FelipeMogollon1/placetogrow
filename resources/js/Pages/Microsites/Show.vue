@@ -224,7 +224,8 @@ const submit = () => {
                         </div>
 
                         <template v-for="field in form.configuration.fields" :key="field.name">
-                            <div v-if="field.active === 'true'" class="mb-2">
+                            <template v-if="field.active === 'true' && field.name !== 'currency_type' || field.active === 'true' && field.name === 'currency_type' && microsite.currency === 'BOTH' " class="mb-2">
+
                                 <InputComponent
                                     :type="field.type"
                                     :name="field.name"
@@ -237,7 +238,7 @@ const submit = () => {
                                     :currency="microsite.currency"
                                     inputClass="w-full mt-1 text-sm border-gray-300 focus:border-gray-500 focus:ring-gray-500 rounded-md py-1 px-2"
                                 />
-                            </div>
+                            </template>
                         </template>
 
                         <div class="col-span-1 flex justify-center sm:col-span-2">

@@ -16,7 +16,7 @@ class StorePaymentAction
         $microsite = Microsite::findOrFail($data['microsite_id']);
 
         if (empty($data['description'])) {
-            $data['description'] = "Basic Payment by" . $microsite->name;
+            $data['description'] = "Basic Payment by " . $microsite->name;
         }
 
         return Payment::create([

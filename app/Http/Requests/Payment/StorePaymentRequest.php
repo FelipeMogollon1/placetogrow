@@ -51,7 +51,6 @@ class StorePaymentRequest extends FormRequest
             ],
             'amount' => array_merge([
                 'required',
-                'numeric',
                 'min:1',
                 'max:999999999',
             ], $this->amountRule()),

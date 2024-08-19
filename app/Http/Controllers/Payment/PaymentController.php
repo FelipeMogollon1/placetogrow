@@ -26,7 +26,7 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function store (StorePaymentRequest $request,StorePaymentAction $action, PaymentGatewayContract $gateway ): \Symfony\Component\HttpFoundation\Response
+    public function store (StorePaymentRequest $request, StorePaymentAction $action, PaymentGatewayContract $gateway ): \Symfony\Component\HttpFoundation\Response
     {
         $payment = $action->execute($request->validated());
 

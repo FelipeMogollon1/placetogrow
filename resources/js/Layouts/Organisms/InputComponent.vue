@@ -1,7 +1,7 @@
 <template>
     <div>
-        <label :for="name" class="block text-sm font-medium text-gray-700">{{ $t(`form.${label}`) }}</label>
-
+        <label v-if="label === 'amount' && currency !== 'BOTH'" :for="name" class="block text-sm font-medium text-gray-700">{{ $t(`form.${label}`) }}  {{ $t(`currencies.${currency}`) }} </label>
+        <label v-else :for="name" class="block text-sm font-medium text-gray-700">{{ $t(`form.${label}`) }}</label>
         <input
             v-if="type === 'text' || type === 'email' || type === 'number'"
             :type="type"
@@ -30,6 +30,9 @@
 
             <option v-if="name === 'currency_type' && currency === 'BOTH' " v-for="(constant, index) in constants.filter(constant => constant !== 'BOTH')" :key="index" :value="constant">
                 {{ $t(`currencies.${constant}`) }}
+            </option>
+            <option v-else :value="currency" >
+                {{ $t(`currencies.${currency}`) }}
             </option>
 
         </select>
@@ -83,6 +86,10 @@ export default {
             type: String,
             default: 'w-full mt-1 text-sm border-gray-300 rounded-md py-1 px-2',
         },
+        currency:{
+            type: String,
+            default: '',
+        }
     }
 }
 </script>
