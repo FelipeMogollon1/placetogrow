@@ -46,6 +46,12 @@
         },
         {
             "type": "text",
+            "name": "company",
+            "active": "false",
+            "required": "false"
+        },
+        {
+            "type": "text",
             "name": "description",
             "active": "true",
             "required": "false"
