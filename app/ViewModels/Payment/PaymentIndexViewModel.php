@@ -27,15 +27,20 @@ class PaymentIndexViewModel extends ViewModel
         $paymentsQuery->when(
             in_array(Permissions::PAYMENTS_INDEX->value, $permissionsUser),
             function ($query) use ($rolesUser) {
+
                 if (in_array(Roles::ADMIN->value, $rolesUser)) {
                     $query->where('microsites.user_id', $this->user->id);
+
                 } elseif (in_array(Roles::GUEST->value, $rolesUser)) {
                     $query->join('users', 'payments.payer_email', '=', 'users.email')
                         ->where('payments.payer_email', $this->user->email);
+
                 }
+
             }
         );
-        $paymentsQuery->orderBy('microsites.name', 'asc');
+
+        $paymentsQuery->orderBy('payments.id', 'Desc');
 
         return $paymentsQuery->paginate(5);
     }
