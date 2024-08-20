@@ -25,6 +25,7 @@ class StorePaymentAction
             'payer_surname' => $data['payer_surname'] ?? null,
             'payer_email' => $data['payer_email'] ?? null,
             'payer_phone' => $data['payer_phone'] ?? null,
+            'payer_company' => $data['payer_company'] ?? null,
             'payer_document_type' => $data['payer_document_type'] ?? null,
             'payer_document' => $data['payer_document'] ?? null,
             'description' => $data['description'],

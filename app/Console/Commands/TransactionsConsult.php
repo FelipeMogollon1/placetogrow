@@ -25,7 +25,7 @@ class TransactionsConsult extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $payments = Payment::where('status', 'pending')->get();
         foreach ($payments as $payment) {

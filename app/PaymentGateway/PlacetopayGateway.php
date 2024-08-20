@@ -34,12 +34,15 @@ class PlacetopayGateway implements PaymentGatewayContract
             'documentType' => $payment->payer_document_type,
             'name' => $payment->payer_name,
             'surname' => $payment->payer_surname,
+            'company'=> $payment->payer_company,
             'email' => $payment->payer_email,
+            'mobile'=>$payment->payer_phone,
         ], function ($value) {
             return $value !== null && $value !== '';
         });
 
         try {
+
             $requestData = [
                 'payer' => $payerData,
                 'payment' => [
@@ -55,6 +58,7 @@ class PlacetopayGateway implements PaymentGatewayContract
                 'ipAddress' => $request->ip(),
                 'userAgent' => $request->userAgent(),
             ];
+
             $response = $this->placetopay->request($requestData);
 
             if ($response->isSuccessful()) {

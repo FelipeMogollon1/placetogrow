@@ -26,7 +26,9 @@ const initialValues = {
     payer_document_type : "CC",
     payer_document : "",
     payer_phone : "",
+    payer_company: "",
     reference: "",
+    company:"",
     description: "",
     currency: currency.value !== "BOTH" ? currency.value : "COP",
     amount: "",
@@ -279,6 +281,20 @@ watch(() => form.currency, (newCurrency) => {
                                         :placeholder="$t(`form.${field.name}`)"
                                     />
                                     <InputError class="mt-2" :message="form.errors.reference" />
+                                </div>
+
+                                <div v-if="field.type === 'text' && field.name === 'company' ">
+                                    <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
+                                    <TextInput
+                                        :id="field.name"
+                                        type="text"
+                                        class="mt-1 block w-full"
+                                        v-model="form.payer_company"
+                                        autofocus
+                                        :autocomplete="field.name"
+                                        :placeholder="$t(`form.${field.name}`)"
+                                    />
+                                    <InputError class="mt-2" :message="form.errors.payer_company" />
                                 </div>
 
                                 <div v-if="field.type === 'text' && field.name === 'description'">
