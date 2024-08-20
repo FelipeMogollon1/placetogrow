@@ -29,7 +29,8 @@ class MicrositeIndexViewModel extends ViewModel
             $microsites = Microsite::query()->AllWithCategories()
                 ->where('microsites.user_id', $this->user->id);
         }
-        return $microsites->paginate(5);
+
+        return $microsites->orderBy('microsites.id', 'Desc')->paginate(5);
     }
 
     public function toArray(): array
