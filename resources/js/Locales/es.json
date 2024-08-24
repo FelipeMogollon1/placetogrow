@@ -8,6 +8,8 @@
     "create_rol": "",
     "create_user": "",
     "currency": "Moneda",
+    "no_information": "No hay información disponible por el momento",
+    "search": "Buscar por micrositio, referencia o nombre",
     "currencies": {
         "COP": "Peso colombiano",
         "USD": "Dólar estadounidense",
@@ -173,7 +175,8 @@
         "microsite_name": "Micrositio",
         "payment_list" : "Lista de pagos",
         "payment_detailer": "Detalle del pago",
-        "paid_at" : "Pagado en"
+        "paid_at" : "Pagado en",
+        "microsite_type": "Tipo"
     },
     "payment_status": {
         "PENDING" : "Pendiente",

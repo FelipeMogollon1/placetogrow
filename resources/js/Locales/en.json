@@ -8,6 +8,8 @@
     "create_rol": "",
     "create_user": "",
     "currency": "Currency",
+    "no_information": "No information available at the moment",
+    "search": "Search by microsite, reference or name",
     "currencies": {
         "COP": "Colombian Peso",
         "USD": "US Dollar",
@@ -173,7 +175,8 @@
         "microsite_name": "Microsite",
         "payment_list" : "Payment List",
         "payment_detailer": "Payment Detail",
-        "paid_at" : "Paid at"
+        "paid_at" : "Paid at",
+        "microsite_type": "Type"
     },
     "payment_status": {
         "PENDING" : "Pending",

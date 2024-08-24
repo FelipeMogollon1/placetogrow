@@ -45,6 +45,12 @@ const statusColors = {
     UNKNOWN: 'blue'
 };
 
+const typeMicrosite = {
+    donation: 'violet',
+    invoice: 'orange',
+    subscription: 'cyan'
+};
+
 </script>
 
 <template>
@@ -74,6 +80,13 @@ const statusColors = {
                         </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
+
+                        <tr v-if="!props.data.length" class="text-center">
+                            <td colspan="100%" class="px-6 py-3 text-sm text-gray-500">
+                                {{ $t('no_information') }}<!-- Mensaje de no información -->
+                            </td>
+                        </tr>
+
                         <tr
                             v-for="(item, index) in props.data"
                             :key="index"
@@ -84,8 +97,19 @@ const statusColors = {
                                 :key="header"
                                 class="px-6 py-3 whitespace text-sm text-gray-900"
                             >
-                                <template v-if="header === 'status'">
-                                    <span-form :color="statusColors[item[header]]">
+                                 <template v-if="header === 'microsite_type'">
+                                    <span-form class="capitalize" :color="typeMicrosite[item[header]]">
+                                            {{ $t(`micrositeTypes.${item[header]}`) }}
+                                    </span-form>
+                                 </template>
+
+                                <template v-else-if="header === 'amount'">
+                                    <span v-if="item['currency'] === 'USD'">${{ item[header].toLocaleString('en-US') }}</span>
+                                    <span v-else>${{ item[header].toLocaleString('es-CO') }}</span>
+                                </template>
+
+                                <template v-else-if="header === 'status'">
+                                    <span-form class="capitalize" :color="statusColors[item[header]]">
                                         {{ $t(`payment_status.${item[header]}`) }}
                                     </span-form>
                                 </template>

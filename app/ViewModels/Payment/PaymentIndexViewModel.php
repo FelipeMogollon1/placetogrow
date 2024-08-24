@@ -16,37 +16,48 @@ class PaymentIndexViewModel extends ViewModel
 
     }
 
-    public function getPaymentByMicrosite(): LengthAwarePaginator
+    public static function fromAuthenticatedUser(): ?PaymentIndexViewModel
     {
+        return new self(auth()->user());
+    }
+
+    public function getPayments(array $filters): LengthAwarePaginator
+    {
+        $search = $filters['search'] ?? null;
         $permissionsUser = $this->user->getAllPermissions()->pluck('name')->toArray();
         $rolesUser = $this->user->roles->pluck('name')->toArray();
 
-        $paymentsQuery = Payment::select('payments.*', 'microsites.name as microsite_name')
+        $paymentsQuery = Payment::select('payments.*', 'microsites.microsite_type', 'microsites.name as microsite_name')
             ->join('microsites', 'payments.microsite_id', '=', 'microsites.id');
 
-        $paymentsQuery->when(
-            in_array(Permissions::PAYMENTS_INDEX->value, $permissionsUser),
-            function ($query) use ($rolesUser) {
+        if (in_array(Permissions::PAYMENTS_INDEX->value, $permissionsUser)) {
 
-                if (in_array(Roles::ADMIN->value, $rolesUser)) {
-                    $query->where('microsites.user_id', $this->user->id);
+            if (in_array(Roles::ADMIN->value, $rolesUser)) {
 
-                } elseif (in_array(Roles::GUEST->value, $rolesUser)) {
-                    $query->join('users', 'payments.payer_email', '=', 'users.email')
-                        ->where('payments.payer_email', $this->user->email);
+                $paymentsQuery
+                    ->where('microsites.user_id', $this->user->id);
 
-                }
+            } elseif (in_array(Roles::GUEST->value, $rolesUser)) {
 
+                $paymentsQuery
+                    ->join('users', 'payments.payer_email', '=', 'users.email')
+                    ->where('payments.payer_email', $this->user->email);
             }
-        );
 
-        $paymentsQuery->orderBy('payments.id', 'Desc');
+        }
+
+        if ($search) {
+            $paymentsQuery->where(function ($query) use ($search) {
+                $query->where('microsites.name', 'like', '%' . $search . '%')
+                    ->orWhere('payments.reference', 'like', '%' . $search . '%')
+                    ->orWhere('payments.payer_name', 'like', '%' . $search . '%')
+                    ->orWhere('payments.payer_surname', 'like', '%' . $search . '%');
+            });
+        }
+
+        $paymentsQuery->orderBy('payments.id', 'desc');
 
         return $paymentsQuery->paginate(5);
     }
 
-    public function toArray(): array
-    {
-        return $this->getPaymentByMicrosite()->toArray();
-    }
 }
