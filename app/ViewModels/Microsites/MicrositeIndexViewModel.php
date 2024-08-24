@@ -16,6 +16,11 @@ class MicrositeIndexViewModel extends ViewModel
 
     }
 
+    public static function fromAuthenticatedUser(): ?MicrositeIndexViewModel
+    {
+        return new self(auth()->user());
+    }
+
     public function getMicrositesByUserRole(): LengthAwarePaginator
     {
         $permissionsUser = $this->user->getAllPermissions()->pluck('name')->toArray();

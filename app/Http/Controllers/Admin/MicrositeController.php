@@ -26,15 +26,12 @@ class MicrositeController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index(): Response
+    public function index(MicrositeIndexViewModel $viewModel): Response
     {
-        /** @var User $user */
-        $user = Auth::user();
         $this->authorize(Abilities::VIEW_ANY->value, Microsite::class);
-        $microsites = (new MicrositeIndexViewModel($user));
 
         return Inertia::render('Microsites/Index', [
-          'microsites'  => $microsites
+            'microsites'  => $viewModel->fromAuthenticatedUser()
         ]);
     }
 
@@ -51,7 +48,7 @@ class MicrositeController extends Controller
         $this->authorize(Abilities::STORE->value, Microsite::class);
         $storeAction->execute($request->validated());
 
-        return to_route('microsites.index')->with('success', 'User created.');
+        return to_route('microsites.index')->with('success', 'Microsite created.');
     }
 
     public function show(string $id): Response
