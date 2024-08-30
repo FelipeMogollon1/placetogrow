@@ -54,17 +54,29 @@
         "maxPeriods": "Periodos",
         "notificationUrl": " Notificación Url",
         "button_color": "Color del Botón",
-        "yellow": "Amarillo",
+        "slate": "Pizarra",
+        "gray": "Gris",
+        "zinc": "Zinc",
+        "neutral": "Neutral",
+        "stone": "Piedra",
+        "red": "Rojo",
         "orange": "Naranja",
-        "green": "Verde",
+        "amber": "Ámbar",
+        "yellow": "Amarillo",
         "lime": "Lima",
+        "green": "Verde",
+        "emerald": "Esmeralda",
+        "teal": "Verde azulado",
+        "cyan": "Cian",
+        "sky": "Cielo",
+        "blue": "Azul",
+        "indigo": "Índigo",
+        "violet": "Violeta",
+        "purple": "Púrpura",
         "fuchsia": "Fucsia",
         "pink": "Rosa",
-        "blue": "Azul",
-        "red": "Rojo",
-        "violet": "Violeta",
-        "cyan" : "Cian",
-        "gray": "Gris"
+        "rose": "Rosa claro",
+        "white": "Blanco"
     },
 
     "forgot_your_password": "¿Ha olvidado su contraseña?",
@@ -275,5 +287,8 @@
         "paid": "Valor pagado",
         "product" : "Producto",
         "state": "Estado"
+    },
+    "subscription": {
+        "label" : "Suscripciones"
     }
 }

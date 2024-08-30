@@ -54,17 +54,29 @@
         "maxPeriods": "Periods",
         "notificationUrl": "Notification Url",
         "button_color": "Button Color",
-        "yellow": "Yellow",
+        "slate": "Slate",
+        "gray": "Gray",
+        "zinc": "Zinc",
+        "neutral": "Neutral",
+        "stone": "Stone",
+        "red": "Red",
         "orange": "Orange",
-        "green": "Green",
+        "amber": "Amber",
+        "yellow": "Yellow",
         "lime": "Lime",
+        "green": "Green",
+        "emerald": "Emerald",
+        "teal": "Teal",
+        "cyan": "Cyan",
+        "sky": "Sky",
+        "blue": "Blue",
+        "indigo": "Indigo",
+        "violet": "Violet",
+        "purple": "Purple",
         "fuchsia": "Fuchsia",
         "pink": "Pink",
-        "blue": "Blue",
-        "red": "Red",
-        "violet": "Violet",
-        "cyan": "Cyan",
-        "gray": "Gray"
+        "rose": "Rose",
+        "white": "White"
     },
 
     "forgot_your_password": "Forgot your password?",
@@ -275,5 +287,8 @@
         "paid": "Value paid",
         "product" : "Product",
         "state": "State"
+    },
+    "subscription": {
+        "label" : "Subscriptions"
     }
 }
