@@ -29,12 +29,12 @@ const props = defineProps({
 const colorClasses = computed(() => {
     const colors = {
         yellow: {
-            background: 'bg-yellow-200',
-            text: 'text-yellow-600',
+            background: 'bg-yellow-500',
+            text: 'text-white',
             border: 'border-yellow-400',
-            hover: 'hover:bg-yellow-300',
+            hover: 'hover:bg-yellow-600',
             focus: 'focus:ring-yellow-500 focus:ring-offset-2',
-            active: 'active:bg-yellow-400'
+            active: 'active:bg-yellow-800'
         },
         orange: {
             background: 'bg-orange-500',
@@ -53,26 +53,26 @@ const colorClasses = computed(() => {
             active: 'active:bg-green-900'
         },
         lime: {
-            background: 'bg-lime-200',
+            background: 'bg-lime-500',
             text: 'text-lime-600',
             border: 'border-lime-400',
-            hover: 'hover:bg-lime-300',
+            hover: 'hover:bg-lime-600',
             focus: 'focus:ring-lime-500 focus:ring-offset-2',
             active: 'active:bg-lime-400'
         },
         fuchsia: {
-            background: 'bg-fuchsia-200',
+            background: 'bg-fuchsia-500',
             text: 'text-fuchsia-600',
             border: 'border-fuchsia-400',
-            hover: 'hover:bg-fuchsia-300',
+            hover: 'hover:bg-fuchsia-600',
             focus: 'focus:ring-fuchsia-500 focus:ring-offset-2',
             active: 'active:bg-fuchsia-400'
         }        ,
         pink: {
-            background: 'bg-pink-200',
+            background: 'bg-pink-400',
             text: 'text-pink-600',
             border: 'border-pink-400',
-            hover: 'hover:bg-pink-300',
+            hover: 'hover:bg-pink-500',
             focus: 'focus:ring-pink-500 focus:ring-offset-2',
             active: 'active:bg-pink-400'
         },

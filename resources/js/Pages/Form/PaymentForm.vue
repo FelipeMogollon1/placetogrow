@@ -10,6 +10,7 @@ import {route} from "ziggy-js";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
+import SubscriptionView from "@/Layouts/Organisms/SubscriptionView.vue";
 
 const page = usePage();
 const microsite = ref(page.props.microsite || {});
@@ -160,7 +161,13 @@ watch(() => form.currency, (newCurrency) => {
                 <LanguageDropdown />
             </nav>
         </header>
-           <main class="flex items-center justify-center bg-white my-6">
+
+        <main v-if="microsite.microsite_type === 'subscription'">
+            <SubscriptionView :color="colorOptions[formConfig.color]" :microsite="microsite"/>
+        </main>
+
+
+           <main v-else class="flex items-center justify-center bg-white my-6">
             <div id="form" class="bg-white  rounded-2xl shadow-2xl border border-gray-200 w-full max-w-4xl">
 
                 <div class="col-span-2 flex items-center justify-center w-full h-40">
