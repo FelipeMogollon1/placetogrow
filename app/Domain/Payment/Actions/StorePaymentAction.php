@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Domain\Payment;
+namespace App\Domain\Payment\Actions;
 
 
 
-use App\Constants\CurrencyTypes;
 use App\Infrastructure\Persistence\Models\Microsite;
 use App\Infrastructure\Persistence\Models\Payment;
 use Illuminate\Support\Str;

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Payment;
 
 use App\Constants\Abilities;
 use App\Contracts\PaymentGatewayContract;
-use App\Domain\Payment\StorePaymentAction;
+use App\Domain\Payment\Actions\StorePaymentAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\StorePaymentRequest;
 use App\Infrastructure\Persistence\Models\Microsite;
