@@ -6,43 +6,56 @@ use App\Constants\CurrencyTypes;
 use App\Constants\DocumentTypes;
 use App\Constants\PaymentStatus;
 use App\Rules\Payment\DocumentNumber;
-use App\Rules\Payment\UniqueDocumentCombination;
-use Database\Factories\PaymentFactory;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StorePaymentRequest extends FormRequest
 {
-
     public function authorize(): bool
     {
         return true;
     }
 
-
     public function rules(): array
     {
         return [
-            'reference' => ['nullable', 'string', 'unique:payments,reference'],
+            'reference' => ['nullable', 'string'],
             'receipt' => ['nullable', 'string'],
-            'payer_name' => ['nullable', 'string'],
-            'payer_surname' => ['nullable', 'string'],
-            'payer_email' => ['nullable', 'email'],
-            'payer_phone' => ['nullable', 'numeric', 'min:10'],
+            'payer_name' => ['nullable', 'string', $this->payerFieldsRule()],
+            'payer_surname' => ['nullable', 'string', $this->payerFieldsRule()],
+            'payer_email' => [
+                'nullable',
+                'email',
+                'regex:/^[^@]+@[^@]+\.[a-zA-Z]{2,}$/',
+                $this->payerFieldsRule()
+            ],
+            'payer_phone' => ['nullable', 'numeric', 'digits_between:7,10'],
             'payer_company' => ['nullable', 'string'],
             'payer_document_type' => [
                 'nullable',
-                'in:' . implode(',', DocumentTypes::getDocumentTypes())
+                'string',
+                Rule::in(DocumentTypes::getDocumentTypes()),
+                $this->payerFieldsRule(),
             ],
             'payer_document' => [
                 'nullable',
-                new DocumentNumber($this->input('payer_document_type')),
-                new UniqueDocumentCombination($this->input('payer_document_type'))
+                'string',
+                $this->getDocumentValidationRule(),
+                $this->payerFieldsRule(),
             ],
             'description' => ['nullable', 'string'],
-            'amount' => ['required', 'numeric', 'min:0', 'max:999999999.99'],
+            'currency' => [
+                'required',
+                'string',
+                Rule::in(CurrencyTypes::getCurrencyType()),
+            ],
+            'amount' => array_merge([
+                'required',
+                'min:1',
+                'max:999999999',
+            ], $this->amountRule()),
             'paid_at' => ['nullable', 'date'],
-            'currency' => ['required', 'string', 'in:' . implode(',', CurrencyTypes::getCurrencyType())],
-            'status' => ['nullable', 'string', 'in:' . implode(',', PaymentStatus::getPaymentStatus())],
+            'status' => ['nullable', 'string', Rule::in(PaymentStatus::getPaymentStatus())],
             'process_identifier' => ['nullable', 'integer'],
             'user_id' => ['nullable', 'exists:users,id'],
             'microsite_id' => ['nullable', 'exists:microsites,id'],
@@ -50,8 +63,36 @@ class StorePaymentRequest extends FormRequest
         ];
     }
 
-    protected static function newFactory(): PaymentFactory
+
+    private function payerFieldsRule(): string
     {
-        return PaymentFactory::new();
+        return Rule::requiredIf($this->hasAnyPayerFields());
     }
+
+    private function hasAnyPayerFields(): bool
+    {
+        return $this->has('payer_name') ||
+            $this->has('payer_surname') ||
+            $this->has('payer_email') ||
+            $this->has('payer_document_type') ||
+            $this->has('payer_document');
+    }
+
+    private function amountRule(): array
+    {
+        $rules = [];
+
+        if ($this->input('currency') === CurrencyTypes::USD->value) {
+            $rules[] = 'max:99999';
+        }else if ($this->input('currency') === CurrencyTypes::COP->value)
+            $rules[] = 'max:999999999';
+        return $rules;
+    }
+
+    private function getDocumentValidationRule(): DocumentNumber
+    {
+        $documentType = $this->input('payer_document_type');
+        return new DocumentNumber($documentType);
+    }
+
 }

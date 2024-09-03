@@ -17,6 +17,19 @@ const statusColors = {
     UNKNOWN: 'blue'
 };
 
+const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString('es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        timeZoneName: 'short'
+    });
+};
+
 </script>
 
 <template>
@@ -79,7 +92,7 @@ const statusColors = {
 
                                 <div v-if="payment.payer_document_type !== null "  class="px-4 py-3">
                                     <dt class="text-sm font-medium leading-6 text-gray-400"> {{ $t('payment.payer_document_type') }} :</dt>
-                                    <dd class="text-md leading-6 text-gray-700 font-semibold">{{ payment.payer_document_type }}</dd>
+                                    <dd class="text-md leading-6 text-gray-700 font-semibold">{{ $t(`documentType.${payment.payer_document_type }`) }}</dd>
                                 </div>
 
                                 <div v-if="payment.payer_document !== null "  class="px-4 py-3">
@@ -92,19 +105,30 @@ const statusColors = {
                                     <dd class="text-md leading-6 text-gray-700 font-semibold">{{ payment.description }}</dd>
                                 </div>
 
-                                <div v-if="payment.amount !== null "  class="px-4 py-3">
-                                    <dt class="text-sm font-medium leading-6 text-gray-400"> {{ $t('payment.amount') }} :</dt>
-                                    <dd class="text-md leading-6 text-gray-700 font-semibold">{{ payment.amount }}</dd>
-                                </div>
-
                                 <div v-if="payment.paid_at !== null "  class="px-4 py-3">
                                     <dt class="text-sm font-medium leading-6 text-gray-400"> {{ $t('payment.paid_at') }} :</dt>
-                                    <dd class="text-md leading-6 text-gray-700 font-semibold">{{ payment.paid_at }}</dd>
+                                    <dd class="text-md leading-6 text-gray-700 font-semibold">{{ formatDate(payment.paid_at) }} </dd>
+                                </div>
+
+                                <div class="px-4 py-3">
+                                    <dt class="text-md font-medium leading-6 text-gray-400">{{ $t('voucher.InvoiceNumber') }}</dt>
+                                    <dd class="text-md leading-6 text-gray-700 font-semibold">{{ payment.request_id }}</dd>
                                 </div>
 
                                 <div v-if="payment.currency !== null "  class="px-4 py-3">
                                     <dt class="text-sm font-medium leading-6 text-gray-400"> {{ $t('payment.currency') }} :</dt>
-                                    <dd class="text-md leading-6 text-gray-700 font-semibold">{{ payment.currency }}</dd>
+                                    <dd class="text-md leading-6 text-gray-700 font-semibold">{{ $t(`currencies.${payment.currency }`) }}</dd>
+                                </div>
+
+                                <div v-if="payment.amount !== null " class="px-4 py-3">
+                                    <dt class="text-md font-medium leading-6 text-gray-400">{{ $t('voucher.paid') }}</dt>
+                                    <dd v-if="payment.currency === 'USD' " class="text-md leading-6 text-gray-700 font-semibold">$ {{ payment.amount.toLocaleString('en-US') }}</dd>
+                                    <dd v-else class="text-md leading-6 text-gray-700 font-semibold">$ {{ payment.amount.toLocaleString('es-CO') }}</dd>
+                                </div>
+
+                                <div v-if="payment.created_at !== null " class="px-4 py-3">
+                                    <dt class="text-md font-medium leading-6 text-gray-400">{{ $t('voucher.date') }}</dt>
+                                    <dd class="text-md leading-6 text-gray-700 font-semibold">{{ formatDate(payment.created_at) }}</dd>
                                 </div>
 
                                 <div v-if="payment.status !== null "  class="px-4 py-3">

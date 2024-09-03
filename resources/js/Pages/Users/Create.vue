@@ -28,7 +28,7 @@ const props = defineProps({
 </script>
 
 <template>
-    <Head title="Crear categoria"/>
+    <Head :title="$t('user.create_user')"/>
     <AuthenticatedLayout>
         <template #header>
             <div class="flex justify-between items-center">
@@ -57,7 +57,7 @@ const props = defineProps({
                                     v-model="form.name"
                                     autofocus
                                     autocomplete="name"
-                                    placeholder="Pedro Jose"
+                                    :placeholder="$t('user.name')"
                                 />
                                 <InputError class="mt-2" :message="form.errors.name" />
                             </div>
@@ -90,7 +90,14 @@ const props = defineProps({
                                         v-for="role in props.roles"
                                             :value="role.name"
                                     >
-                                        {{role.name}}
+                                        <template class="capitalize" v-if="['admin', 'guest', 'sa'].includes(role.name)">
+                                            {{ $t(`roles_table.${role.name}`) }}
+                                        </template>
+
+                                        <template class="capitalize" v-else>
+                                            {{ role.name }}
+                                        </template>
+
                                     </option>
 
                                 </select>

@@ -14,7 +14,7 @@ class DocumentNumber implements ValidationRule
         $this->documentType = $documentType;
     }
 
-    public function passes($attribute, $value)
+    public function passes($attribute, $value): bool
     {
         $patterns = [
             'CC' => '/^[1-9][0-9]{3,9}$/',
@@ -29,8 +29,11 @@ class DocumentNumber implements ValidationRule
 
         return preg_match($patterns[$this->documentType], $value);
     }
+
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        //
+        if (!$this->passes($attribute, $value)) {
+            $fail("The {$attribute} is invalid for the selected document type.");
+        }
     }
 }

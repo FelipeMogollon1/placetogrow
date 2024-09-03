@@ -16,6 +16,11 @@ class MicrositeIndexViewModel extends ViewModel
 
     }
 
+    public static function fromAuthenticatedUser(): ?MicrositeIndexViewModel
+    {
+        return new self(auth()->user());
+    }
+
     public function getMicrositesByUserRole(): LengthAwarePaginator
     {
         $permissionsUser = $this->user->getAllPermissions()->pluck('name')->toArray();
@@ -29,7 +34,8 @@ class MicrositeIndexViewModel extends ViewModel
             $microsites = Microsite::query()->AllWithCategories()
                 ->where('microsites.user_id', $this->user->id);
         }
-        return $microsites->paginate(5);
+
+        return $microsites->orderBy('microsites.id', 'Desc')->paginate(5);
     }
 
     public function toArray(): array

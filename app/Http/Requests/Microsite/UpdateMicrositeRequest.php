@@ -25,7 +25,7 @@ class UpdateMicrositeRequest extends FormRequest
             'document' => ['required', 'max:20', 'regex:/^[a-zA-Z0-9 \-]+$/'],
             'microsite_type' => ['required','string', Rule::in(MicrositesTypes::getMicrositesTypes())],
             'currency' => ['required', Rule::in(CurrencyTypes::getCurrencyType())],
-            'payment_expiration_time' => ['required','max:18446744073709551614'],
+            'payment_expiration_time' => ['required', 'integer', 'min:5', 'max:18446744073709551614'],
             'category_id' => ['required', 'integer'],
             'user_id' => ['nullable', 'integer'],
             'form_id' => ['nullable'],

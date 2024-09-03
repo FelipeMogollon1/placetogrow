@@ -17,7 +17,7 @@ const headers = ["name","email","roles"];
 </script>
 
 <template>
-    <Head title="Usuarios index"/>
+    <Head :title="$t('user.label')"/>
     <AuthenticatedLayout>
         <template #header>
             <div class="flex justify-between items-center">

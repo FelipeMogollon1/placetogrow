@@ -1,5 +1,5 @@
 <script setup>
-import { Link } from "@inertiajs/vue3";
+import {Head, Link} from "@inertiajs/vue3";
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 import {ArrowSmallLeftIcon} from "@heroicons/vue/24/outline/index.js";
 import LanguageDropdown from "@/Layouts/Atoms/LanguageDropdown.vue";
@@ -30,10 +30,24 @@ const statusColors = {
     UNKNOWN: 'blue'
 };
 
+const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString('es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        timeZoneName: 'short'
+    });
+};
+
 </script>
 
 <template>
-    <header class="bg-white shadow-md rounded-md w-full flex justify-between items-center p-6">
+    <Head :title="$t('voucher.label')"/>
+    <header class="bg-white rounded-md w-full flex justify-between items-center p-6">
         <Link
             :href="route('Welcome')"
             class="flex items-center text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
@@ -47,51 +61,56 @@ const statusColors = {
         </nav>
     </header>
 
-    <main class="flex-grow flex items-center justify-center bg-white my-6">
-        <div id="form" class="bg-white p-4 m-4 rounded-3xl border border-gray-200 w-full max-w-4xl">
-            <application-logo />
-            <div class="m-3 text-3xl">
-                <span class="block font-extrabold">{{ $t('voucher.label') }}</span>
-                <span class="block"> {{ $t('voucher.pay') }}</span>
+    <main class="flex-grow flex items-center justify-center bg-white">
+        <div id="form" class="bg-white px-8 py-4 rounded-3xl border border-gray-300 w-full max-w-2xl shadow-2xl">
+            <div class="flex justify-between items-center m-5 ">
+                <div class="text-3xl">
+                    <span class="block font-extrabold">{{ $t('voucher.label') }}</span>
+                    <span class="block"> {{ $t('voucher.pay') }}</span>
+                </div>
+                <div class="">
+                    <img v-if="microsite.logo" class=" rounded-lg h-28 object-contain" :src="`/storage/${microsite.logo}`" alt="Logo">
+                </div>
             </div>
 
             <div class="grid grid-cols-2 md:grid-cols-2 gap-4 m-5 ">
                     <div class="pb-1">
-                        <dt class="text-sm font-medium leading-6 text-gray-400">{{ $t('voucher.PaymentMade') }}</dt>
-                        <dd class="text-sm leading-6 text-gray-700 font-semibold">{{ payment.payer_name }} {{ payment.payer_surname }}</dd>
+                        <dt class="text-md font-medium leading-6 text-gray-400">{{ $t('voucher.PaymentMade') }}</dt>
+                        <dd class="text-md leading-6 text-gray-700 font-semibold">{{ payment.payer_name }} {{ payment.payer_surname }}</dd>
                     </div>
                     <div class="pb-1">
-                        <dt class="text-sm font-medium leading-6 text-gray-400">{{ $t('voucher.InvoiceNumber') }}</dt>
-                        <dd class="text-sm leading-6 text-gray-700 font-semibold">{{ payment.request_id }}</dd>
+                        <dt class="text-md font-medium leading-6 text-gray-400">{{ $t('voucher.InvoiceNumber') }}</dt>
+                        <dd class="text-md leading-6 text-gray-700 font-semibold">{{ payment.request_id }}</dd>
                     </div>
                     <div class="pb-1">
-                        <dt class="text-sm font-medium leading-6 text-gray-400">{{ $t('voucher.PaymentDescription') }}</dt>
-                        <dd class="text-sm leading-6 text-gray-700 font-semibold">{{ payment.description }}</dd>
+                        <dt class="text-lg font-medium leading-6 text-gray-400">{{ $t('voucher.PaymentDescription') }}</dt>
+                        <dd class="text-lg leading-6 text-gray-700 font-semibold">{{ payment.description }}</dd>
                     </div>
                     <div class="pb-1">
-                        <dt class="text-sm font-medium leading-6 text-gray-400">{{ $t('voucher.Reference') }}</dt>
-                        <dd class="text-sm leading-6 text-gray-700 font-semibold">{{ payment.reference }}</dd>
+                        <dt class="text-md font-medium leading-6 text-gray-400">{{ $t('voucher.Reference') }}</dt>
+                        <dd class="text-md leading-6 text-gray-700 font-semibold">{{ payment.reference }}</dd>
                     </div>
                     <div class="pb-1">
-                        <dt class="text-sm font-medium leading-6 text-gray-400">{{ $t('voucher.date') }}</dt>
-                        <dd class="text-sm leading-6 text-gray-700 font-semibold">{{ payment.created_at }}</dd>
+                        <dt class="text-md font-medium leading-6 text-gray-400">{{ $t('voucher.date') }}</dt>
+                        <dd class="text-md leading-6 text-gray-700 font-semibold">{{ formatDate(payment.created_at) }}</dd>
                     </div>
 
                     <div class="pb-1">
-                        <dt class="text-sm font-medium leading-6 text-gray-400">{{ $t('voucher.currency') }}</dt>
-                        <dd class="text-sm leading-6 text-gray-700 font-semibold">{{ payment.currency }}</dd>
+                        <dt class="text-md font-medium leading-6 text-gray-400">{{ $t('voucher.currency') }}</dt>
+                        <dd class="text-md leading-6 text-gray-700 font-semibold">{{  $t(`currencies.${payment.currency}`) }} </dd>
                     </div>
                     <div class="pb-1">
-                        <dt class="text-sm font-medium leading-6 text-gray-400">{{ $t('voucher.paid') }}</dt>
-                        <dd class="text-sm leading-6 text-gray-700 font-semibold">{{ payment.amount }}</dd>
+                        <dt class="text-md font-medium leading-6 text-gray-400">{{ $t('voucher.paid') }}</dt>
+                        <dd v-if="payment.currency === 'USD' " class="text-md leading-6 text-gray-700 font-semibold">$ {{ payment.amount.toLocaleString('en-US') }}</dd>
+                        <dd v-else class="text-md leading-6 text-gray-700 font-semibold">$ {{ payment.amount.toLocaleString('es-CO') }}</dd>
                     </div>
                     <div class="pb-1">
-                        <dt class="text-sm font-medium leading-6 text-gray-400">{{ $t('voucher.product') }}</dt>
-                        <dd class="text-sm leading-6 text-gray-700 font-semibold">{{ microsite.name }}</dd>
+                        <dt class="text-md font-medium leading-6 text-gray-400">{{ $t('voucher.product') }}</dt>
+                        <dd class="text-md leading-6 text-gray-700 font-semibold">{{ microsite.name }}</dd>
                     </div>
                     <div class="pb-1">
-                        <dt class="text-sm font-medium leading-6 text-gray-400">{{ $t('voucher.state') }}</dt>
-                        <dd class="text-sm leading-6 text-gray-700 font-semibold">
+                        <dt class="text-md font-medium leading-6 text-gray-400">{{ $t('voucher.state') }}</dt>
+                        <dd class="text-md leading-6 text-gray-700 font-semibold">
                             <span-form :color="statusColors[payment.status]">
                                 {{ $t(`payment_status.${payment.status}`) }}
                             </span-form>

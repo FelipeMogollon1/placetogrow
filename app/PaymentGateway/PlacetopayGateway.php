@@ -2,8 +2,10 @@
 
 namespace App\PaymentGateway;
 
+use App\Constants\MicrositesTypes;
 use App\Constants\PaymentStatus;
 use App\Contracts\PaymentGatewayContract;
+use App\Infrastructure\Persistence\Models\Microsite;
 use App\Infrastructure\Persistence\Models\Payment;
 use Dnetix\Redirection\Message\RedirectResponse;
 use Dnetix\Redirection\PlacetoPay;
@@ -24,34 +26,47 @@ class PlacetopayGateway implements PaymentGatewayContract
 
      public function createSession(Payment $payment, Request $request): RedirectResponse
     {
-        $totalPrice = $payment->amount;
+        $microsite = Microsite::findOrFail($payment->microsite_id);
 
         $payerData = array_filter([
             'document' => $payment->payer_document,
             'documentType' => $payment->payer_document_type,
             'name' => $payment->payer_name,
             'surname' => $payment->payer_surname,
+            'company' => $payment->payer_company,
             'email' => $payment->payer_email,
-        ], function ($value) {
-            return $value !== null && $value !== '';
-        });
+            'mobile' => $payment->payer_phone,
+        ]);
+
+        $paymentData = array_filter([
+            'reference' => $payment->reference,
+            'description' => $payment->description,
+            'amount' => [
+                'currency' => $payment->currency,
+                'total' => $payment->amount,
+            ],
+        ]);
+
+        $subscriptionData = array_filter([
+            'reference' => $payment->payer_reference,
+            'description' => $payment->payer_description,
+        ]);
 
         try {
             $requestData = [
                 'payer' => $payerData,
-                'payment' => [
-                    'reference' => $payment->reference,
-                    'description' => $payment->description,
-                    'amount' => [
-                        'currency' => $payment->currency,
-                        'total' => $totalPrice,
-                    ],
-                ],
-                'expiration' => date('c', strtotime('+30 minutes')),
+                'expiration' => now()->addMinutes($microsite->payment_expiration_time)->toIso8601String(),
                 'returnUrl' => route('returnBusiness', $payment->id),
                 'ipAddress' => $request->ip(),
                 'userAgent' => $request->userAgent(),
             ];
+
+            if ($microsite->microsite_type === MicrositesTypes::SUBSCRIPTION->value) {
+                $requestData['subscription'] = $subscriptionData;
+            } else {
+                $requestData['payment'] = $paymentData;
+            }
+
             $response = $this->placetopay->request($requestData);
 
             if ($response->isSuccessful()) {
@@ -61,9 +76,9 @@ class PlacetopayGateway implements PaymentGatewayContract
 
             } else {
                 $payment->status = PaymentStatus::REJECTED->value;
-
             }
             $payment->save();
+
             return $response;
 
         } catch (Throwable $exception) {
@@ -74,8 +89,6 @@ class PlacetopayGateway implements PaymentGatewayContract
 
     public function queryPayment(Payment $payment): Payment
     {
-//        $this->connection();
-
         $response = $this->placetopay->query($payment->request_id);
 
         if ($response->isSuccessful()) {

@@ -8,9 +8,12 @@
     "create_rol": "",
     "create_user": "",
     "currency": "Moneda",
+    "no_information": "No hay información disponible por el momento",
+    "search": "Buscar por micrositio, referencia o nombre",
     "currencies": {
         "COP": "Peso colombiano",
-        "USD": "Dólar estadounidense"
+        "USD": "Dólar estadounidense",
+        "BOTH": "Ambos"
     },
     "dashboard": "Panel",
     "detail_microsite": "Detalle del Micrositio",
@@ -49,7 +52,31 @@
         "periodicity": "Periodicidad",
         "interval": "Intervalo",
         "maxPeriods": "Periodos",
-        "notificationUrl": " Notificación Url"
+        "notificationUrl": " Notificación Url",
+        "button_color": "Color del Botón",
+        "slate": "Pizarra",
+        "gray": "Gris",
+        "zinc": "Zinc",
+        "neutral": "Neutral",
+        "stone": "Piedra",
+        "red": "Rojo",
+        "orange": "Naranja",
+        "amber": "Ámbar",
+        "yellow": "Amarillo",
+        "lime": "Lima",
+        "green": "Verde",
+        "emerald": "Esmeralda",
+        "teal": "Verde azulado",
+        "cyan": "Cian",
+        "sky": "Cielo",
+        "blue": "Azul",
+        "indigo": "Índigo",
+        "violet": "Violeta",
+        "purple": "Púrpura",
+        "fuchsia": "Fucsia",
+        "pink": "Rosa",
+        "rose": "Rosa claro",
+        "white": "Blanco"
     },
 
     "forgot_your_password": "¿Ha olvidado su contraseña?",
@@ -81,11 +108,11 @@
         "microsite_type": "Tipo de Micrositio",
         "name": "Nombre",
         "slug": "URL",
-        "time_expiration": "Tiempo de expiración en segundos",
+        "time_expiration": "Tiempo de expiración en minutos",
         "type": "Tipo"
     },
     "page": "Páginas",
-    "payment_expiration_time": "Tiempo de expiración en segundos",
+    "payment_expiration_time": "Tiempo de expiración en minutos",
     "return": "Regresar",
     "register": "Registrarse",
     "remember_me": "Recuérdame",
@@ -160,7 +187,8 @@
         "microsite_name": "Micrositio",
         "payment_list" : "Lista de pagos",
         "payment_detailer": "Detalle del pago",
-        "paid_at" : "Pagado en"
+        "paid_at" : "Pagado en",
+        "microsite_type": "Tipo"
     },
     "payment_status": {
         "PENDING" : "Pendiente",
@@ -259,5 +287,8 @@
         "paid": "Valor pagado",
         "product" : "Producto",
         "state": "Estado"
+    },
+    "subscription": {
+        "label" : "Suscripciones"
     }
 }

@@ -8,11 +8,14 @@
     "create_rol": "",
     "create_user": "",
     "currency": "Currency",
+    "no_information": "No information available at the moment",
+    "search": "Search by microsite, reference or name",
     "currencies": {
         "COP": "Colombian Peso",
-        "USD": "US Dollar"
+        "USD": "US Dollar",
+        "BOTH": "Both"
     },
-    "dashboard": "Panel",
+    "dashboard": "Dashboard",
     "detail_microsite": "Microsite Detail",
     "documentType": {
         "CC": "Citizenship Card",
@@ -49,7 +52,31 @@
         "periodicity": "Periodicity",
         "interval": "Interval",
         "maxPeriods": "Periods",
-        "notificationUrl": "Notification Url"
+        "notificationUrl": "Notification Url",
+        "button_color": "Button Color",
+        "slate": "Slate",
+        "gray": "Gray",
+        "zinc": "Zinc",
+        "neutral": "Neutral",
+        "stone": "Stone",
+        "red": "Red",
+        "orange": "Orange",
+        "amber": "Amber",
+        "yellow": "Yellow",
+        "lime": "Lime",
+        "green": "Green",
+        "emerald": "Emerald",
+        "teal": "Teal",
+        "cyan": "Cyan",
+        "sky": "Sky",
+        "blue": "Blue",
+        "indigo": "Indigo",
+        "violet": "Violet",
+        "purple": "Purple",
+        "fuchsia": "Fuchsia",
+        "pink": "Pink",
+        "rose": "Rose",
+        "white": "White"
     },
 
     "forgot_your_password": "Forgot your password?",
@@ -81,11 +108,11 @@
         "microsite_type": "Microsite type",
         "name": "Name",
         "slug": "URL",
-        "time_expiration": "Expiration time in seconds",
+        "time_expiration": "Expiration time in minutes",
         "type": "Type"
     },
     "page": "Pages",
-    "payment_expiration_time": "Expiration time in seconds",
+    "payment_expiration_time": "Expiration time in minutes",
     "return": "Return",
     "register": "Register",
     "remember_me": "Remember me",
@@ -160,7 +187,8 @@
         "microsite_name": "Microsite",
         "payment_list" : "Payment List",
         "payment_detailer": "Payment Detail",
-        "paid_at" : "Paid at"
+        "paid_at" : "Paid at",
+        "microsite_type": "Type"
     },
     "payment_status": {
         "PENDING" : "Pending",
@@ -259,5 +287,8 @@
         "paid": "Value paid",
         "product" : "Product",
         "state": "State"
+    },
+    "subscription": {
+        "label" : "Subscriptions"
     }
 }

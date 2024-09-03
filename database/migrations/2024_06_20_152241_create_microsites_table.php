@@ -23,11 +23,10 @@ return new class () extends Migration {
             $table->unsignedBigInteger('payment_expiration_time');
             $table->foreignId('category_id')->constrained();
             $table->foreignId('user_id')->nullable()->constrained();
-            $table->foreignId('form_id')->nullable()->constrained();
+            $table->foreignId('form_id')->nullable()->unique()->constrained();
             $table->timestamp('enabled_at')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
-            $table->unique(['document', 'document_type'], 'UNIQUE_PERSONS_MICROSITES');
         });
     }
 

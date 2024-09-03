@@ -6,6 +6,7 @@ enum CurrencyTypes: string
 {
     case COP = 'COP';
     case USD = 'USD';
+    case BOTH = 'BOTH';
 
     public static function getCurrencyType(): array
     {

@@ -40,6 +40,7 @@ const statusColors = {
     guest: 'yellow',
     sa: 'green',
     admin: 'cyan',
+    default : 'orange'
 };
 
 </script>
@@ -84,17 +85,29 @@ const statusColors = {
                                 <template v-if="header === 'roles'">
                                     <ul>
                                         <li v-for="role in item.roles" :key="role.id">
-                                            <span-form :color="statusColors[role.name]">
-                                            {{ $t(`roles_table.${role.name}`) }}
-                                            </span-form>
+
+                                            <template v-if="['admin', 'guest', 'sa'].includes(role.name)">
+                                                <span-form class="capitalize" :color="statusColors[role.name]">
+                                                    {{ $t(`roles_table.${role.name}`) }}
+                                                </span-form>
+                                            </template>
+
+                                            <template v-else>
+                                                <span-form class="capitalize" :color="statusColors['default']">
+                                                    {{ role.name }}
+                                                </span-form>
+                                            </template>
                                         </li>
                                     </ul>
                                 </template>
 
-                                <span v-else>
+                                <span class="capitalize" v-else-if="header === 'name'">
                                     {{ item[header] }}
                                 </span>
 
+                                <span  v-else>
+                                    {{ item[header] }}
+                                </span>
                             </td>
                             <td>
                                 <div>

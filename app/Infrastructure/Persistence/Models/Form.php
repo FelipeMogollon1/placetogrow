@@ -6,6 +6,7 @@ use Database\Factories\FormFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Form extends Model
 {
@@ -21,6 +22,9 @@ class Form extends Model
      */
     protected $fillable = [
         'configuration',
+        'header',
+        'footer',
+        'color'
     ];
 
     /**
@@ -30,11 +34,14 @@ class Form extends Model
      */
     protected $casts = [
         'configuration' => 'array',
+        'header'=> 'string',
+        'footer'=> 'string',
+        'color'=> 'string'
     ];
 
-    public function microsites(): hasMany
+    public function microsite(): HasOne
     {
-        return $this->hasMany(Microsite::class);
+        return $this->hasOne(Microsite::class);
     }
 
     protected static function newFactory(): FormFactory
