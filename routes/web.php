@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Roles\RoleController;
+use App\Http\Controllers\Subscription\SubscriptionController;
 use App\Http\Controllers\Subscription\SubscriptionPlanController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -36,7 +37,7 @@ Route::group(['middleware' => 'auth', 'verified'], function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('/subscriptionsPlan', SubscriptionPlanController::class);
-
+    Route::resource('/subscriptions', SubscriptionController::class);
 
 });
 
