@@ -56,7 +56,7 @@ const props = defineProps({
     },
     maxWidth: {
         type: String,
-        default: '2xl',
+        default: 'xl',
     },
     closeable: {
         type: Boolean,
@@ -80,7 +80,7 @@ watch(
 const close = () => {
     if (props.closeable) {
         emit('close');
-        emit('update:show', false); // Actualiza el valor de `show`
+        emit('update:show', false);
     }
 };
 
