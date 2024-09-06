@@ -289,6 +289,26 @@
         "state": "Estado"
     },
     "subscription": {
-        "label" : "Suscripciones"
+        "label" : "Planes de suscripción",
+        "name" : "Nombre",
+        "amount":  "Monto",
+        "subscription_period": "Período de Suscripción",
+        "expiration_time": "Tiempo de Expiración",
+        "description": "Descripción",
+        "newSubscriptionPlan" : "Nuevo Plan de Suscripción",
+        "updateSubscriptionPlan": "Actualizar Plan de Suscripción",
+        "addDescription": "Agregar descripción",
+        "createSubscription": "Crear Suscripción",
+        "daily" : "Diario",
+        "weekly": "Semanal",
+        "monthly": "Mensual",
+        "yearly": "Anual",
+        "Preview": "Vista Previa",
+        "Default": "Color Predeterminado",
+        "chooseYourPlan" : "Elige tu plan",
+        "totalPrice" : "Precio total",
+        "additional_info": "Información Adicional",
+        "expiration_additional_info": "Información de vencimientos",
+        "noSubscriptions" : "Parece que aún no hay suscripciones disponibles. ¡Vuelve más tarde!"
     }
 }

@@ -289,6 +289,26 @@
         "state": "State"
     },
     "subscription": {
-        "label" : "Subscriptions"
+        "label" : "Subscription plans",
+        "name": "Name",
+        "amount": "Amount",
+        "subscription_period": "Subscription Period",
+        "expiration_time": "Expiration Time",
+        "description": "Description",
+        "newSubscriptionPlan": "New Subscription Plan",
+        "updateSubscriptionPlan": "Update Subscription Plan",
+        "addDescription": "Add description",
+        "createSubscription": "Create Subscription",
+        "daily" : "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "yearly": "Yearly",
+        "Preview": "Preview",
+        "Default": "Default Color",
+        "chooseYourPlan": "Choose your plan",
+        "totalPrice" : "Total price",
+        "additional_info": "Additional Information",
+        "expiration_additional_info": "Expiration information",
+        "noSubscriptions": "It looks like there are no subscriptions available yet. Check back later!"
     }
 }
