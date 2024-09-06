@@ -19,6 +19,7 @@ const documentTypes = ref(page.props.arrayConstants.documentTypes || {});
 const currencyTypes =ref(page.props.arrayConstants.currencyTypes || {});
 const currency = ref(page.props.microsite.currency || {});
 const microsite_id = ref(page.props.microsite.id || {});
+const subscriptionPlans = ref(page.props.subscriptionPlans || {});
 
 const initialValues = {
     payer_name : "",
@@ -163,7 +164,13 @@ watch(() => form.currency, (newCurrency) => {
         </header>
 
         <main v-if="microsite.microsite_type === 'subscription'">
-            <SubscriptionView :color="colorOptions[formConfig.color]" :microsite="microsite"/>
+
+            <SubscriptionView  :color="colorOptions[formConfig.color]"
+                               :microsite="microsite"
+                               :subscriptionPlans="subscriptionPlans"
+                               :fields="formConfig.configuration.fields"
+                               :documentTypes="documentTypes"
+            />
         </main>
 
 

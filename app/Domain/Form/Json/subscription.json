@@ -40,55 +40,19 @@
         },
         {
             "type": "text",
-            "name": "reference",
+            "name": "company",
             "active": "false",
             "required": "false"
         },
         {
             "type": "text",
+            "name": "reference",
+            "active": "true",
+            "required": "true"
+        },
+        {
+            "type": "text",
             "name": "description",
-            "active": "true",
-            "required": "true"
-        },
-        {
-            "type": "select",
-            "name": "currency_type",
-            "active": "true",
-            "required": "true"
-        },
-        {
-            "type": "number",
-            "name": "amount",
-            "active": "true",
-            "required": "true"
-        },
-        {
-            "type": "text",
-            "name": "periodicity",
-            "active": "true",
-            "required": "true"
-        },
-        {
-            "type": "number",
-            "name": "interval",
-            "active": "true",
-            "required": "true"
-        },
-        {
-            "type": "number",
-            "name": "maxPeriods",
-            "active": "true",
-            "required": "true"
-        },
-        {
-            "type": "text",
-            "name": "notificationUrl",
-            "active": "true",
-            "required": "true"
-        },
-        {
-            "type": "text",
-            "name": "company",
             "active": "true",
             "required": "true"
         }

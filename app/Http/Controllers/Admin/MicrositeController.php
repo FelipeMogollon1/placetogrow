@@ -6,6 +6,7 @@ use App\Constants\Abilities;
 use App\Constants\CurrencyTypes;
 use App\Constants\DocumentTypes;
 use App\Constants\MicrositesTypes;
+use App\Constants\SubscriptionPeriods;
 use App\Domain\Microsite\Actions\DestroyMicrositeAction;
 use App\Domain\Microsite\Actions\StoreMicrositeAction;
 use App\Domain\Microsite\Actions\UpdateMicrositeAction;
@@ -14,6 +15,7 @@ use App\Http\Requests\Microsite\StoreMicrositeRequest;
 use App\Http\Requests\Microsite\UpdateMicrositeRequest;
 use App\Infrastructure\Persistence\Models\Category;
 use App\Infrastructure\Persistence\Models\Microsite;
+use App\Infrastructure\Persistence\Models\SubscriptionPlan;
 use App\Infrastructure\Persistence\Models\User;
 use App\ViewModels\Microsites\MicrositeIndexViewModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -55,9 +57,10 @@ class MicrositeController extends Controller
     {
         $this->authorize(Abilities::VIEW->value, Microsite::class);
         $microsite = Microsite::withCategory($id)->firstOrFail()->toArray();
+        $subscriptionPlans = SubscriptionPlan::where('microsite_id', $id)->orderBy('name', 'asc')->paginate(6);
         $arrayConstants = $this->getCommonData();
 
-        return Inertia::render('Microsites/Show', compact('microsite','arrayConstants'));
+        return Inertia::render('Microsites/Show', compact('microsite','arrayConstants', 'subscriptionPlans'));
     }
 
     public function edit(string $id): Response
@@ -95,9 +98,10 @@ class MicrositeController extends Controller
     public function paymentForm(string $slug): Response
     {
         $microsite = Microsite::where('slug', $slug)->with('form')->firstOrFail();
+        $subscriptionPlans = SubscriptionPlan::where('microsite_id', $microsite->id)->orderBy('name', 'asc')->paginate(6);
         $arrayConstants = $this->getCommonData();
 
-        return Inertia::render('Form/PaymentForm', compact('microsite','arrayConstants'));
+        return Inertia::render('Form/PaymentForm', compact('microsite','subscriptionPlans','arrayConstants'));
     }
 
     private function getCommonData(): array
@@ -108,6 +112,7 @@ class MicrositeController extends Controller
             'currencyTypes' => CurrencyTypes::getCurrencyType(),
             'categories' => Category::select('id', 'name')->get(),
             'users' => User::role('admin')->select('id', 'name')->get(),
+            'periods' => SubscriptionPeriods::getAllSubscriptionPeriods()
         ];
     }
 }

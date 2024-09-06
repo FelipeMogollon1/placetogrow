@@ -1,49 +1,18 @@
 <script setup>
-import { ref, computed } from 'vue';
-import {CheckBadgeIcon, PhotoIcon} from "@heroicons/vue/24/outline/index.js";
+import {ref, computed, watch} from 'vue';
+import {CheckBadgeIcon, PencilIcon, PhotoIcon} from "@heroicons/vue/24/outline/index.js";
 import { useForm } from '@inertiajs/vue3';
+import InputError from "@/Components/InputError.vue";
+import TextInput from "@/Components/TextInput.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import { FaceFrownIcon } from "@heroicons/vue/24/outline/index.js";
+
+
+
+const selectedCurrency = ref('USD');
 
 const showForm = ref(false);
 const selectedSubscription = ref(null);
-const form = useForm({ reference: '', email: '' });
-
-const subscriptions = ref([
-    {
-        title: 'Básico con anuncios',
-        price: '12x $16.900,00 /mes',
-        description: 'Precio total anual $202.800,00',
-        features: ['2 dispositivos a la vez', 'Resolución Full HD'],
-    },
-    {
-        title: 'Estándar',
-        price: '12x $19.900,00 /mes',
-        description: 'Precio total anual $238.800,00',
-        features: ['2 dispositivos a la vez', 'Resolución Full HD', '30 descargas para disfrutar offline'],
-    },
-    {
-        title: 'Platino',
-        price: '12x $24.900,00 /mes',
-        description: 'Precio total anual $298.800,00',
-        features: ['4 dispositivos a la vez', 'Resolución Full HD y 4K Ultra HD', 'Audio Dolby Atmos', '100 descargas para disfrutar offline'],
-    }
-
-]);
-
-const gridClasses = computed(() => {
-    switch (subscriptions.value.length) {
-        case 1:
-            return 'grid-cols-1';
-        case 2:
-            return 'grid-cols-1 sm:grid-cols-2';
-        case 3:
-            return 'sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
-        case 4:
-            return 'grid-cols-2 sm:grid-cols-2';
-        default:
-            return 'sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
-    }
-});
-
 const selectSubscription = (subscription) => {
     selectedSubscription.value = subscription;
     showForm.value = true;
@@ -59,17 +28,46 @@ const submitForm = () => {
     });
 };
 
-// Props Definition
 const props = defineProps({
     color: {
         type: String,
         default: 'white'
     },
     microsite: {
-        type: Array,
+        type: Object,
         default: null
+    },
+    subscriptionPlans:{
+        type: Object,
+        default: () => []
+    },
+    fields: {
+        type: Object,
+        default: () => []
+    },
+    documentTypes:{
+        type: Object,
+        default: () => []
     }
 });
+
+const initialValues = {
+    payer_name : "",
+    payer_surname : "",
+    payer_email : "",
+    payer_document_type : "CC",
+    payer_document : "",
+    payer_phone : "",
+    payer_company: "",
+    reference: "",
+    company:"",
+    description: "",
+    currency: props.microsite.currency.value !== "BOTH" ? props.microsite.currency.value : "COP",
+    amount: "",
+    microsite_id : props.microsite.id,
+}
+
+const form = useForm(initialValues)
 
 const colorOptions = {
     white: {
@@ -197,24 +195,83 @@ const colorOptions = {
 const colorClasses = computed(() => {
     return colorOptions[props.color] || colorOptions['white'];
 });
+const gridClasses = computed(() => {
+    const length = props.subscriptionPlans.data.length;
+
+    switch (length) {
+        case 1:
+            return 'grid-cols-1';
+        case 2:
+            return 'grid-cols-1 sm:grid-cols-2';
+        case 3:
+            return 'sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+        case 4:
+            return 'grid-cols-2 sm:grid-cols-2';
+        default:
+            return 'sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+    }
+});
+
+const patterns = {
+    CC: /^[1-9][0-9]{3,9}$/,
+    CE: /^([a-zA-Z]{1,5})?[1-9][0-9]{3,7}$/,
+    TI: /^[1-9][0-9]{4,11}$/,
+    NIT: /^[1-9]\d{6,9}$/,
+};
+
+const documentErrorMessage = ref('');
+const validateDocument = () => {
+    const docType = form.payer_document_type;
+    const docValue = form.payer_document;
+
+    if (patterns[docType]) {
+        const isValid = patterns[docType].test(docValue);
+        documentErrorMessage.value = isValid ? '' : 'El número de documento no es válido para el tipo seleccionado.';
+    } else {
+        documentErrorMessage.value = 'Tipo de documento no válido.';
+    }
+};
+
+watch(() => form.payer_document_type, validateDocument);
+watch(() => form.payer_document, validateDocument);
+
 </script>
 
 <template>
     <div :class="['bg-gradient-to-b min-h-screen flex flex-col items-center justify-center p-6', colorClasses.backgroundFrom, colorClasses.backgroundTo]">
-
        <div v-if="microsite.logo" class="flex lg:justify-center lg:col-start-2">
            <div class="group flex items-center rounded-xl mb-6">
                <img  class="rounded-xl w-12 object-contain mr-2" :src="`/storage/${microsite.logo}`" alt="Logo">
-               <h1 :class="['m-1 group-hover:text-gray-500', colorClasses.primaryText]">{{microsite.name}}</h1>
+               <h1 :class="['m-1 group-hover:text-gray-500', colorClasses.primaryText]">{{microsite}}</h1>
            </div>
        </div>
 
-        <h1 :class="['text-3xl font-bold', colorClasses.primaryText]">Elige tu plan</h1>
-        <p class="text-center mb-6" :class="colorClasses.primaryText">Información adicional de la suscripción.</p>
+        <div v-if="subscriptionPlans.data && subscriptionPlans.data.length > 0">
+            <h1 :class="['text-3xl font-bold', colorClasses.primaryText]">
+                {{ $t('subscription.chooseYourPlan') }}
+            </h1>
+        </div>
+
+        <div v-if="subscriptionPlans.data && subscriptionPlans.data.length > 0">
+
+
+            <p class="text-center mb-6" :class="colorClasses.primaryText">
+                {{ subscriptionPlans.data[0].additional_info || '' }}
+            </p>
+
+        </div>
+
+        <div v-else class="flex flex-col items-center mt-6">
+            <FaceFrownIcon class="w-12 text-gray-900 mb-4" />
+            <h2 class="text-2xl text-gray-700 text-center">
+                {{ $t('subscription.noSubscriptions') }}
+            </h2>
+        </div>
+
 
         <div v-if="!showForm" class="grid gap-6 w-full max-w-7xl" :class="gridClasses">
             <div
-                v-for="(subscription, index) in subscriptions"
+                v-for="(subscription, index) in subscriptionPlans.data"
                 :key="index"
                 @click="selectSubscription(subscription)"
                 :class="[
@@ -224,14 +281,15 @@ const colorClasses = computed(() => {
                     colorClasses.primaryText,
                 ]"
             >
-                <h2 :class="['lg:text-3xl md:text-3xl sm:text-4xl font-bold mb-2', colorClasses.primaryText]">{{ subscription.title }}</h2>
-                <p :class="['lg:text-4xl md:text-3xl sm:text-4xl font-bold mb-4', colorClasses.secondaryText]">{{ subscription.price }}</p>
-                <p class="mb-4 lg:text-2xl md:text-xl sm:text-3xl">{{ subscription.description }}</p>
+                <h2 :class="['lg:text-3xl md:text-3xl sm:text-4xl font-bold mb-2', colorClasses.primaryText]">{{ subscription.name }}</h2>
+                <p :class="['lg:text-4xl md:text-3xl sm:text-4xl font-bold mb-4', colorClasses.secondaryText]">
+                    {{ subscription.expiration_time }}x ${{ subscription.amount}} {{ subscription.currency}} / {{ $t(`subscription.${subscription.subscription_period}`) }}</p>
+                <p class="mb-4 lg:text-2xl md:text-xl sm:text-3xl">{{ $t('subscription.totalPrice') }} ${{ (subscription.expiration_time * subscription.amount).toFixed(2) }} {{ subscription.currency}}</p>
                 <div class="flex justify-center">
                     <ul class="grid grid-cols-1 gap-1">
                         <li
-                            v-for="(feature, featureIndex) in subscription.features"
-                            :key="featureIndex"
+                            v-for="(feature, i) in JSON.parse(subscription.description)"
+                            :key="i"
                             :class="['flex items-center lg:text-md md:text-sm sm:text-2xl', colorClasses.primaryText]"
                         >
                             <CheckBadgeIcon :class="['w-6 h-6 mr-2 flex-shrink-0 text-bold', colorClasses.secondaryText]" />
@@ -242,39 +300,154 @@ const colorClasses = computed(() => {
             </div>
         </div>
 
-        <div v-else class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+        <div v-else class="bg-white p-6 rounded-lg shadow-xl w-full max-w-xl mx-auto">
             <h2 class="text-2xl font-bold mb-4">Formulario de Suscripción</h2>
-            <p class="text-center mb-6">Por favor, ingresa la referencia y tu correo electrónico.</p>
 
-            <form @submit.prevent="submitForm">
-                <div class="mb-4">
+            <form @submit.prevent="submitForm" class="grid grid-cols-1 md:grid-cols-2 gap-4" >
+                <div class="mb-4 col-span-2">
                     <label class="block text-gray-700 font-bold mb-2">Suscripción Seleccionada:</label>
-                    <div class="bg-gray-100 p-2 rounded">{{ selectedSubscription?.title }}</div>
+                    <div class="bg-gray-100 p-2 rounded">{{ selectedSubscription?.name }}</div>
                 </div>
 
-                <div class="mb-4">
-                    <label for="reference" class="block text-gray-700 font-bold mb-2">Referencia:</label>
-                    <input
-                        v-model="form.reference"
-                        id="reference"
-                        type="text"
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        placeholder="Ingresa tu referencia"
-                    />
-                </div>
+                <template v-for="field in fields" :key="field.name">
 
-                <div class="mb-6">
-                    <label for="email" class="block text-gray-700 font-bold mb-2">Correo Electrónico:</label>
-                    <input
-                        v-model="form.email"
-                        id="email"
-                        type="email"
-                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        placeholder="Ingresa tu correo electrónico"
-                    />
-                </div>
+                    <template v-if="field.active === 'true'" class="mb-2">
 
-                <div class="flex items-center justify-between">
+                        <div v-if="field.type === 'text' && field.name === 'name'">
+                            <InputLabel for="name" :value="'*' +  $t(`form.${field.name}`)" />
+                            <TextInput
+                                id="name"
+                                type="text"
+                                class="mt-1 block w-full"
+                                v-model="form.payer_name"
+                                autofocus
+                                autocomplete="name"
+                                :placeholder="$t(`form.${field.name}`)"
+                            />
+                            <InputError class="mt-2" :message="form.errors.payer_name" />
+                        </div>
+
+                        <div v-if="field.type === 'text' && field.name === 'surname'">
+                            <InputLabel for="surname" :value="'*' +  $t(`form.${field.name}`)" />
+                            <TextInput
+                                :id="field.name"
+                                type="text"
+                                class="mt-1 block w-full"
+                                v-model="form.payer_surname"
+                                autofocus
+                                :autocomplete="field.name"
+                                :placeholder="$t(`form.${field.name}`)"
+                            />
+                            <InputError class="mt-2" :message="form.errors.payer_surname" />
+                        </div>
+
+                        <div v-if="field.type === 'select' && field.name === 'document_type'">
+                            <InputLabel for="name" :value="'*' +  $t('microsites_table.document_type')" />
+                            <select
+                                :name="field.name"
+                                :id="field.name"
+                                class="w-full mt-1 border-gray-300 focus:border-gray-500 focus:ring-gray-500 rounded-md shadow-sm"
+                                v-model="form.payer_document_type"
+                            >
+                                <option value="" disabled>{{ $t('select') }}</option>
+                                <option v-for="(type, index) in documentTypes" :key="index" :value="type">{{ $t(`documentType.${type}`) }}</option>
+                            </select>
+                            <InputError class="mt-2" :message="form.errors.payer_document_type" />
+                        </div>
+
+                        <div v-if="field.type === 'number' && field.name === 'document'">
+                            <InputLabel :for="field.name" :value="'*' +  $t(`form.${field.name}`)" />
+                            <TextInput
+                                :id="field.name"
+                                type="text"
+                                class="mt-1 block w-full"
+                                @input="validateDocument"
+                                v-model="form.payer_document"
+                                autofocus
+                                :autocomplete="field.name"
+                                :placeholder="$t(`form.${field.name}`)"
+                            />
+                            <InputError class="mt-2" :message="documentErrorMessage" />
+                            <InputError class="mt-2" :message="form.errors.payer_document" />
+                        </div>
+
+                        <div v-if="field.type === 'number' && field.name === 'mobile' ">
+                            <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
+                            <TextInput
+                                :id="field.name"
+                                type="number"
+                                class="mt-1 block w-full"
+                                v-model="form.payer_phone"
+                                autofocus
+                                :autocomplete="field.name"
+                                :placeholder="$t(`form.${field.name}`)"
+                                pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                            />
+                            <InputError class="mt-2" :message="form.errors.payer_phone" />
+                        </div>
+
+                        <div v-if="field.type === 'text' && field.name === 'reference' ">
+                            <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
+                            <TextInput
+                                :id="field.name"
+                                type="text"
+                                class="mt-1 block w-full"
+                                v-model="form.reference"
+                                autofocus
+                                :autocomplete="field.name"
+                                :placeholder="$t(`form.${field.name}`)"
+                            />
+                            <InputError class="mt-2" :message="form.errors.reference" />
+                        </div>
+
+                        <div v-if="field.type === 'text' && field.name === 'company' ">
+                            <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
+                            <TextInput
+                                :id="field.name"
+                                type="text"
+                                class="mt-1 block w-full"
+                                v-model="form.payer_company"
+                                autofocus
+                                :autocomplete="field.name"
+                                :placeholder="$t(`form.${field.name}`)"
+                            />
+                            <InputError class="mt-2" :message="form.errors.payer_company" />
+                        </div>
+
+                        <div v-if="field.type === 'text' && field.name === 'description'">
+                            <InputLabel :for="field.name" :value="$t(`form.${field.name}`)" />
+                            <TextInput
+                                :id="field.name"
+                                type="text"
+                                class="mt-1 block w-full"
+                                v-model="form.description"
+                                autofocus
+                                :autocomplete="field.name"
+                                :placeholder="$t(`form.${field.name}`)"
+                            />
+                            <InputError class="mt-2" :message="form.errors.description" />
+                        </div>
+
+
+                        <div v-if="field.type === 'email' && field.name === 'email' ">
+                            <InputLabel :for="field.name" :value="'*' +  $t(`form.${field.name}`)" />
+                            <TextInput
+                                :id="field.name"
+                                type="text"
+                                class="mt-1 block w-full"
+                                v-model="form.payer_email"
+                                autofocus
+                                autocomplete="email"
+                                :placeholder="$t(`form.${field.name}`)"
+                            />
+                            <InputError class="mt-2" :message="form.errors.payer_email" />
+                        </div>
+
+                    </template>
+
+                </template>
+
+                <div class="flex items-center justify-between col-span-2">
                     <button
                         type="submit"
                         :class="[
@@ -298,6 +471,10 @@ const colorClasses = computed(() => {
             </form>
         </div>
 
-        <p :class="[ 'text-sm text-center mt-6 text-gray-50']" v-if="!showForm">*Información adicional de vencimientos.</p>
+        <div v-if="subscriptionPlans.data && subscriptionPlans.data.length > 0">
+            <p v-if="!showForm" :class="['text-sm text-center mt-6 text-gray-50']">
+                {{ subscriptionPlans.data[0].expiration_additional_info || '' }}
+            </p>
+        </div>
     </div>
 </template>
