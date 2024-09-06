@@ -289,6 +289,7 @@
         "state": "State"
     },
     "subscription": {
+        "subscriptions" : "Subscriptions",
         "label" : "Subscription plans",
         "name": "Name",
         "amount": "Amount",
