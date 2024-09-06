@@ -6,13 +6,18 @@ import {PhotoIcon} from "@heroicons/vue/24/outline/index.js";
 import { route } from 'ziggy-js';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputComponent from '@/Layouts/Organisms/InputComponent.vue';
-import Modal from "@/Components/Modal.vue";
-import SubscriptionForm from "@/Layouts/Organisms/SubscriptionForm.vue";
 import SubscriptionView from "@/Layouts/Organisms/SubscriptionView.vue";
+import Index from "@/Pages/SubscriptionPlans/Index.vue";
 
 const page = usePage();
 const microsite = ref(page.props.microsite || {});
 const formConfig = reactive(page.props.microsite.form || {});
+const periods = ref(page.props.arrayConstants.periods || {});
+const subscriptionPlans = ref(page.props.subscriptionPlans || {});
+
+watch(() => page.props.subscriptionPlans, (newSubscriptionPlans) => {
+    subscriptionPlans.value = newSubscriptionPlans;
+});
 
 const constants = {
     documentTypes: ref(page.props.arrayConstants.documentTypes || {}),
@@ -114,17 +119,6 @@ const submit = () => {
 };
 
 
-const isModalOpen = ref(false);
-
-const openModal = () => {
-    isModalOpen.value = true;
-};
-
-const handleSubmit = (formData) => {
-    console.log('Form Data:', formData);
-};
-
-
 const selectedColorDefault = ref(form.colorDefault);
 
 watch(selectedColorDefault, (newColor) => {
@@ -207,85 +201,67 @@ watch(selectedColorDefault, (newColor) => {
                 </dl>
             </div>
         </main>
-
-
         <main v-if="microsite.microsite_type === 'subscription' " id="subscriptions" class="py-5">
 
-            <div class="flex justify-between items-center">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ $t('subscription.label') }}</h2>
+            <index :periods="periods" :microsite="microsite" :subscriptionPlans="subscriptionPlans" :currency="constants.currencyTypes.value"/>
 
-                <button @click="openModal"
-                        class="inline-flex items-center px-4 py-2 bg-orange-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-700 focus:bg-orange-700 active:bg-orange-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition ease-in-out duration-150"
-                >
-                    Nueva Suscripción
-                </button>
-            </div>
-
-            <Modal v-model:show="isModalOpen" @submit="handleSubmit">
-                <template v-slot:default>
-                    <h1 class="text-2xl font-semibold m-4">Crear Nueva Suscripción</h1>
-                    <SubscriptionForm @submit="handleSubmit" />
-                </template>
-            </Modal>
-
-            <div id="Table">
-                   <div class="container mx-auto p-6">
-                    <div class="bg-white shadow-lg rounded-lg p-6">
-                        <h2 class="text-xl font-semibold mb-4">Suscripciones Existentes</h2>
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descripción</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duración</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
-                            </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Suscripción Básica</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Acceso básico a todos los contenidos</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$9.99</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Mensual</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <button class="text-indigo-600 hover:text-indigo-900">Editar</button>
-                                    <button class="text-red-600 hover:text-red-900 ml-4">Eliminar</button>
-                                </td>
-                            </tr>
-
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            Vista previa
-
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ $t('subscription.Preview') }}</h2>
 
             <div class="flex justify-center items-center">
                 <div id="form" class="border border-1 container bg-white grid grid-cols-2 md:grid-cols-1 gap-4 sm:grid-cols-1 m-4 rounded-2xl shadow-lg">
-                    <SubscriptionView :color="selectedColor" :microsite="microsite" />
+                    <SubscriptionView  :color="selectedColor"
+                                       :microsite="microsite"
+                                       :subscriptionPlans="subscriptionPlans"
+                                       :fields="form.configuration.fields"
+                                       :documentTypes="page.props.arrayConstants.documentTypes"
+                    />
                 </div>
 
                 <div id="fields" class="bg-white px-2 py-3 rounded-2xl shadow-lg">
+                    <div v-if="form.configuration && form.configuration.fields && form.configuration.fields.length > 0">
+                        <h3 class="mb-4 font-semibold text-gray-900">{{ $t('form.fields') }}</h3>
+                        <ul class="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
+                            <li v-for="field in form.configuration.fields" :key="field.name" class="w-full border-b border-gray-200 rounded-t-lg">
+                                <div class="flex items-center ps-3">
+                                    <input
+                                        :id="'checkbox-' + field.name"
+                                        type="checkbox"
+                                        :disabled = "field.required === 'true'"
+                                        :checked="field.active === 'true'"
+                                        @change="toggleFieldActive(field)"
+                                        :class="{
+                                            'w-4 h-4 text-orange-400 bg-gray-50 border-orange-500 rounded focus:ring-orange-500 focus:ring-2': field.required !== 'true',
+                                            'w-4 h-4 text-gray-200 bg-gray-50 border-gray-500 rounded focus:ring-gray-500 focus:ring-2': field.required === 'true'
+                                        }"
+                                    >
+                                    <label
+                                        :for="'checkbox-' + field.name"
+                                        class="w-full py-3 ms-2 text-sm font-medium text-gray-900"
+                                    >
+                                        {{ $t(`form.${field.name}`) }}
+                                    </label>
+                                </div>
+                            </li>
+                        </ul>
 
-                    <h2 class="text-lg my-4 font-semibold text-gray-900">Predeterminado</h2>
-                    <ul class="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
-                        <li  class="w-full border-b border-gray-200 rounded-t-lg">
-                            <select
-                                id="color-select"
-                                v-model="selectedColor"
-                                class="w-full border border-gray-50 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            >
-                                <option value="">{{ $t('select') }}</option>
-                                <option v-for="(label, value) in colorOptions" :key="value" :value="value">
-                                    {{ $t(`form.${label}`) }}
-                                </option>
-                            </select>
-                        </li>
-                    </ul>
+                        <h2 class="text-lg my-4 font-semibold text-gray-900">{{ $t('subscription.Default') }}</h2>
+                        <ul class="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
+                            <li  class="w-full border-b border-gray-200 rounded-t-lg">
+                                <select
+                                    id="color-select"
+                                    v-model="selectedColor"
+                                    class="w-full border border-gray-50 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                >
+                                    <option value="">{{ $t('select') }}</option>
+                                    <option v-for="(label, value) in colorOptions" :key="value" :value="value">
+                                        {{ $t(`form.${label}`) }}
+                                    </option>
+                                </select>
+                            </li>
+                        </ul>
+
+                    </div>
+
                     <div class="flex justify-center pt-4">
                         <PrimaryButton @click="submit">
                             {{ $t('save') }}
@@ -301,6 +277,7 @@ watch(selectedColorDefault, (newColor) => {
         <main v-else id="form">
             <div class="flex justify-between items-center pt-6">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ $t('form.label') }}</h2>
+
             </div>
 
             <div class="flex justify-center items-center">
@@ -408,6 +385,7 @@ watch(selectedColorDefault, (newColor) => {
                                 </div>
                             </li>
                         </ul>
+
                         <h3 class="my-4 font-semibold text-gray-900">{{$t('form.button_color')}}</h3>
                         <ul class="w-48 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg">
                             <li  class="w-full border-b border-gray-200 rounded-t-lg">
@@ -423,6 +401,7 @@ watch(selectedColorDefault, (newColor) => {
                                 </select>
                             </li>
                         </ul>
+
                     </div>
 
                     <div class="flex justify-center pt-4">
