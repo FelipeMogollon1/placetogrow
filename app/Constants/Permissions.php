@@ -41,6 +41,11 @@ enum Permissions: string
     case PAYMENTS_SHOW = 'payments.show';
 
 
+    case SUBSCRIPTIONS_INDEX = 'subscriptions.index';
+    case SUBSCRIPTIONS_SHOW = 'subscriptions.show';
+
+
+
     public static function getAllPermissions(): array
     {
         return array_map(fn($enum) => $enum->value, self::cases());
@@ -53,6 +58,8 @@ enum Permissions: string
             self::MICROSITES_SHOW->value,
             self::PAYMENTS_INDEX->value,
             self::PAYMENTS_SHOW->value,
+            self::SUBSCRIPTIONS_INDEX->value,
+            self::SUBSCRIPTIONS_SHOW->value,
         ];
     }
 
@@ -61,6 +68,8 @@ enum Permissions: string
         return [
             self::PAYMENTS_INDEX->value,
             self::PAYMENTS_SHOW->value,
+            self::SUBSCRIPTIONS_INDEX->value,
+            self::SUBSCRIPTIONS_SHOW->value,
         ];
     }
 }
