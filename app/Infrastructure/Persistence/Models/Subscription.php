@@ -17,15 +17,16 @@ class Subscription extends Model
         'surname',
         'email',
         'document_type',
+        'document',
         'process_url',
         'request_id',
-        'document',
         'mobile',
         'company',
         'token',
         'sub_token',
         'subscription_plan_id',
         'microsite_id',
+        'status',
     ];
 
     public function subscriptionPlan(): BelongsTo
