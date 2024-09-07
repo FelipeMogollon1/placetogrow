@@ -1,31 +1,25 @@
 <script setup>
 import {ref, computed, watch} from 'vue';
-import {CheckBadgeIcon, PencilIcon, PhotoIcon} from "@heroicons/vue/24/outline/index.js";
+import {CheckBadgeIcon} from "@heroicons/vue/24/outline/index.js";
 import { useForm } from '@inertiajs/vue3';
 import InputError from "@/Components/InputError.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import { FaceFrownIcon } from "@heroicons/vue/24/outline/index.js";
-
-
+import {route} from "ziggy-js";
 
 const selectedCurrency = ref('USD');
 
 const showForm = ref(false);
 const selectedSubscription = ref(null);
+
 const selectSubscription = (subscription) => {
     selectedSubscription.value = subscription;
     showForm.value = true;
 };
 
 const submitForm = () => {
-    form.post('/subscription/submit', {
-        onFinish: () => {
-            form.reset();
-            showForm.value = false;
-            selectedSubscription.value = null;
-        }
-    });
+    form.post(route('subscriptions.store'));
 };
 
 const props = defineProps({
@@ -52,20 +46,23 @@ const props = defineProps({
 });
 
 const initialValues = {
-    payer_name : "",
-    payer_surname : "",
-    payer_email : "",
-    payer_document_type : "CC",
-    payer_document : "",
-    payer_phone : "",
-    payer_company: "",
+    name : "",
+    surname : "",
+    email : "",
+    document_type : "CC",
+    document : "",
+    mobile : "",
+    company: "",
     reference: "",
-    company:"",
     description: "",
-    currency: props.microsite.currency.value !== "BOTH" ? props.microsite.currency.value : "COP",
     amount: "",
     microsite_id : props.microsite.id,
+    subscription_plan_id: selectedSubscription?.id
 }
+
+watch(selectedSubscription, (newValue) => {
+    form.subscription_plan_id = newValue?.id || null;
+});
 
 const form = useForm(initialValues)
 
@@ -221,8 +218,8 @@ const patterns = {
 
 const documentErrorMessage = ref('');
 const validateDocument = () => {
-    const docType = form.payer_document_type;
-    const docValue = form.payer_document;
+    const docType = form.document_type;
+    const docValue = form.document;
 
     if (patterns[docType]) {
         const isValid = patterns[docType].test(docValue);
@@ -232,8 +229,8 @@ const validateDocument = () => {
     }
 };
 
-watch(() => form.payer_document_type, validateDocument);
-watch(() => form.payer_document, validateDocument);
+watch(() => form.document_type, validateDocument);
+watch(() => form.document, validateDocument);
 
 </script>
 
@@ -319,12 +316,12 @@ watch(() => form.payer_document, validateDocument);
                                 id="name"
                                 type="text"
                                 class="mt-1 block w-full"
-                                v-model="form.payer_name"
+                                v-model="form.name"
                                 autofocus
                                 autocomplete="name"
                                 :placeholder="$t(`form.${field.name}`)"
                             />
-                            <InputError class="mt-2" :message="form.errors.payer_name" />
+                            <InputError class="mt-2" :message="form.errors.name" />
                         </div>
 
                         <div v-if="field.type === 'text' && field.name === 'surname'">
@@ -333,12 +330,12 @@ watch(() => form.payer_document, validateDocument);
                                 :id="field.name"
                                 type="text"
                                 class="mt-1 block w-full"
-                                v-model="form.payer_surname"
+                                v-model="form.surname"
                                 autofocus
                                 :autocomplete="field.name"
                                 :placeholder="$t(`form.${field.name}`)"
                             />
-                            <InputError class="mt-2" :message="form.errors.payer_surname" />
+                            <InputError class="mt-2" :message="form.errors.surname" />
                         </div>
 
                         <div v-if="field.type === 'select' && field.name === 'document_type'">
@@ -347,12 +344,12 @@ watch(() => form.payer_document, validateDocument);
                                 :name="field.name"
                                 :id="field.name"
                                 class="w-full mt-1 border-gray-300 focus:border-gray-500 focus:ring-gray-500 rounded-md shadow-sm"
-                                v-model="form.payer_document_type"
+                                v-model="form.document_type"
                             >
                                 <option value="" disabled>{{ $t('select') }}</option>
                                 <option v-for="(type, index) in documentTypes" :key="index" :value="type">{{ $t(`documentType.${type}`) }}</option>
                             </select>
-                            <InputError class="mt-2" :message="form.errors.payer_document_type" />
+                            <InputError class="mt-2" :message="form.errors.document_type" />
                         </div>
 
                         <div v-if="field.type === 'number' && field.name === 'document'">
@@ -362,13 +359,13 @@ watch(() => form.payer_document, validateDocument);
                                 type="text"
                                 class="mt-1 block w-full"
                                 @input="validateDocument"
-                                v-model="form.payer_document"
+                                v-model="form.document"
                                 autofocus
                                 :autocomplete="field.name"
                                 :placeholder="$t(`form.${field.name}`)"
                             />
                             <InputError class="mt-2" :message="documentErrorMessage" />
-                            <InputError class="mt-2" :message="form.errors.payer_document" />
+                            <InputError class="mt-2" :message="form.errors.document" />
                         </div>
 
                         <div v-if="field.type === 'number' && field.name === 'mobile' ">
@@ -377,13 +374,13 @@ watch(() => form.payer_document, validateDocument);
                                 :id="field.name"
                                 type="number"
                                 class="mt-1 block w-full"
-                                v-model="form.payer_phone"
+                                v-model="form.mobile"
                                 autofocus
                                 :autocomplete="field.name"
                                 :placeholder="$t(`form.${field.name}`)"
                                 pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
                             />
-                            <InputError class="mt-2" :message="form.errors.payer_phone" />
+                            <InputError class="mt-2" :message="form.errors.mobile" />
                         </div>
 
                         <div v-if="field.type === 'text' && field.name === 'reference' ">
@@ -406,12 +403,12 @@ watch(() => form.payer_document, validateDocument);
                                 :id="field.name"
                                 type="text"
                                 class="mt-1 block w-full"
-                                v-model="form.payer_company"
+                                v-model="form.company"
                                 autofocus
                                 :autocomplete="field.name"
                                 :placeholder="$t(`form.${field.name}`)"
                             />
-                            <InputError class="mt-2" :message="form.errors.payer_company" />
+                            <InputError class="mt-2" :message="form.errors.company" />
                         </div>
 
                         <div v-if="field.type === 'text' && field.name === 'description'">
@@ -435,12 +432,12 @@ watch(() => form.payer_document, validateDocument);
                                 :id="field.name"
                                 type="text"
                                 class="mt-1 block w-full"
-                                v-model="form.payer_email"
+                                v-model="form.email"
                                 autofocus
                                 autocomplete="email"
                                 :placeholder="$t(`form.${field.name}`)"
                             />
-                            <InputError class="mt-2" :message="form.errors.payer_email" />
+                            <InputError class="mt-2" :message="form.errors.email" />
                         </div>
 
                     </template>

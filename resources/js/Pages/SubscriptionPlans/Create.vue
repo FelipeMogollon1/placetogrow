@@ -67,7 +67,6 @@
                     <InputError class="mt-2" :message="form.errors.expiration_time" />
                 </div>
 
-                <!-- Campo de currency -->
                 <div v-if="microsite.currency === 'BOTH'">
                     <InputLabel for="currency" :value="$t('subscription.currency')" />
                     <select
