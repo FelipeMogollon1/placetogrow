@@ -42,6 +42,8 @@ Route::group(['middleware' => 'auth', 'verified'], function () {
     Route::resource('/subscriptionsPlan', SubscriptionPlanController::class);
     Route::resource('/invoices', InvoiceController::class);
     Route::post('/invoices', [InvoiceController::class, 'import'])->name('invoices.import');
+    Route::post('/invoices/{invoiceId}/process-payment', [InvoiceController::class, 'processPayment'])->name('invoices.processPayment');
+
 });
 
 require __DIR__.'/auth.php';
