@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\FormController;
 use App\Http\Controllers\Admin\MicrositeController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\ImportInvoice\InvoiceController;
 use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Roles\RoleController;
@@ -39,7 +40,8 @@ Route::group(['middleware' => 'auth', 'verified'], function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('/subscriptionsPlan', SubscriptionPlanController::class);
-
+    Route::resource('/invoices', InvoiceController::class);
+    Route::post('/invoices', [InvoiceController::class, 'import'])->name('invoices.import');
 });
 
 require __DIR__.'/auth.php';
