@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
-import { EyeIcon } from '@heroicons/vue/24/outline';
+import { EyeIcon, XCircleIcon } from '@heroicons/vue/24/outline';
 import Paginator from '@/Components/Paginator.vue';
 import SpanForm from "@/Layouts/Atoms/SpanForm.vue";
 
@@ -69,7 +69,7 @@ const typeMicrosite = {
                                 @click="sortData(header)"
                                 :class="{ 'cursor-pointer': true, 'bg-gray-300': sortKey === header }"
                             >
-                               {{ $t(`payment.${header}`) }}
+                               {{ $t(`subscription.${header}`) }}
                                 <span v-if="sortKey === header">
                                     {{ sortOrder === 'asc' ? '▲' : '▼' }}
                                 </span>
@@ -121,9 +121,25 @@ const typeMicrosite = {
                             </td>
                             <td>
                                 <div class="text-gray-400 flex justify-center">
-                                    <Link v-if="can('payments.show')" class="mx-1" :href="route('payments.show', item.id)">
+                                    <Link
+                                        v-if="can('subscriptions.show')" class="mx-1"
+                                        :href="route('subscriptions.show', item.id)"
+                                        :title="$t('subscription.detailer')"
+                                    >
                                         <EyeIcon class="w-6 hover:text-gray-500"/>
                                     </Link>
+                                    <Link
+                                        v-if="can('subscriptions.destroy') && item.status !== 'REJECTED' "
+                                          class="mx-1"
+                                        :href="route('subscriptions.destroy', item.id)"
+                                        method="delete"
+                                        as="button"
+                                        :title="$t('subscription.cancelSubscription')"
+                                    >
+                                        <XCircleIcon title="Cancelar" class="w-6 hover:text-red-500"/>
+                                    </Link>
+
+
                                 </div>
                             </td>
                         </tr>
