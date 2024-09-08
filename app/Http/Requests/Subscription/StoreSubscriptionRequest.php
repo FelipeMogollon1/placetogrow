@@ -18,10 +18,10 @@ class StoreSubscriptionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'reference' => ['required', 'string', 'max:255'],
+            'reference' => ['nullable', 'string',],
             'description' => ['nullable', 'string'],
-            'name' => ['required', 'string', 'max:255'],
-            'surname' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string'],
+            'surname' => ['required', 'string'],
             'email' => [
                 'required',
                 'email',
@@ -35,7 +35,7 @@ class StoreSubscriptionRequest extends FormRequest
                 $this->payerFieldsRule(),
             ],
             'process_url' => ['nullable', 'url'],
-            'request_id' => ['nullable', 'string', 'max:255'],
+            'request_id' => ['nullable', 'string'],
             'document' => [
                 'required',
                 'string',
@@ -44,8 +44,6 @@ class StoreSubscriptionRequest extends FormRequest
             ],
             'mobile' => ['nullable', 'numeric', 'digits_between:7,10'],
             'company' => ['nullable', 'string', 'max:255'],
-            'token' => ['nullable', 'string'],
-            'sub_token' => ['nullable', 'string'],
             'subscription_plan_id' => ['required', 'exists:subscription_plans,id'],
             'microsite_id' => ['required', 'exists:microsites,id'],
         ];
