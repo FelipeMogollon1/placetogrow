@@ -49,11 +49,17 @@
             </Link>
         </div>
 
+        <div v-if="can('invoices.index')" class="mb-4">
+            <Link class="group flex items-center py-1" :href="route('invoices.index')">
+                <DocumentArrowUpIcon class="mr-2 h-6 text-gray-500 group-hover:text-orange-500" />
+                <div class="text-gray-500 group-hover:text-orange-500">{{ $t('invoices.title') }}</div>
+            </Link>
+        </div>
     </div>
 </template>
 
 <script>
-import {MagnifyingGlassIcon, PresentationChartBarIcon, GlobeAmericasIcon, SwatchIcon, UserGroupIcon, QueueListIcon, BanknotesIcon, ArrowPathRoundedSquareIcon} from "@heroicons/vue/24/outline/index.js";
+import {MagnifyingGlassIcon, PresentationChartBarIcon, GlobeAmericasIcon, SwatchIcon, UserGroupIcon, QueueListIcon, BanknotesIcon, ArrowPathRoundedSquareIcon, DocumentArrowUpIcon} from "@heroicons/vue/24/outline/index.js";
 import { Link } from '@inertiajs/vue3'
 
 
@@ -67,6 +73,7 @@ export default {
         QueueListIcon,
         BanknotesIcon,
         ArrowPathRoundedSquareIcon,
+        DocumentArrowUpIcon,
         Link,
     }
 }
