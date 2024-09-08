@@ -327,5 +327,18 @@
         "detailer": "Detalle de la Subscripción",
         "list": "Lista de Subscripciones",
         "cancelSubscription" : "Cancelar suscripción"
+    },
+    "invoices": {
+        "title" : "Facturas",
+        "reference": "Referencia",
+        "microsite_type" : "Tipo" ,
+        "name" :  "Nombre",
+        "surname" : "Apellido",
+        "email" :  "Correo Electronico",
+        "document_type" :  "Tipo de documento",
+        "document" : "documento",
+        "currency_type": "Moneda",
+        "amount": "Monto",
+        "status": "Estado"
     }
 }

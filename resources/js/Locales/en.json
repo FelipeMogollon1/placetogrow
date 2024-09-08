@@ -327,5 +327,18 @@
         "detailer": "Subscription Detail",
         "list": "List of Subscriptions",
         "cancelSubscription" : "Cancel Subscription"
+    },
+    "invoices": {
+        "title" : "Invoices",
+        "reference": "Reference",
+        "microsite_type": "Type",
+        "name": "Name",
+        "surname": "Last name",
+        "email" : "Email",
+        "document_type": "Document type",
+        "document": "document",
+        "currency_type": "Currency",
+        "quantity": "Amount",
+        "state": "State"
     }
 }
