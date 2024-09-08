@@ -32,11 +32,6 @@ class SubscriptionController extends Controller
     }
 
 
-    public function create()
-    {
-        //
-    }
-
     public function store(StoreSubscriptionRequest $request, StoreSubscriptionAction $action, PaymentGatewayContract $gateway ): \Symfony\Component\HttpFoundation\Response
     {
         $subscription = $action->execute($request->validated());
@@ -67,18 +62,6 @@ class SubscriptionController extends Controller
             ->where('id', $id)->firstOrFail();
 
         return Inertia::render('Subscriptions/Show', compact('subscription'));
-    }
-
-
-    public function edit(Subscription $subscription)
-    {
-        //
-    }
-
-
-    public function update(Request $request, Subscription $subscription)
-    {
-        //
     }
 
     public function destroy(string $id,PaymentGatewayContract $gateway): \Symfony\Component\HttpFoundation\Response
