@@ -4,6 +4,7 @@ namespace App\PaymentGateway;
 
 use App\Constants\PaymentStatus;
 use App\Contracts\PaymentGatewayContract;
+use App\Infrastructure\Persistence\Models\Invoice;
 use App\Infrastructure\Persistence\Models\Microsite;
 use App\Infrastructure\Persistence\Models\Payment;
 use App\Infrastructure\Persistence\Models\Subscription;
@@ -61,7 +62,6 @@ class PlacetopayGateway implements PaymentGatewayContract
             ];
 
             $requestData['payment'] = $paymentData;
-
             $response = $this->placetopay->request($requestData);
 
             if ($response->isSuccessful()) {
@@ -207,6 +207,62 @@ class PlacetopayGateway implements PaymentGatewayContract
         }
     }
 
+
+    public function createSessionInvoice(Invoice $invoice, Request $request): RedirectResponse
+    {
+        $microsite = Microsite::findOrFail($invoice->microsite_id);
+
+        $payerData = array_filter([
+            'document' => strval($invoice->document),
+            'documentType' => $invoice->document_type,
+            'name' => $invoice->name,
+            'surname' => $invoice->surname,
+            'company' => $invoice->company ?? null,
+            'email' => $invoice->email,
+            'mobile' => $invoice->phone ?? null,
+        ]);
+
+        $paymentData = array_filter([
+            'reference' => $invoice->reference,
+            'description' => $invoice->description,
+            'amount' => [
+                'currency' => $invoice->currency_type,
+                'total' => $invoice->amount,
+            ],
+        ]);
+
+        try {
+            $requestData = [
+                'payer' => $payerData,
+                'expiration' => now()->addMinutes($microsite->payment_expiration_time)->toIso8601String(),
+                'returnUrl' => route('invoices.index'),
+                'ipAddress' => $request->ip(),
+                'userAgent' => $request->userAgent(),
+
+            ];
+
+            $requestData['payment'] = $paymentData;
+
+            $response = $this->placetopay->request($requestData);
+
+            if ($response->isSuccessful()) {
+                $invoice->status = PaymentStatus::PENDING->value;
+                $invoice->process_identifier = $response->processUrl();
+                $invoice->request_id = $response->requestId();
+
+            } else {
+                $invoice->status = PaymentStatus::REJECTED->value;
+            }
+            $invoice->save();
+
+            return $response;
+
+        } catch (Throwable $exception) {
+            report($exception);
+            throw new GatewayException($exception->getMessage());
+        }
+    }
+
     public function getPaymentPlacetoPay(array $settings):PlacetoPay
     {
         return new PlacetoPay([
@@ -216,6 +272,7 @@ class PlacetopayGateway implements PaymentGatewayContract
             'timeout' => 10,
         ]);
     }
+
 
 
 }

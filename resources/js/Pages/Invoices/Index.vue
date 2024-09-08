@@ -1,0 +1,185 @@
+<script setup>
+import {Head, Link, useForm, usePage} from '@inertiajs/vue3';
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import {MagnifyingGlassIcon, PhotoIcon} from "@heroicons/vue/24/outline/index.js";
+import {ref, computed, watch} from "vue";
+import { route } from "ziggy-js";
+import InvoiceTable from "@/Layouts/Organisms/InvoiceTable.vue";
+import {Listbox, ListboxButton, ListboxLabel, ListboxOption, ListboxOptions} from "@headlessui/vue";
+import {CheckIcon, ChevronUpDownIcon} from "@heroicons/vue/20/solid/index.js";
+
+defineProps({
+    invoices: {
+        type: Object,
+        default: () => []
+    },
+    microsites: {
+        type: Object,
+        default: () => []
+    }
+});
+
+const headers = [
+    "reference",
+    "microsite_type",
+    "name",
+    "surname",
+    "email",
+    "document_type",
+    "document",
+    "currency_type",
+    "amount",
+    "status",
+
+];
+
+const selected = ref(null);
+
+const form = useForm({
+    invoices: null,
+    microsite_id: null
+});
+
+const fileInput = ref(null);
+
+
+const handleButtonClick = () => {
+    fileInput.value?.click();
+};
+
+
+const handleFileChange = (event) => {
+    const file = event.target.files?.[0];
+    if (file) {
+        form.invoices = file;
+    }
+};
+
+const fileName = computed(() => form.invoices ? form.invoices.name : 'No ha seleccionado un archivo');
+
+const submitForm = () => {
+    if (selected.value) {
+        form.microsite_id = selected.value.id;
+    }
+
+    form.post(route('invoices.import'), {
+        onSuccess: () => {
+            console.log('Importación exitosa');
+        },
+        onError: (error) => {
+            console.log('Error en la importación', error);
+        },
+        forceFormData: true
+    });
+};
+</script>
+
+<template>
+    <Head :title="$t('invoices.title')" />
+    <AuthenticatedLayout>
+        <template #header>
+            <div class="flex justify-between items-center">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{$t('invoices.title')}}</h2>
+            </div>
+        </template>
+
+        <form @submit.prevent="submitForm" class="space-y-6 p-6 mt-5 bg-white rounded-lg shadow-md ">
+            <!-- Mensaje de selección e instrucciones -->
+            <div>
+                <p class="text-gray-700 mb-2">{{ $t('invoices.selectImport') }}</p>
+                <!-- Opcional: enlace para descargar plantilla de ejemplo -->
+                <!--
+                <p>
+                    <a :href="route('invoices.index')" class="text-blue-600 hover:underline">
+                        Descargar plantilla de ejemplo
+                    </a>
+                </p>
+                -->
+            </div>
+
+            <div class="flex items-center space-x-10">
+                <!-- Selección de archivo y nombre del archivo -->
+                <div class="flex-grow">
+                    <label class="flex items-center cursor-pointer">
+            <span class="inline-flex items-center px-4 py-2 bg-gray-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                {{ $t('invoices.selectFile') }}
+            </span>
+                        <input
+                            ref="fileInput"
+                            type="file"
+                            accept=".csv, .xlsx, .xls"
+                            class="hidden"
+                            @change="handleFileChange"
+                            required
+                        />
+                    </label>
+                    <span class="text-gray-600">{{ fileName }}</span>
+                    <p class="text-red-500" v-if="form.errors.invoices">{{ form.errors.invoices }}</p>
+                </div>
+
+                  <div class="flex-grow">
+                    <Listbox as="div" v-model="selected">
+                        <ListboxLabel v-if="selected" class="block text-sm font-medium leading-6 text-gray-900">
+                            Selecciona el micrositio
+                        </ListboxLabel>
+                        <div class="relative mt-2">
+                            <ListboxButton class="relative w-full cursor-default rounded-md bg-white py-2 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 sm:text-sm sm:leading-6">
+                                <div v-if="selected">
+                        <span class="flex items-center">
+                            <img v-if="selected.logo" class="h-6 w-6 flex-shrink-0 rounded-full" :src="`/storage/${selected.logo}`" alt="Logo">
+                            <PhotoIcon v-else class="h-6 w-6 flex-shrink-0 rounded-full"/>
+                            <span class="ml-3 block truncate">{{ selected.name }}</span>
+                        </span>
+                                    <span class="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
+                            <ChevronUpDownIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
+                        </span>
+                                </div>
+                                <div v-else>
+                                    <span class="ml-3 block truncate">Selecciona el micrositio</span>
+                                </div>
+                            </ListboxButton>
+
+                            <transition leave-active-class="transition ease-in duration-100" leave-from-class="opacity-100" leave-to-class="opacity-0">
+                                <ListboxOptions class="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                    <ListboxOption as="template" v-for="person in microsites" :key="person.id" :value="person" v-slot="{ active, selected }">
+                                        <li :class="[active ? 'bg-orange-600 text-white' : 'text-gray-900', 'relative cursor-default select-none py-2 pl-3 pr-9']">
+                                            <div class="flex items-center">
+                                                <img v-if="person.logo" class="h-6 w-6 flex-shrink-0 rounded-full" :src="`/storage/${person.logo}`" alt="Logo">
+                                                <PhotoIcon v-else class="h-6 w-6 flex-shrink-0 rounded-full"/>
+                                                <span :class="[selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate']">{{ person.name }}</span>
+                                            </div>
+                                            <span v-if="selected" :class="[active ? 'text-white' : 'text-orange-600', 'absolute inset-y-0 right-0 flex items-center pr-4']">
+                                    <CheckIcon class="h-5 w-5" aria-hidden="true" />
+                                </span>
+                                        </li>
+                                    </ListboxOption>
+                                </ListboxOptions>
+                            </transition>
+                        </div>
+                    </Listbox>
+                    <input type="hidden" name="microsite_id" :value="selected?.id" />
+                      <p class="text-red-500" v-if="form.errors.microsite_id">{{ form.errors.microsite_id }}</p>
+                </div>
+            </div>
+
+            <div class="flex justify-center">
+                <button type="submit"
+                        class="inline-flex items-center px-4 py-2 bg-orange-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                >
+                    Importar
+                </button>
+            </div>
+        </form>
+
+
+        <!--   <div class="max-w-sm mx-auto relative mt-6">
+               <input type="text"
+                      v-model="search"
+                      class="py-2 px-11 block w-full border-gray-300 focus:border-gray-500 focus:ring-gray-500 rounded-full text-sm"
+                      placeholder="Buscar factura...">
+               <MagnifyingGlassIcon class="absolute left-3 top-1/2 transform -translate-y-1/2 w-6 text-gray-600" />
+           </div>
+   --->
+        <InvoiceTable :data="invoices.data" :paginator="invoices" :headers="headers" />
+    </AuthenticatedLayout>
+</template>
