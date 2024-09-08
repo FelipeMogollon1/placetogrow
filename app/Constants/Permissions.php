@@ -2,6 +2,8 @@
 
 namespace App\Constants;
 
+use function Laravel\Prompts\search;
+
 enum Permissions: string
 {
     case USERS_INDEX = 'users.index';
@@ -46,6 +48,10 @@ enum Permissions: string
     case SUBSCRIPTIONS_DESTROY  = 'subscriptions.destroy';
 
 
+    case INVOICES_INDEX = 'invoices.index';
+    case INVOICES_STORE = 'invoices.store';
+    case INVOICES_SHOW = 'invoices.show';
+
 
     public static function getAllPermissions(): array
     {
@@ -61,7 +67,10 @@ enum Permissions: string
             self::PAYMENTS_SHOW->value,
             self::SUBSCRIPTIONS_INDEX->value,
             self::SUBSCRIPTIONS_SHOW->value,
-            self::SUBSCRIPTIONS_DESTROY->value
+            self::SUBSCRIPTIONS_DESTROY->value,
+            self::INVOICES_INDEX->value,
+            self::INVOICES_STORE->value,
+            self::INVOICES_SHOW->value
         ];
     }
 
@@ -72,7 +81,10 @@ enum Permissions: string
             self::PAYMENTS_SHOW->value,
             self::SUBSCRIPTIONS_INDEX->value,
             self::SUBSCRIPTIONS_SHOW->value,
-            self::SUBSCRIPTIONS_DESTROY->value
+            self::SUBSCRIPTIONS_DESTROY->value,
+            self::INVOICES_INDEX->value,
+            self::INVOICES_STORE->value,
+            self::INVOICES_SHOW->value
         ];
     }
 }
