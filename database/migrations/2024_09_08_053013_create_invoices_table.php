@@ -16,6 +16,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('microsite_id')->nullable();
+            $table->string('receipt')->nullable();
             $table->string('reference')->nullable();
             $table->string('microsite_type')->default(MicrositesTypes::INVOICE->value);
             $table->string('name')->nullable();
@@ -26,9 +27,12 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->enum('currency_type', CurrencyTypes::getCurrencyType());
             $table->decimal('amount', 10, 2)->nullable();
+            $table->timestamp('paid_at')->nullable();
             $table->string('status')->default(PaymentStatus::PENDING->value);
+            $table->string('process_url')->nullable();
+            $table->string('request_id')->nullable();
+            $table->string('process_identifier')->nullable();
             $table->timestamps();
-
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('microsite_id')->references('id')->on('microsites')->onDelete('cascade');
         });
