@@ -278,15 +278,22 @@
     "voucher": {
         "label": "Comprobante",
         "pay": "de pago en línea",
+        "subscription": "de subscripción",
         "PaymentMade": "Pago realizado por",
+        "subscriptionMade": "Subscripción realizado por",
+        "planInformation": "Información del plan",
+        "planName": "Nombre del plan",
+        "subscriptionPeriod": "Numero de periodos",
+        "periodCount": "Periodo de subscripción",
         "InvoiceNumber" : "Nro. de factura",
         "PaymentDescription": "Descripción del pago",
-        "Reference": "Nro. de referencia",
+        "Reference": "Referencia",
         "date": "Fecha y hora de la transacción",
         "currency": "Moneda",
         "paid": "Valor pagado",
         "product" : "Producto",
-        "state": "Estado"
+        "state": "Estado",
+        "print" : "Imprimir Comprobante"
     },
     "subscription": {
         "subscriptions" : "Suscripciones",
@@ -310,6 +317,15 @@
         "totalPrice" : "Precio total",
         "additional_info": "Información Adicional",
         "expiration_additional_info": "Información de vencimientos",
-        "noSubscriptions" : "Parece que aún no hay suscripciones disponibles. ¡Vuelve más tarde!"
+        "noSubscriptions" : "Parece que aún no hay suscripciones disponibles. ¡Vuelve más tarde!",
+        "reference": "Referencia",
+        "subscriptionPlans": "PLan",
+        "surname": "Apellido",
+        "date": "Fecha de Inicio",
+        "status": "Estado",
+        "microsite": "Micrositio",
+        "detailer": "Detalle de la Subscripción",
+        "list": "Lista de Subscripciones",
+        "cancelSubscription" : "Cancelar suscripción"
     }
 }
