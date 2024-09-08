@@ -2,10 +2,6 @@
 
 namespace App\Infrastructure\Persistence\Models;
 
-use App\Constants\CurrencyTypes;
-use App\Constants\DocumentTypes;
-use App\Constants\MicrositesTypes;
-use App\Constants\PaymentStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,12 +28,11 @@ class Invoice extends Model
     ];
 
     protected $casts = [
-        'document_type' => DocumentTypes::class,
-        'currency_type' => CurrencyTypes::class,
-        'status'        => PaymentStatus::class,
-        'microsite_type' => MicrositesTypes::class,
+        'document_type' => 'string',
+        'currency_type' => 'string',
+        'status'        => 'string',
+        'microsite_type' => 'string',
     ];
-
 
     public function user(): BelongsTo
     {

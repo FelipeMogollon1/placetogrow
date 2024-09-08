@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\ImportInvoice;
 
+use App\Contracts\PaymentGatewayContract;
+use App\Domain\Invoice\StoreInvoiceAction;
+use App\Domain\Payment\Actions\StorePaymentAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Invoice\ImportInvoicesRequest;
+use App\Http\Requests\Invoice\StoreInvoiceRequest;
 use App\Imports\InvoicesImport;
 use App\Infrastructure\Persistence\Models\Invoice;
 use App\Infrastructure\Persistence\Models\Microsite;
@@ -20,21 +24,26 @@ class InvoiceController extends Controller
     public function import(ImportInvoicesRequest $request): Response
     {
         $request->validated();
-        Excel::import(new InvoicesImport, $request->file('invoices'));
+        $import = new InvoicesImport(auth()->user()->id, $request->input('microsite_id'));
+
+        Excel::import($import, $request->file('invoices'));
+        $microsites = Microsite::where('microsite_type', 'invoice')->get();
 
         return Inertia::render('Invoices/Index', [
             'invoices' => Invoice::orderBy('name', 'asc')->paginate(5),
-            'success' => 'Invoices imported successfully.',
+            'microsites' => $microsites
         ]);
     }
 
+
     public function index(): Response
     {
-
+        $microsites = Microsite::where('microsite_type', 'invoice')->get();
         $invoices = Invoice::orderBy('name', 'asc')->paginate(5);
 
         return Inertia::render('Invoices/Index', [
-            'invoices' => $invoices
+            'invoices' => $invoices,
+            'microsites' => $microsites
         ]);
     }
 
@@ -45,24 +54,12 @@ class InvoiceController extends Controller
     }
 
 
-    public function store(Request $request): RedirectResponse
+    public function processPayment(int $invoiceId, Request $request, PaymentGatewayContract $gateway): \Symfony\Component\HttpFoundation\Response
     {
-        $request->validate([
-            'name' => 'nullable|string',
-            'surname' => 'nullable|string',
-            'email' => 'nullable|email',
-            'document_type' => 'nullable|string',
-            'document' => 'nullable|numeric',
-            'description' => 'nullable|string',
-            'currency_type' => 'nullable|string',
-            'amount' => 'nullable|numeric',
-            'user_id' => 'required|exists:users,id',
-            'microsite_id' => 'required|exists:microsites,id',
-        ]);
+        $invoice = Invoice::findOrFail($invoiceId);
+        $response = $gateway->createSessionInvoice($invoice,$request);
 
-        Invoice::create($request->all());
-
-        return redirect()->route('invoices.index')->with('success', 'Invoice created successfully.');
+        return Inertia::location($response->processUrl());
     }
 
 
