@@ -33,7 +33,7 @@ const formatDate = (dateString) => {
 </script>
 
 <template>
-        <Head :title="$t('detail_microsite')"/>
+        <Head :title="$t('payment.payment_detailer')"/>
         <AuthenticatedLayout>
                 <div class="flex justify-between items-center">
                     <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ $t('payment.payment_detailer') }}</h2>
@@ -144,6 +144,7 @@ const formatDate = (dateString) => {
                         </div>
                     </div>
                 </main>
+
         </AuthenticatedLayout>
 </template>
 

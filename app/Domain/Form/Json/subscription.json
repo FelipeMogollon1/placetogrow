@@ -47,14 +47,14 @@
         {
             "type": "text",
             "name": "reference",
-            "active": "true",
-            "required": "true"
+            "active": "false",
+            "required": "false"
         },
         {
             "type": "text",
             "name": "description",
-            "active": "true",
-            "required": "true"
+            "active": "false",
+            "required": "false"
         }
     ]
 }

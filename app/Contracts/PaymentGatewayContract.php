@@ -14,5 +14,7 @@ interface PaymentGatewayContract
     public function createSession(Payment $payment, Request $request):RedirectResponse;
     public function queryPayment(Payment $payment): Payment;
     public function createSessionSubscription(Subscription $subscription, Request $request):RedirectResponse;
+    public function cancelSubscription(Subscription $subscription):RedirectResponse;
     public function querySubscription(Subscription $subscription): Subscription;
+
 }

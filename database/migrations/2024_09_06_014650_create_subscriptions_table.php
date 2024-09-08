@@ -24,8 +24,11 @@ return new class extends Migration
             $table->string('document', 20)->nullable();
             $table->string('mobile')->nullable();
             $table->string('company')->nullable();
-            $table->string('token')->nullable();
-            $table->string('sub_token')->nullable();
+            $table->timestamp('paid_at')->nullable();
+            $table->text('token')->nullable();
+            $table->text('sub_token')->nullable();
+            $table->text('lastDigits')->nullable();
+            $table->date('validUntil')->nullable();
             $table->enum('status', PaymentStatus::getPaymentStatus())->nullable();
             $table->string('process_identifier')->nullable();
             $table->foreignId('subscription_plan_id')->constrained()->onDelete('cascade');

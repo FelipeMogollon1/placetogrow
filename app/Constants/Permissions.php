@@ -43,6 +43,7 @@ enum Permissions: string
 
     case SUBSCRIPTIONS_INDEX = 'subscriptions.index';
     case SUBSCRIPTIONS_SHOW = 'subscriptions.show';
+    case SUBSCRIPTIONS_DESTROY  = 'subscriptions.destroy';
 
 
 
@@ -60,6 +61,7 @@ enum Permissions: string
             self::PAYMENTS_SHOW->value,
             self::SUBSCRIPTIONS_INDEX->value,
             self::SUBSCRIPTIONS_SHOW->value,
+            self::SUBSCRIPTIONS_DESTROY->value
         ];
     }
 
@@ -70,6 +72,7 @@ enum Permissions: string
             self::PAYMENTS_SHOW->value,
             self::SUBSCRIPTIONS_INDEX->value,
             self::SUBSCRIPTIONS_SHOW->value,
+            self::SUBSCRIPTIONS_DESTROY->value
         ];
     }
 }

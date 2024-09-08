@@ -239,7 +239,7 @@ watch(() => form.document, validateDocument);
        <div v-if="microsite.logo" class="flex lg:justify-center lg:col-start-2">
            <div class="group flex items-center rounded-xl mb-6">
                <img  class="rounded-xl w-12 object-contain mr-2" :src="`/storage/${microsite.logo}`" alt="Logo">
-               <h1 :class="['m-1 group-hover:text-gray-500', colorClasses.primaryText]">{{microsite}}</h1>
+               <h1 :class="['m-1 text-4xl group-hover:text-gray-500', colorClasses.primaryText]">{{microsite.name}}</h1>
            </div>
        </div>
 

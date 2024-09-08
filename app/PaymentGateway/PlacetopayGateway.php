@@ -2,7 +2,6 @@
 
 namespace App\PaymentGateway;
 
-use App\Constants\MicrositesTypes;
 use App\Constants\PaymentStatus;
 use App\Contracts\PaymentGatewayContract;
 use App\Infrastructure\Persistence\Models\Microsite;
@@ -13,15 +12,18 @@ use Dnetix\Redirection\PlacetoPay;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Crypt;
 use Throwable;
 
 class PlacetopayGateway implements PaymentGatewayContract
 {
     public PlacetoPay $placetopay;
+    public string $baseUrl;
 
     public function connection(array $settings): self
     {
         $this->placetopay = $this->getPaymentPlacetoPay($settings);
+        $this->baseUrl = Arr::get($settings, 'baseUrl');
         return $this;
     }
 
@@ -55,6 +57,7 @@ class PlacetopayGateway implements PaymentGatewayContract
                 'returnUrl' => route('returnBusiness', $payment->id),
                 'ipAddress' => $request->ip(),
                 'userAgent' => $request->userAgent(),
+
             ];
 
             $requestData['payment'] = $paymentData;
@@ -116,6 +119,7 @@ class PlacetopayGateway implements PaymentGatewayContract
                 $subscription->request_id = $response->requestId();
              } else {
                 $subscription->status = PaymentStatus::REJECTED->value;
+                $subscription->request_id = $response->requestId();
             }
             $subscription->save();
 
@@ -148,17 +152,59 @@ class PlacetopayGateway implements PaymentGatewayContract
     {
         $response = $this->placetopay->query($subscription->request_id);
 
+
         if ($response->isSuccessful()) {
             if ($response->status()->isApproved()) {
+                $instrumentData = $response->subscription()->instrumentToArray();
+
                 $subscription->status = PaymentStatus::APPROVED->value;
                 $subscription->paid_at = new Carbon($response->status()->date());
-                $subscription->receipt = Arr::get($response->payment(), 'receipt');
+                $subscription->token = Crypt::encrypt($instrumentData[0]['value']);
+                $subscription->sub_token = Crypt::encrypt($instrumentData[1]['value']);
+                $subscription->lastDigits = Crypt::encrypt($instrumentData[5]['value']);
+                $subscription->validUntil = $instrumentData[6]['value'];
+
             } elseif ($response->status()->isRejected()) {
                 $subscription->status = PaymentStatus::REJECTED->value;
             }
             $subscription->save();
         }
         return $subscription;
+    }
+
+    public function cancelSubscription(Subscription $subscription): RedirectResponse
+    {
+        $microsite = Microsite::findOrFail($subscription->microsite_id);
+
+       try {
+            $requestData = [
+                'instrument' => [
+                    "token" => Crypt::decrypt($subscription->token),
+                ],
+                'expiration' => now()->addMinutes($microsite->payment_expiration_time)->toIso8601String(),
+                'returnUrl' => route('subscription.index', $subscription->id),
+                'ipAddress' => $request->ip(),
+                'userAgent' => $request->userAgent(),
+            ];
+
+            $response = $this->placetopay->request($requestData);
+
+            if ($response->isSuccessful()) {
+                $subscription->status = PaymentStatus::PENDING->value;
+                $subscription->process_identifier = $response->processUrl();
+                $subscription->request_id = $response->requestId();
+            } else {
+                $subscription->status = PaymentStatus::REJECTED->value;
+                $subscription->request_id = $response->requestId();
+            }
+            $subscription->save();
+
+            return $response;
+
+        } catch (Throwable $exception) {
+            report($exception);
+            throw new GatewayException($exception->getMessage());
+        }
     }
 
     public function getPaymentPlacetoPay(array $settings):PlacetoPay
@@ -170,4 +216,6 @@ class PlacetopayGateway implements PaymentGatewayContract
             'timeout' => 10,
         ]);
     }
+
+
 }

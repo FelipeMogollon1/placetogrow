@@ -2,29 +2,32 @@
 
 namespace App\Http\Controllers\Subscription;
 
+use App\Constants\Abilities;
 use App\Contracts\PaymentGatewayContract;
-use App\Contracts\SubscriptionGatewayContract;
 use App\Domain\Subscription\Actions\StoreSubscriptionAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Subscription\StoreSubscriptionRequest;
 use App\Infrastructure\Persistence\Models\Microsite;
-use App\Infrastructure\Persistence\Models\Payment;
 use App\Infrastructure\Persistence\Models\Subscription;
-use Illuminate\Http\Request;
+use App\Infrastructure\Persistence\Models\SubscriptionPlan;
+use App\ViewModels\Subscription\SubscriptionIndexViewModel;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class SubscriptionController extends Controller
 {
-
-    public function index(): Response
+    use AuthorizesRequests;
+    public function index(SubscriptionIndexViewModel $viewModel): Response
     {
-        $subscriptions = Subscription::with(['subscriptionPlan', 'microsite'])
-            ->orderBy('name', 'asc')
-            ->paginate(5);
+        $this->authorize(Abilities::VIEW_ANY->value, Subscription::class);
+        $search = Request::only(['search']);
 
         return Inertia::render('Subscriptions/Index', [
-            'subscriptions' => $subscriptions
+            'subscriptions' => $viewModel
+                ->fromAuthenticatedUser()->getSubscriptions($search),
+            'filter' => $search ?? '',
         ]);
     }
 
@@ -34,9 +37,6 @@ class SubscriptionController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreSubscriptionRequest $request, StoreSubscriptionAction $action, PaymentGatewayContract $gateway ): \Symfony\Component\HttpFoundation\Response
     {
         $subscription = $action->execute($request->validated());
@@ -49,42 +49,45 @@ class SubscriptionController extends Controller
     public function returnSubscription(Subscription $subscription, PaymentGatewayContract $gatewayContract): Response
     {
         $microsite = Microsite::query()->where('id',$subscription->microsite_id)->first();
+        $subscriptionPlans = SubscriptionPlan::all();
         $gatewayContract->querySubscription($subscription);
 
         return Inertia::render('Subscriptions/ReturnSubscription', [
             'subscription' => $subscription,
-            'microsite' => $microsite
+            'microsite' => $microsite,
+            'subscriptionPlans' => $subscriptionPlans
+
         ]);
     }
-    /**
-     * Display the specified resource.
-     */
-    public function show(Subscription $subscription)
+
+    public function show(string $id): Response
     {
-        //
+        $this->authorize(Abilities::VIEW->value, Subscription::class);
+        $subscription = Subscription::with(['subscriptionPlan', 'microsite'])
+            ->where('id', $id)->firstOrFail();
+
+        return Inertia::render('Subscriptions/Show', compact('subscription'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+
     public function edit(Subscription $subscription)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+
     public function update(Request $request, Subscription $subscription)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Subscription $subscription)
+    public function destroy(string $id,PaymentGatewayContract $gateway): \Symfony\Component\HttpFoundation\Response
     {
-        //
+        dd($id);
+        $subscription = SubscriptionPlan::findOrFail($id);
+        $response = $gateway->cancelSubscription($subscription);
+
+        return Inertia::location($response->processUrl());
+
     }
 }

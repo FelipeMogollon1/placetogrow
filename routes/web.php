@@ -20,7 +20,7 @@ Route::resource('/payments', PaymentController::class);
 Route::resource('/subscriptions', SubscriptionController::class);
 
 Route::get('/returnBusiness/{payment}', [PaymentController::class,'returnBusiness'])->name('returnBusiness');
-Route::get('/returnSubscription/{Subscription}', [SubscriptionController::class,'returnSubscription'])->name('returnSubscription');
+Route::get('/returnSubscription/{subscription}', [SubscriptionController::class,'returnSubscription'])->name('returnSubscription');
 
 Route::group(['middleware' => 'auth', 'verified'], function () {
 
