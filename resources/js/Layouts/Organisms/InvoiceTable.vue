@@ -5,7 +5,7 @@ import { route } from 'ziggy-js';
 import { EyeIcon, CreditCardIcon } from '@heroicons/vue/24/outline';
 import Paginator from '@/Components/Paginator.vue';
 import SpanForm from "@/Layouts/Atoms/SpanForm.vue";
-import {XCircleIcon} from "@heroicons/vue/24/outline/index.js";
+import {TrashIcon, XCircleIcon} from "@heroicons/vue/24/outline/index.js";
 
 
 const props = defineProps({
@@ -122,16 +122,20 @@ const typeMicrosite = {
                             </td>
                             <td>
                                 <div class="text-gray-400 flex justify-center">
-                                    <Link v-if="can('invoices.show')" class="mx-1" :href="route('invoices.show', item.id)">
-                                        <EyeIcon class="w-6 hover:text-gray-500"/>
-                                    </Link>
 
-                                    <Link v-if="can('invoices.store') && item.status !== 'APPROVED'"
+                                    <Link v-if="can('invoices.processPayment') && item.status !== 'APPROVED'"
                                           class="mx-1"
                                           :href="route('invoices.processPayment', item.id)"
                                           method="POST"
                                     >
                                         <CreditCardIcon title="Realizar el pago" class="w-6 hover:text-gray-500"/>
+                                    </Link>
+
+                                    <Link v-if="can('invoices.destroy') && item.status !== 'APPROVED'"
+                                          :href="route('invoices.destroy', item.id)"
+                                          method="delete" as="button"
+                                    >
+                                        <TrashIcon class="w-6 hover:text-red-500"/>
                                     </Link>
 
                                 </div>

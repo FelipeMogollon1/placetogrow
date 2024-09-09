@@ -42,6 +42,10 @@ const props = defineProps({
     documentTypes:{
         type: Object,
         default: () => []
+    },
+    disableSubmit: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -298,11 +302,11 @@ watch(() => form.document, validateDocument);
         </div>
 
         <div v-else class="bg-white p-6 rounded-lg shadow-xl w-full max-w-xl mx-auto">
-            <h2 class="text-2xl font-bold mb-4">Formulario de Suscripción</h2>
+            <h2 class="text-2xl font-bold mb-4">{{ $t('subscription.subscriptionForm') }}</h2>
 
             <form @submit.prevent="submitForm" class="grid grid-cols-1 md:grid-cols-2 gap-4" >
                 <div class="mb-4 col-span-2">
-                    <label class="block text-gray-700 font-bold mb-2">Suscripción Seleccionada:</label>
+                    <label class="block text-gray-700 font-bold mb-2">{{ $t('subscription.selectedSubscription') }}:</label>
                     <div class="bg-gray-100 p-2 rounded">{{ selectedSubscription?.name }}</div>
                 </div>
 
@@ -449,10 +453,12 @@ watch(() => form.document, validateDocument);
                         type="submit"
                         :class="[
                             'text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline border',
-                            colorClasses.button
+                            colorClasses.button,
+                            { 'opacity-50 cursor-not-allowed': props.disableSubmit }
                         ]"
+                        :disabled="props.disableSubmit"
                     >
-                        Enviar
+                        {{ $t('subscription.send') }}
                     </button>
                     <button
                         type="button"
@@ -462,7 +468,7 @@ watch(() => form.document, validateDocument);
                             colorClasses.buttonText
                         ]"
                     >
-                        Volver
+                        {{ $t('subscription.return') }}
                     </button>
                 </div>
             </form>
