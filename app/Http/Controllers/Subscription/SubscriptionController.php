@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Subscription;
 
 use App\Constants\Abilities;
+use App\Constants\PaymentStatus;
+use App\Constants\SubscriptionStatus;
 use App\Contracts\PaymentGatewayContract;
+use App\Domain\Subscription\Actions\DestroySubscriptionAction;
 use App\Domain\Subscription\Actions\StoreSubscriptionAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Subscription\StoreSubscriptionRequest;
@@ -12,7 +15,14 @@ use App\Infrastructure\Persistence\Models\Subscription;
 use App\Infrastructure\Persistence\Models\SubscriptionPlan;
 use App\ViewModels\Subscription\SubscriptionIndexViewModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -64,13 +74,18 @@ class SubscriptionController extends Controller
         return Inertia::render('Subscriptions/Show', compact('subscription'));
     }
 
-    public function destroy(string $id, PaymentGatewayContract $gateway): \Symfony\Component\HttpFoundation\Response
+    public function destroy(string $id, DestroySubscriptionAction $action): RedirectResponse
     {
-        dd($id);
-        $subscription = SubscriptionPlan::findOrFail($id);
-        $response = $gateway->cancelSubscription($subscription);
+        $subscription = Subscription::findOrFail($id);
 
-        return Inertia::location($response->processUrl());
+        if ($action->execute($subscription)) {
+            Artisan::call('app:transactions-consult');
+            return redirect()->route('subscriptions.index')
+                ->with('success', 'Subscription successfully canceled and transactions updated.');
+        }
 
+        return redirect()->route('subscriptions.index')
+            ->with('error', 'Failed to cancel the subscription. Please try again.');
     }
+
 }
