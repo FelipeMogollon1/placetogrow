@@ -116,17 +116,10 @@ const submitForm = () => {
         </template>
 
         <form v-if="can('invoices.import')" @submit.prevent="submitForm" class="space-y-6 p-6 mt-5 bg-white rounded-lg shadow-md ">
-            <!-- Mensaje de selección e instrucciones -->
+
             <div>
                 <p class="text-gray-700 mb-2">{{ $t('invoices.selectImport') }}</p>
-                <!-- Opcional: enlace para descargar plantilla de ejemplo -->
-                <!--
-                <p>
-                    <a :href="route('invoices.index')" class="text-blue-600 hover:underline">
-                        Descargar plantilla de ejemplo
-                    </a>
-                </p>
-                -->
+
             </div>
 
             <div class="flex items-center space-x-10">

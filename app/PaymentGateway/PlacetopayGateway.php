@@ -172,7 +172,7 @@ class PlacetopayGateway implements PaymentGatewayContract
         return $subscription;
     }
 
-    public function cancelSubscription(Subscription $subscription): RedirectResponse
+    public function cancelSubscription(Subscription $subscription, Request $request): RedirectResponse
     {
         $microsite = Microsite::findOrFail($subscription->microsite_id);
 
@@ -274,5 +274,20 @@ class PlacetopayGateway implements PaymentGatewayContract
     }
 
 
+    public function queryInvoice(Invoice $invoice): Invoice
+    {
+        $response = $this->placetopay->query($invoice->request_id);
 
+        if ($response->isSuccessful()) {
+            if ($response->status()->isApproved()) {
+                $invoice->status = PaymentStatus::APPROVED->value;
+                $invoice->paid_at = new Carbon($response->status()->date());
+                $invoice->receipt = Arr::get($response->payment(), 'receipt');
+            } elseif ($response->status()->isRejected()) {
+                $invoice->status = PaymentStatus::REJECTED->value;
+            }
+            $invoice->save();
+        }
+        return $invoice;
+    }
 }

@@ -2,8 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Infrastructure\Persistence\Models\Invoice;
 use App\Infrastructure\Persistence\Models\Payment;
+use App\Infrastructure\Persistence\Models\Subscription;
+use App\Jobs\SoluctionInvoiceJob;
+use App\Jobs\SolutionInvoiceJob;
 use App\Jobs\SolutionPaymentJob;
+use App\Jobs\SolutionSubscriptionJob;
 use Illuminate\Console\Command;
 
 class TransactionsConsult extends Command
@@ -31,5 +36,16 @@ class TransactionsConsult extends Command
         foreach ($payments as $payment) {
             SolutionPaymentJob::dispatch($payment);
         }
+
+        $subscriptions = Subscription::where('status', 'approved')->get();
+        foreach ($subscriptions as $subscription) {
+            SolutionSubscriptionJob::dispatch($subscription);
+        }
+
+        $invoices = Invoice::where('status', 'pending')->get();
+        foreach ($invoices as $invoice) {
+            SolutionInvoiceJob::dispatch($invoice);
+        }
+
     }
 }
