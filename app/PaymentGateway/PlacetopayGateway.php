@@ -28,7 +28,7 @@ class PlacetopayGateway implements PaymentGatewayContract
         return $this;
     }
 
-     public function createSession(Payment $payment, Request $request): RedirectResponse
+    public function createSession(Payment $payment, Request $request): RedirectResponse
     {
         $microsite = Microsite::findOrFail($payment->microsite_id);
 
@@ -82,7 +82,7 @@ class PlacetopayGateway implements PaymentGatewayContract
         }
     }
 
-    public function createSessionSubscription(Subscription $subscription, Request $request):RedirectResponse
+    public function createSessionSubscription(Subscription $subscription, Request $request): RedirectResponse
     {
         $microsite = Microsite::findOrFail($subscription->microsite_id);
 
@@ -117,7 +117,7 @@ class PlacetopayGateway implements PaymentGatewayContract
                 $subscription->status = PaymentStatus::PENDING->value;
                 $subscription->process_identifier = $response->processUrl();
                 $subscription->request_id = $response->requestId();
-             } else {
+            } else {
                 $subscription->status = PaymentStatus::REJECTED->value;
                 $subscription->request_id = $response->requestId();
             }
@@ -148,7 +148,7 @@ class PlacetopayGateway implements PaymentGatewayContract
         return $payment;
     }
 
-    public function querySubscription(Subscription $subscription):Subscription
+    public function querySubscription(Subscription $subscription): Subscription
     {
         $response = $this->placetopay->query($subscription->request_id);
 
@@ -176,7 +176,7 @@ class PlacetopayGateway implements PaymentGatewayContract
     {
         $microsite = Microsite::findOrFail($subscription->microsite_id);
 
-       try {
+        try {
             $requestData = [
                 'instrument' => [
                     "token" => Crypt::decrypt($subscription->token),
@@ -263,7 +263,7 @@ class PlacetopayGateway implements PaymentGatewayContract
         }
     }
 
-    public function getPaymentPlacetoPay(array $settings):PlacetoPay
+    public function getPaymentPlacetoPay(array $settings): PlacetoPay
     {
         return new PlacetoPay([
             'login' => Arr::get($settings, 'login'),

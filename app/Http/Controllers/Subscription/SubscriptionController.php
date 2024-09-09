@@ -32,7 +32,7 @@ class SubscriptionController extends Controller
     }
 
 
-    public function store(StoreSubscriptionRequest $request, StoreSubscriptionAction $action, PaymentGatewayContract $gateway ): \Symfony\Component\HttpFoundation\Response
+    public function store(StoreSubscriptionRequest $request, StoreSubscriptionAction $action, PaymentGatewayContract $gateway): \Symfony\Component\HttpFoundation\Response
     {
         $subscription = $action->execute($request->validated());
         $response = $gateway->createSessionSubscription($subscription, $request);
@@ -43,7 +43,7 @@ class SubscriptionController extends Controller
 
     public function returnSubscription(Subscription $subscription, PaymentGatewayContract $gatewayContract): Response
     {
-        $microsite = Microsite::query()->where('id',$subscription->microsite_id)->first();
+        $microsite = Microsite::query()->where('id', $subscription->microsite_id)->first();
         $subscriptionPlans = SubscriptionPlan::all();
         $gatewayContract->querySubscription($subscription);
 
@@ -64,7 +64,7 @@ class SubscriptionController extends Controller
         return Inertia::render('Subscriptions/Show', compact('subscription'));
     }
 
-    public function destroy(string $id,PaymentGatewayContract $gateway): \Symfony\Component\HttpFoundation\Response
+    public function destroy(string $id, PaymentGatewayContract $gateway): \Symfony\Component\HttpFoundation\Response
     {
         dd($id);
         $subscription = SubscriptionPlan::findOrFail($id);

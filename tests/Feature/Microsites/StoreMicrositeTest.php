@@ -43,7 +43,7 @@ class StoreMicrositeTest extends TestCase
             'currency' => CurrencyTypes::COP->value,
             'payment_expiration_time' => 12,
             'category_id' => $category->id,
-            'user_id'=> $user->id
+            'user_id' => $user->id
         ];
 
         $response = $this->actingAs($user)
@@ -62,7 +62,7 @@ class StoreMicrositeTest extends TestCase
             'currency' => CurrencyTypes::COP->value,
             'payment_expiration_time' => 12,
             'category_id' => $category->id,
-            'user_id'=> $user->id
+            'user_id' => $user->id
         ]);
     }
 }

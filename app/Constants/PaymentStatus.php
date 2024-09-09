@@ -13,6 +13,6 @@ enum PaymentStatus: string
 
     public static function getPaymentStatus(): array
     {
-        return array_map(fn($enum) => $enum->value, self::cases());
+        return array_map(fn ($enum) => $enum->value, self::cases());
     }
 }

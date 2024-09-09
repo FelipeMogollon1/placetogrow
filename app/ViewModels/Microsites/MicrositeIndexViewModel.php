@@ -11,7 +11,7 @@ use Spatie\ViewModels\ViewModel;
 
 class MicrositeIndexViewModel extends ViewModel
 {
-     public function __construct(protected User $user)
+    public function __construct(protected User $user)
     {
 
     }

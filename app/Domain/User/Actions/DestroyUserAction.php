@@ -8,8 +8,7 @@ class DestroyUserAction
 {
     public function execute(User $user): bool
     {
-        if ($user->microsites()->exists())
-        {
+        if ($user->microsites()->exists()) {
             return true;
         }
 

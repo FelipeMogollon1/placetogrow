@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 
 class ValidateFormConfiguration implements ValidationRule
 {
-      protected array $existingFields;
+    protected array $existingFields;
 
     public function __construct(array $existingFields = [])
     {

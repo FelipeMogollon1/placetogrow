@@ -6,7 +6,6 @@ use App\Constants\Permissions;
 use App\Constants\Roles;
 use App\Infrastructure\Persistence\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class DestroyRoleTest extends TestCase

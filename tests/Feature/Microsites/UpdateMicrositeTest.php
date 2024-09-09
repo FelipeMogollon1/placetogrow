@@ -70,7 +70,7 @@ class UpdateMicrositeTest extends TestCase
             'payment_expiration_time' => 24,
             'category_id' => $category->id,
             'user_id' => $user->id,
-            'form_id' =>$form->id
+            'form_id' => $form->id
         ];
 
         $response = $this->actingAs($user)
@@ -91,7 +91,7 @@ class UpdateMicrositeTest extends TestCase
             'payment_expiration_time' => $updatedData['payment_expiration_time'],
             'category_id' => $updatedData['category_id'],
             'user_id' => $updatedData['user_id'],
-            'form_id' =>$updatedData['form_id'],
+            'form_id' => $updatedData['form_id'],
         ]);
 
         $this->assertEquals($updatedLogoPath, $microsite->logo);

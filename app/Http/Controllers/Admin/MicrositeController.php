@@ -20,7 +20,6 @@ use App\Infrastructure\Persistence\Models\User;
 use App\ViewModels\Microsites\MicrositeIndexViewModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -60,7 +59,7 @@ class MicrositeController extends Controller
         $subscriptionPlans = SubscriptionPlan::where('microsite_id', $id)->orderBy('name', 'asc')->paginate(6);
         $arrayConstants = $this->getCommonData();
 
-        return Inertia::render('Microsites/Show', compact('microsite','arrayConstants', 'subscriptionPlans'));
+        return Inertia::render('Microsites/Show', compact('microsite', 'arrayConstants', 'subscriptionPlans'));
     }
 
     public function edit(string $id): Response
@@ -80,7 +79,7 @@ class MicrositeController extends Controller
         return to_route('microsites.index');
     }
 
-    public function destroy(int $id,DestroyMicrositeAction $destroyAction): RedirectResponse
+    public function destroy(int $id, DestroyMicrositeAction $destroyAction): RedirectResponse
     {
         $this->authorize(Abilities::DELETE->value, Microsite::class);
         $destroyAction->execute($id);
@@ -101,7 +100,7 @@ class MicrositeController extends Controller
         $subscriptionPlans = SubscriptionPlan::where('microsite_id', $microsite->id)->orderBy('name', 'asc')->paginate(6);
         $arrayConstants = $this->getCommonData();
 
-        return Inertia::render('Form/PaymentForm', compact('microsite','subscriptionPlans','arrayConstants'));
+        return Inertia::render('Form/PaymentForm', compact('microsite', 'subscriptionPlans', 'arrayConstants'));
     }
 
     private function getCommonData(): array

@@ -17,6 +17,6 @@ enum CurrencyTypes: string
     }
     public static function getCurrencyType(): array
     {
-        return array_map(fn($enum) => $enum->value, self::cases());
+        return array_map(fn ($enum) => $enum->value, self::cases());
     }
 }

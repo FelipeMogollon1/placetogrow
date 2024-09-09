@@ -5,11 +5,8 @@ namespace App\ViewModels\Invoice;
 use App\Constants\Permissions;
 use App\Constants\Roles;
 use App\Infrastructure\Persistence\Models\Invoice;
-use App\Infrastructure\Persistence\Models\Microsite;
 use App\Infrastructure\Persistence\Models\User;
-use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
 use Spatie\ViewModels\ViewModel;
 
 class InvoiceIndexViewModel extends ViewModel

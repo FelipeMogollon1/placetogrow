@@ -2,8 +2,6 @@
 
 namespace App\Domain\Payment\Actions;
 
-
-
 use App\Infrastructure\Persistence\Models\Microsite;
 use App\Infrastructure\Persistence\Models\Payment;
 use Illuminate\Support\Str;

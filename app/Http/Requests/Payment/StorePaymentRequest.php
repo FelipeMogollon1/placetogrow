@@ -84,8 +84,9 @@ class StorePaymentRequest extends FormRequest
 
         if ($this->input('currency') === CurrencyTypes::USD->value) {
             $rules[] = 'max:99999';
-        }else if ($this->input('currency') === CurrencyTypes::COP->value)
+        } elseif ($this->input('currency') === CurrencyTypes::COP->value) {
             $rules[] = 'max:999999999';
+        }
         return $rules;
     }
 

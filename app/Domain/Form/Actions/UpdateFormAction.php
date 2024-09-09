@@ -3,7 +3,6 @@
 namespace App\Domain\Form\Actions;
 
 use App\Infrastructure\Persistence\Models\Form;
-use App\Infrastructure\Persistence\Models\Microsite;
 use Illuminate\Support\Facades\Storage;
 
 class UpdateFormAction
@@ -32,6 +31,6 @@ class UpdateFormAction
             unset($data['footer']);
         }
 
-       return Form::findOrFail($id)->update($data);
+        return Form::findOrFail($id)->update($data);
     }
 }

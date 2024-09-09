@@ -9,7 +9,6 @@ use Illuminate\Validation\Rule;
 
 class StoreSubscriptionPlanRequest extends FormRequest
 {
-
     public function authorize(): bool
     {
         return true;

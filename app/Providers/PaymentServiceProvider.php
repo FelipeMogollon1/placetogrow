@@ -9,11 +9,9 @@ use Illuminate\Support\ServiceProvider;
 
 class PaymentServiceProvider extends ServiceProvider
 {
-
-
     public function boot(): void
     {
-            $this->app->bind(PaymentGatewayContract::class, function () {
+        $this->app->bind(PaymentGatewayContract::class, function () {
             $service = config('payment.services.current');
 
             return (app(PlacetopayGateway::class))

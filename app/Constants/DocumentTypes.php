@@ -11,6 +11,6 @@ enum DocumentTypes: string
 
     public static function getDocumentTypes(): array
     {
-        return array_map(fn($enum) => $enum->value, self::cases());
+        return array_map(fn ($enum) => $enum->value, self::cases());
     }
 }

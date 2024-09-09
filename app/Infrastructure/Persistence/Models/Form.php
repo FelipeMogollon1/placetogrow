@@ -5,7 +5,6 @@ namespace App\Infrastructure\Persistence\Models;
 use Database\Factories\FormFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Form extends Model
@@ -34,9 +33,9 @@ class Form extends Model
      */
     protected $casts = [
         'configuration' => 'array',
-        'header'=> 'string',
-        'footer'=> 'string',
-        'color'=> 'string'
+        'header' => 'string',
+        'footer' => 'string',
+        'color' => 'string'
     ];
 
     public function microsite(): HasOne

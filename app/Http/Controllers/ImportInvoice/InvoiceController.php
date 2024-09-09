@@ -17,10 +17,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use Inertia\Inertia;
 use Inertia\Response;
 
-
 class InvoiceController extends Controller
 {
-
     public function import(ImportInvoicesRequest $request): Response
     {
         $request->validated();
@@ -35,7 +33,7 @@ class InvoiceController extends Controller
         ]);
     }
 
-    public function index(Request $request,InvoiceIndexViewModel $viewModel, InvoiceMicrositeIndexViewModel $viewModelMicrosite): Response
+    public function index(Request $request, InvoiceIndexViewModel $viewModel, InvoiceMicrositeIndexViewModel $viewModelMicrosite): Response
     {
         $search = $request->only(['search']);
 
@@ -49,7 +47,7 @@ class InvoiceController extends Controller
     public function processPayment(int $invoiceId, Request $request, PaymentGatewayContract $gateway): \Symfony\Component\HttpFoundation\Response
     {
         $invoice = Invoice::findOrFail($invoiceId);
-        $response = $gateway->createSessionInvoice($invoice,$request);
+        $response = $gateway->createSessionInvoice($invoice, $request);
 
         return Inertia::location($response->processUrl());
     }

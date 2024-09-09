@@ -2,8 +2,6 @@
 
 namespace App\Constants;
 
-use function Laravel\Prompts\search;
-
 enum Permissions: string
 {
     case USERS_INDEX = 'users.index';
@@ -52,13 +50,13 @@ enum Permissions: string
     case INVOICES_IMPORT = 'invoices.import';
     case INVOICES_SHOW = 'invoices.show';
     case INVOICES_DESTROY  = 'invoices.destroy';
-    case INVOICE_PROCESS_PAYMENT= 'invoices.processPayment';
+    case INVOICE_PROCESS_PAYMENT = 'invoices.processPayment';
 
 
 
     public static function getAllPermissions(): array
     {
-        return array_map(fn($enum) => $enum->value, self::cases());
+        return array_map(fn ($enum) => $enum->value, self::cases());
     }
 
     public static function getAdminPermissions(): array

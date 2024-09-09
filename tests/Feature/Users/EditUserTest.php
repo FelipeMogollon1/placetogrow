@@ -30,7 +30,8 @@ class EditUserTest extends TestCase
             ->get(route('users.edit', $userToEdit->id));
 
         $response->assertOk()
-            ->assertInertia(fn (AssertableInertia $page) => $page
+            ->assertInertia(
+                fn (AssertableInertia $page) => $page
                 ->component('Users/Edit')
             );
     }

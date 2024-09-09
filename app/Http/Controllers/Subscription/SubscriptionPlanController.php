@@ -12,7 +12,6 @@ use Illuminate\Http\RedirectResponse;
 
 class SubscriptionPlanController extends Controller
 {
-
     public function store(StoreSubscriptionPlanRequest $request, StoreSubscriptionPlanAction $action): RedirectResponse
     {
         $action->execute($request->validated());
@@ -22,7 +21,7 @@ class SubscriptionPlanController extends Controller
     }
 
 
-    public function update(UpdateSubscriptionPlanRequest $request,string $id,UpdateSubscriptionPlanAction $action): RedirectResponse
+    public function update(UpdateSubscriptionPlanRequest $request, string $id, UpdateSubscriptionPlanAction $action): RedirectResponse
     {
         $action->execute($id, $request->validated());
 

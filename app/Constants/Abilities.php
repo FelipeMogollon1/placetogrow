@@ -14,6 +14,6 @@ enum Abilities: string
 
     public static function getAllAbilities(): array
     {
-        return array_map(fn($enum) => $enum->value, self::cases());
+        return array_map(fn ($enum) => $enum->value, self::cases());
     }
 }

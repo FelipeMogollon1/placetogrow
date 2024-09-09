@@ -7,7 +7,6 @@ use App\Infrastructure\Persistence\Models\User;
 
 class InvoicePolicy
 {
-
     public function viewAny(User $user): bool
     {
         return $user->hasPermissionTo(Permissions::INVOICES_INDEX);

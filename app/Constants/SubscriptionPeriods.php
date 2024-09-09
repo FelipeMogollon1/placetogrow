@@ -2,7 +2,6 @@
 
 namespace App\Constants;
 
-
 enum SubscriptionPeriods: string
 {
     case DAILY = 'daily';
@@ -12,6 +11,6 @@ enum SubscriptionPeriods: string
 
     public static function getAllSubscriptionPeriods(): array
     {
-        return array_map(fn($enum) => $enum->value, self::cases());
+        return array_map(fn ($enum) => $enum->value, self::cases());
     }
 }

@@ -31,7 +31,7 @@ class PaymentController extends Controller
         ]);
     }
 
-    public function store(StorePaymentRequest $request, StorePaymentAction $action, PaymentGatewayContract $gateway ): \Symfony\Component\HttpFoundation\Response
+    public function store(StorePaymentRequest $request, StorePaymentAction $action, PaymentGatewayContract $gateway): \Symfony\Component\HttpFoundation\Response
     {
         $payment = $action->execute($request->validated());
         $response = $gateway->createSession($payment, $request);
@@ -49,7 +49,7 @@ class PaymentController extends Controller
 
     public function returnBusiness(Payment $payment, PaymentGatewayContract $gatewayContract): Response
     {
-        $microsite = Microsite::query()->where('id',$payment->microsite_id)->first();
+        $microsite = Microsite::query()->where('id', $payment->microsite_id)->first();
         $gatewayContract->queryPayment($payment);
 
         return Inertia::render('Payment/BackBusiness', [

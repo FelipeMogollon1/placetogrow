@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\User;
 
-use App\Infrastructure\Persistence\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateUserRequest extends FormRequest

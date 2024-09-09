@@ -50,10 +50,10 @@ class UserController extends Controller
         $user = User::with('roles')->findOrFail($id);
         $roles = Role::all();
 
-        return Inertia::render('Users/Edit', compact('user','roles'));
+        return Inertia::render('Users/Edit', compact('user', 'roles'));
     }
 
-    public function update(UpdateUserRequest $request,User $user, UpdateUserAction $updateAction): RedirectResponse
+    public function update(UpdateUserRequest $request, User $user, UpdateUserAction $updateAction): RedirectResponse
     {
         $this->authorize(Abilities::UPDATE->value, User::class);
         $updateAction->execute($user->id, $request->validated());

@@ -7,7 +7,6 @@ use App\Infrastructure\Persistence\Models\Payment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
-
 class PaymentFactory extends Factory
 {
     protected $model = Payment::class;

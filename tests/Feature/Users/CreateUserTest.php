@@ -25,7 +25,8 @@ class CreateUserTest extends TestCase
 
         $response = $this->actingAs($user)->get(route('users.create'));
         $response->assertOk()
-            ->assertInertia(fn(AssertableInertia $page) => $page
+            ->assertInertia(
+                fn (AssertableInertia $page) => $page
                 ->component('Users/Create')
             );
     }
