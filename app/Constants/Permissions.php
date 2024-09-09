@@ -49,8 +49,11 @@ enum Permissions: string
 
 
     case INVOICES_INDEX = 'invoices.index';
-    case INVOICES_STORE = 'invoices.store';
+    case INVOICES_IMPORT = 'invoices.import';
     case INVOICES_SHOW = 'invoices.show';
+    case INVOICES_DESTROY  = 'invoices.destroy';
+    case INVOICE_PROCESS_PAYMENT= 'invoices.processPayment';
+
 
 
     public static function getAllPermissions(): array
@@ -69,8 +72,9 @@ enum Permissions: string
             self::SUBSCRIPTIONS_SHOW->value,
             self::SUBSCRIPTIONS_DESTROY->value,
             self::INVOICES_INDEX->value,
-            self::INVOICES_STORE->value,
-            self::INVOICES_SHOW->value
+            self::INVOICES_SHOW->value,
+            self::INVOICES_IMPORT->value,
+            self::INVOICES_DESTROY->value
         ];
     }
 
@@ -83,8 +87,8 @@ enum Permissions: string
             self::SUBSCRIPTIONS_SHOW->value,
             self::SUBSCRIPTIONS_DESTROY->value,
             self::INVOICES_INDEX->value,
-            self::INVOICES_STORE->value,
-            self::INVOICES_SHOW->value
+            self::INVOICES_SHOW->value,
+            self::INVOICE_PROCESS_PAYMENT->value
         ];
     }
 }
