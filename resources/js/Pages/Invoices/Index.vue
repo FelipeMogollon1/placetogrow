@@ -1,5 +1,5 @@
 <script setup>
-import {Head, Link, useForm, usePage} from '@inertiajs/vue3';
+import {Head, Link, router, useForm, usePage} from '@inertiajs/vue3';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {MagnifyingGlassIcon, PhotoIcon} from "@heroicons/vue/24/outline/index.js";
 import {ref, computed, watch} from "vue";
@@ -7,6 +7,10 @@ import { route } from "ziggy-js";
 import InvoiceTable from "@/Layouts/Organisms/InvoiceTable.vue";
 import {Listbox, ListboxButton, ListboxLabel, ListboxOption, ListboxOptions} from "@headlessui/vue";
 import {CheckIcon, ChevronUpDownIcon} from "@heroicons/vue/20/solid/index.js";
+import {debounce} from "@/Utils/debounce.js";
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 defineProps({
     invoices: {
@@ -19,8 +23,36 @@ defineProps({
     }
 });
 
+const search = ref(usePage().props.filter.search),
+    pageNumber = ref(1);
+
+const paymentsUrl = computed(() => {
+    const url = new URL(route("invoices.index"))
+
+    if(search.value){
+        url.searchParams.append("search", search.value)
+    }
+    return url;
+});
+
+const debouncedUpdateUrl = debounce((updatedPaymentsUrl) => {
+    router.visit(updatedPaymentsUrl, {
+        preserveScroll: true,
+        preserveState: true,
+        replace: true
+    });
+}, 300);
+
+watch(
+    () => paymentsUrl.value,
+    (updatedPaymentsUrl) => {
+        debouncedUpdateUrl(updatedPaymentsUrl);
+    }
+);
+
 const headers = [
     "reference",
+    "microsite_name",
     "microsite_type",
     "name",
     "surname",
@@ -55,7 +87,7 @@ const handleFileChange = (event) => {
     }
 };
 
-const fileName = computed(() => form.invoices ? form.invoices.name : 'No ha seleccionado un archivo');
+const fileName = computed(() => form.invoices ? form.invoices.name : t('invoices.noFile'));
 
 const submitForm = () => {
     if (selected.value) {
@@ -64,10 +96,10 @@ const submitForm = () => {
 
     form.post(route('invoices.import'), {
         onSuccess: () => {
-            console.log('Importación exitosa');
+
         },
         onError: (error) => {
-            console.log('Error en la importación', error);
+
         },
         forceFormData: true
     });
@@ -83,7 +115,7 @@ const submitForm = () => {
             </div>
         </template>
 
-        <form @submit.prevent="submitForm" class="space-y-6 p-6 mt-5 bg-white rounded-lg shadow-md ">
+        <form v-if="can('invoices.import')" @submit.prevent="submitForm" class="space-y-6 p-6 mt-5 bg-white rounded-lg shadow-md ">
             <!-- Mensaje de selección e instrucciones -->
             <div>
                 <p class="text-gray-700 mb-2">{{ $t('invoices.selectImport') }}</p>
@@ -98,7 +130,7 @@ const submitForm = () => {
             </div>
 
             <div class="flex items-center space-x-10">
-                <!-- Selección de archivo y nombre del archivo -->
+
                 <div class="flex-grow">
                     <label class="flex items-center cursor-pointer">
             <span class="inline-flex items-center px-4 py-2 bg-gray-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
@@ -120,7 +152,7 @@ const submitForm = () => {
                   <div class="flex-grow">
                     <Listbox as="div" v-model="selected">
                         <ListboxLabel v-if="selected" class="block text-sm font-medium leading-6 text-gray-900">
-                            Selecciona el micrositio
+                            {{ $t('invoices.selectMicrosite') }}
                         </ListboxLabel>
                         <div class="relative mt-2">
                             <ListboxButton class="relative w-full cursor-default rounded-md bg-white py-2 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 sm:text-sm sm:leading-6">
@@ -135,7 +167,7 @@ const submitForm = () => {
                         </span>
                                 </div>
                                 <div v-else>
-                                    <span class="ml-3 block truncate">Selecciona el micrositio</span>
+                                    <span class="ml-3 block truncate">{{ $t('invoices.selectMicrosite') }}</span>
                                 </div>
                             </ListboxButton>
 
@@ -166,20 +198,19 @@ const submitForm = () => {
                 <button type="submit"
                         class="inline-flex items-center px-4 py-2 bg-orange-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition ease-in-out duration-150"
                 >
-                    Importar
+                    {{ $t('invoices.matter') }}
                 </button>
             </div>
         </form>
 
 
-        <!--   <div class="max-w-sm mx-auto relative mt-6">
+   <div class="max-w-sm mx-auto relative mt-6">
                <input type="text"
                       v-model="search"
                       class="py-2 px-11 block w-full border-gray-300 focus:border-gray-500 focus:ring-gray-500 rounded-full text-sm"
-                      placeholder="Buscar factura...">
+                      :placeholder="$t('invoices.searchInvoice')">
                <MagnifyingGlassIcon class="absolute left-3 top-1/2 transform -translate-y-1/2 w-6 text-gray-600" />
            </div>
-   --->
         <InvoiceTable :data="invoices.data" :paginator="invoices" :headers="headers" />
     </AuthenticatedLayout>
 </template>
