@@ -326,12 +326,17 @@
         "microsite": "Micrositio",
         "detailer": "Detalle de la Subscripción",
         "list": "Lista de Subscripciones",
-        "cancelSubscription" : "Cancelar suscripción"
+        "cancelSubscription" : "Cancelar suscripción",
+        "subscriptionForm" : "Formulario de Suscripción",
+        "selectedSubscription" : "Suscripción Seleccionada",
+        "send" : "Enviar",
+        "return" : "Volver"
     },
     "invoices": {
         "title" : "Facturas",
         "reference": "Referencia",
         "microsite_type" : "Tipo" ,
+        "microsite_name": "Micrositio",
         "name" :  "Nombre",
         "surname" : "Apellido",
         "email" :  "Correo Electronico",
@@ -339,6 +344,12 @@
         "document" : "documento",
         "currency_type": "Moneda",
         "amount": "Monto",
-        "status": "Estado"
+        "status": "Estado",
+        "selectImport" : "Selecciona un archivo para importar las facturas en formato CSV, XLSX o XLS",
+        "selectFile" : "Seleccionar archivo",
+        "selectMicrosite": "Selecciona el micrositio",
+        "matter": "Importar",
+        "searchInvoice" : "Buscar factura...",
+        "noFile": "No se  ha seleccionado un archivo"
     }
 }
