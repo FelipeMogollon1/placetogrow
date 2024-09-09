@@ -317,7 +317,7 @@
         "totalPrice" : "Total Price",
         "additional_info": "Additional Information",
         "expiration_additional_info": "Expiration Information",
-        "noSubscriptions" : "It looks like there are no subscriptions available yet. Come back later!",
+        "noSubscriptions" : "Looks like there are no subscriptions available yet. Come back later!",
         "reference": "Reference",
         "subscriptionPlans": "PLan",
         "surname": "Last Name",
@@ -326,19 +326,30 @@
         "microsite": "Microsite",
         "detailer": "Subscription Detail",
         "list": "List of Subscriptions",
-        "cancelSubscription" : "Cancel Subscription"
+        "cancelSubscription" : "Cancel Subscription",
+        "subscriptionForm" : "Subscription Form",
+        "selectedSubscription" : "Selected Subscription",
+        "send" : "Send",
+        "return" : "Return"
     },
     "invoices": {
         "title" : "Invoices",
         "reference": "Reference",
-        "microsite_type": "Type",
-        "name": "Name",
-        "surname": "Last name",
+        "microsite_type" : "Type" ,
+        "microsite_name": "Microsite",
+        "name" : "First name",
+        "surname" : "Last name",
         "email" : "Email",
-        "document_type": "Document type",
-        "document": "document",
+        "document_type" : "Document type",
+        "document" : "document",
         "currency_type": "Currency",
-        "quantity": "Amount",
-        "state": "State"
+        "amount": "Amount",
+        "status": "Status",
+        "selectImport" : "Select a file to import invoices in CSV, XLSX or XLS format",
+        "selectFile" : "Select file",
+        "selectMicrosite": "Select the microsite",
+        "matter": "Import",
+        "searchInvoice" : "Search invoice...",
+        "noFile": "No You have selected a file"
     }
 }
