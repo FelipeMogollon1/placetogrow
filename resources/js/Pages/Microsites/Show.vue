@@ -214,6 +214,7 @@ watch(selectedColorDefault, (newColor) => {
                                        :subscriptionPlans="subscriptionPlans"
                                        :fields="form.configuration.fields"
                                        :documentTypes="page.props.arrayConstants.documentTypes"
+                                       :disableSubmit="true"
                     />
                 </div>
 
