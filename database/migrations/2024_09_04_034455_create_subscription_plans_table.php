@@ -17,8 +17,6 @@ return new class () extends Migration {
             $table->enum('currency', CurrencyTypes::getCurrencyType());
             $table->enum('subscription_period', SubscriptionPeriods::getAllSubscriptionPeriods());
             $table->integer('expiration_time');
-            $table->string('additional_info')->nullable();
-            $table->string('expiration_additional_info')->nullable();
             $table->unsignedBigInteger('microsite_id');
             $table->timestamps();
 
