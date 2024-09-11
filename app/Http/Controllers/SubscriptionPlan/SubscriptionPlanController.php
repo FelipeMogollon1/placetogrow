@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Subscription;
+namespace App\Http\Controllers\SubscriptionPlan;
 
 use App\Domain\SubscriptionPlan\Actions\StoreSubscriptionPlanAction;
 use App\Domain\SubscriptionPlan\Actions\UpdateSubscriptionPlanAction;
