@@ -1,14 +1,18 @@
 <template>
-    <div v-if="linksArray.length > 3">
-        <div class="flex flex-wrap -mb-1">
+    <div v-if="linksArray.length > 3" class="flex justify-center mt-4">
+        <nav aria-label="Pagination" class="inline-flex space-x-1">
             <template v-for="(link, key) in linksArray" :key="key">
-                <div v-if="link.url === null" class="border border-orange-200 mb-1 mr-1 px-4 py-3 text-gray-400 text-sm leading-4  rounded" v-html="link.label" />
-                <Link v-else class="border border-orange-300  mb-1 mr-1 px-4 py-3 focus:text-gray-700 text-sm leading-4 hover:bg-orange-300  focus:border-orange-500 rounded"
-                      :class="{ 'bg-white': link.active }"
+                <div v-if="link.url === null"
+                     class="border border-gray-300 bg-gray-100 cursor-not-allowed mb-1 px-4 py-2 text-gray-400 text-sm leading-4 rounded">
+                    <span v-html="link.label" />
+                </div>
+                <Link v-else
+                      class="border mb-1 px-4 py-2 text-sm leading-4 rounded focus:outline-none focus:ring-2 focus:ring-gray-500 transition-colors"
+                      :class="link.active ? 'bg-gray-500 text-white border-gray-500' : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-300 hover:text-gray-900'"
                       :href="link.url"
                       v-html="link.label" />
             </template>
-        </div>
+        </nav>
     </div>
 </template>
 
