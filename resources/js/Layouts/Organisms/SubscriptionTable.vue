@@ -5,6 +5,7 @@ import { route } from 'ziggy-js';
 import { EyeIcon, XCircleIcon } from '@heroicons/vue/24/outline';
 import Paginator from '@/Components/Paginator.vue';
 import SpanForm from "@/Layouts/Atoms/SpanForm.vue";
+import {PencilIcon} from "@heroicons/vue/24/outline/index.js";
 
 
 const props = defineProps({
@@ -120,7 +121,15 @@ const typeMicrosite = {
 
                             </td>
                             <td>
-                                <div class="text-gray-400 flex justify-center">
+                                <div class="text-gray-400 flex justify-center items-center space-x-2">
+
+                                    <Link
+                                        v-if="can('subscriptions.edit')" class="mx-1"
+                                        :href="route('subscriptions.edit', item.id)"
+                                        :title="$t('subscription.editSubscription')"
+                                    >
+                                        <PencilIcon class="w-6 hover:text-gray-500"/>
+                                    </Link>
                                     <Link
                                         v-if="can('subscriptions.show')" class="mx-1"
                                         :href="route('subscriptions.show', item.id)"
@@ -129,8 +138,7 @@ const typeMicrosite = {
                                         <EyeIcon class="w-6 hover:text-gray-500"/>
                                     </Link>
                                     <Link
-                                        v-if="can('subscriptions.destroy') && item.status !== 'REJECTED' "
-                                          class="mx-1"
+                                        v-if="can('subscriptions.destroy') && item.status !== 'REJECTED'" class="mx-1"
                                         :href="route('subscriptions.destroy', item.id)"
                                         method="delete"
                                         as="button"
@@ -138,7 +146,6 @@ const typeMicrosite = {
                                     >
                                         <XCircleIcon title="Cancelar" class="w-6 hover:text-red-500"/>
                                     </Link>
-
 
                                 </div>
                             </td>

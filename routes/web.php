@@ -14,12 +14,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', [MicrositeController::class, 'welcomeIndex'])->name('Welcome');
-
 Route::get('/microsites/{slug}/payment-form', [MicrositeController::class, 'paymentForm'])->name('microsites.paymentForm');
-
 Route::resource('/payments', PaymentController::class);
-Route::resource('/subscriptions', SubscriptionController::class);
-
 Route::get('/returnBusiness/{payment}', [PaymentController::class,'returnBusiness'])->name('returnBusiness');
 Route::get('/returnSubscription/{subscription}', [SubscriptionController::class,'returnSubscription'])->name('returnSubscription');
 
@@ -43,6 +39,7 @@ Route::group(['middleware' => 'auth', 'verified'], function () {
     Route::resource('/invoices', InvoiceController::class);
     Route::post('/invoices', [InvoiceController::class, 'import'])->name('invoices.import');
     Route::post('/invoices/{invoiceId}/process-payment', [InvoiceController::class, 'processPayment'])->name('invoices.processPayment');
+    Route::resource('/subscriptions', SubscriptionController::class);
 
 });
 

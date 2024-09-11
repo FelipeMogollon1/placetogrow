@@ -74,6 +74,20 @@ class SubscriptionController extends Controller
         return Inertia::render('Subscriptions/Show', compact('subscription'));
     }
 
+    public function edit(string $id): Response
+    {
+        $subscriptionPlan = SubscriptionPlan::select('subscription_plans.*')
+            ->join('microsites', 'subscription_plans.microsite_id', '=', 'microsites.id')
+            ->where('subscription_plans.id', $id)->get();
+
+        $subscriptionPlans = SubscriptionPlan::select('subscription_plans.*')
+            ->join('microsites', 'subscription_plans.microsite_id', '=', 'microsites.id')->get();
+
+        return Inertia::render('Subscriptions/Edit', compact('subscriptionPlan','subscriptionPlans'));
+    }
+
+
+
     public function destroy(string $id, DestroySubscriptionAction $action): RedirectResponse
     {
         $subscription = Subscription::findOrFail($id);
