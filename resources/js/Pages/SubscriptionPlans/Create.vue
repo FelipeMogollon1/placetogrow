@@ -94,30 +94,6 @@
                     <InputError class="mt-2" :message="form.errors.amount" />
                 </div>
 
-                <div class="md:col-span-2">
-                    <InputLabel for="additional_info" :value="$t('subscription.additional_info')" />
-                    <TextInput
-                        id="additional_info"
-                        type="text"
-                        class="mt-1 block w-full"
-                        v-model="form.additional_info"
-                        :placeholder="$t('subscription.additional_info')"
-                    />
-                    <InputError class="mt-2" :message="form.errors.additional_info" />
-                </div>
-
-                <div class="md:col-span-2">
-                    <InputLabel for="expiration_additional_info" :value="$t('subscription.expiration_additional_info')" />
-                    <TextInput
-                        id="expiration_additional_info"
-                        type="text"
-                        class="mt-1 block w-full"
-                        v-model="form.expiration_additional_info"
-                        :placeholder="$t('subscription.expiration_additional_info')"
-                    />
-                    <InputError class="mt-2" :message="form.errors.expiration_additional_info" />
-                </div>
-
                 <div class="md:col-span-2 flex justify-center">
                     <PrimaryButton @click="submit">
                         {{ $t('subscription.createSubscription') }}
@@ -160,9 +136,7 @@ const initialValues = {
     currency: props.microsite.currency !== "BOTH" ? props.microsite.currency : "COP",
     subscription_period: "monthly",
     expiration_time: 1,
-    microsite_id: props.microsite.id ?? "",
-    additional_info: "",
-    expiration_additional_info: ""
+    microsite_id: props.microsite.id ?? ""
 };
 
 const form = useForm(initialValues);
