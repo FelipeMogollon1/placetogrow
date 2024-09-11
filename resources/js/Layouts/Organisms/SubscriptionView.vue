@@ -7,6 +7,7 @@ import TextInput from "@/Components/TextInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import { FaceFrownIcon } from "@heroicons/vue/24/outline/index.js";
 import {route} from "ziggy-js";
+import Paginator from "@/Components/Paginator.vue";
 
 const selectedCurrency = ref('USD');
 
@@ -46,6 +47,10 @@ const props = defineProps({
     disableSubmit: {
         type: Boolean,
         default: false
+    },
+    forms:{
+        type: Object,
+        default: () => []
     }
 });
 
@@ -257,7 +262,7 @@ watch(() => form.document, validateDocument);
 
 
             <p class="text-center mb-6" :class="colorClasses.primaryText">
-                {{ subscriptionPlans.data[0].additional_info || '' }}
+                {{ forms.additional_info || '' }}
             </p>
 
         </div>
@@ -299,6 +304,9 @@ watch(() => form.document, validateDocument);
                     </ul>
                 </div>
             </div>
+        </div>
+        <div v-if="!showForm" class="flex justify-center">
+            <Paginator :paginator="subscriptionPlans.links"/>
         </div>
 
         <div v-else class="bg-white p-6 rounded-lg shadow-xl w-full max-w-xl mx-auto">
@@ -476,7 +484,7 @@ watch(() => form.document, validateDocument);
 
         <div v-if="subscriptionPlans.data && subscriptionPlans.data.length > 0">
             <p v-if="!showForm" :class="['text-sm text-center mt-6 text-gray-50']">
-                {{ subscriptionPlans.data[0].expiration_additional_info || '' }}
+                {{ forms.expiration_additional_info || '' }}
             </p>
         </div>
     </div>

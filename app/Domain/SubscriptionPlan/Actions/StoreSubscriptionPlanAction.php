@@ -18,8 +18,6 @@ class StoreSubscriptionPlanAction
             'subscription_period'         => $data['subscription_period'],
             'expiration_time'             => $data['expiration_time'],
             'microsite_id'                => $data['microsite_id'],
-            'additional_info'             => $data['additional_info'] ?? null,
-            'expiration_additional_info'  => $data['expiration_additional_info'] ?? null,
         ]);
     }
 }

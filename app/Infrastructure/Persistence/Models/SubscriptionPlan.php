@@ -20,8 +20,6 @@ class SubscriptionPlan extends Model
         'currency',
         'subscription_period',
         'expiration_time',
-        'additional_info',
-        'expiration_additional_info',
         'microsite_id',
     ];
 
