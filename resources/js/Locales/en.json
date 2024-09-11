@@ -330,7 +330,8 @@
         "subscriptionForm" : "Subscription Form",
         "selectedSubscription" : "Selected Subscription",
         "send" : "Send",
-        "return" : "Return"
+        "return" : "Return",
+        "currency": "Currency"
     },
     "invoices": {
         "title" : "Invoices",

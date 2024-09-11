@@ -330,7 +330,8 @@
         "subscriptionForm" : "Formulario de Suscripción",
         "selectedSubscription" : "Suscripción Seleccionada",
         "send" : "Enviar",
-        "return" : "Volver"
+        "return" : "Volver",
+        "currency": "Moneda"
     },
     "invoices": {
         "title" : "Facturas",
