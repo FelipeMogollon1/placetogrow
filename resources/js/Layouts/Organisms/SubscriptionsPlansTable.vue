@@ -6,6 +6,7 @@ import Paginator from '@/Components/Paginator.vue';
 import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline/index.js';
 import Modal from '@/Components/Modal.vue';
 import Edit from '@/Pages/SubscriptionPlans/Edit.vue';
+import SpanForm from "@/Layouts/Atoms/SpanForm.vue";
 
 const props = defineProps({
     data: {
@@ -63,6 +64,13 @@ const handleCloseModal = () => {
     isModalOpenEdit.value = false;
 };
 
+
+const typeMicrosite = {
+    daily : 'violet',
+    weekly: 'orange',
+    monthly: 'cyan',
+    yearly: 'blue',
+};
 </script>
 
 <template>
@@ -118,7 +126,22 @@ const handleCloseModal = () => {
                                 :key="header"
                                 class="px-6 py-3 whitespace text-sm text-gray-900"
                             >
-                                {{ item[header] }}
+
+                                <template v-if="header === 'subscription_period'">
+                                    <span-form class="capitalize" :color="typeMicrosite[item[header]]">
+                                        {{ $t(`subscription.${item[header]}`) }}
+                                    </span-form>
+                                </template>
+
+                                <template v-else-if="header === 'amount'">
+                                    <span v-if="item['currency'] === 'USD'">${{ item[header].toLocaleString('en-US') }}</span>
+                                    <span v-else>${{ item[header].toLocaleString('es-CO') }}</span>
+                                </template>
+
+                                <span v-else>
+                                    {{ item[header] }}
+                                </span>
+
                             </td>
                             <td>
                                 <div class="text-gray-400 flex justify-center">

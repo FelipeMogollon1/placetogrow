@@ -9,7 +9,7 @@ use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Roles\RoleController;
 use App\Http\Controllers\Subscription\SubscriptionController;
-use App\Http\Controllers\Subscription\SubscriptionPlanController;
+use App\Http\Controllers\SubscriptionPlan\SubscriptionPlanController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
