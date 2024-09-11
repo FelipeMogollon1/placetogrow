@@ -23,7 +23,9 @@ class Form extends Model
         'configuration',
         'header',
         'footer',
-        'color'
+        'color',
+        'additional_info',
+        'expiration_additional_info',
     ];
 
     /**
