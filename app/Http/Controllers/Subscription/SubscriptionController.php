@@ -3,26 +3,21 @@
 namespace App\Http\Controllers\Subscription;
 
 use App\Constants\Abilities;
-use App\Constants\PaymentStatus;
-use App\Constants\SubscriptionStatus;
 use App\Contracts\PaymentGatewayContract;
 use App\Domain\Subscription\Actions\DestroySubscriptionAction;
 use App\Domain\Subscription\Actions\StoreSubscriptionAction;
+use App\Domain\Subscription\Actions\UpdateSubscriptionAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Subscription\StoreSubscriptionRequest;
+use App\Http\Requests\Subscription\UpdateSubscriptionRequest;
 use App\Infrastructure\Persistence\Models\Microsite;
 use App\Infrastructure\Persistence\Models\Subscription;
 use App\Infrastructure\Persistence\Models\SubscriptionPlan;
 use App\ViewModels\Subscription\SubscriptionIndexViewModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -76,17 +71,23 @@ class SubscriptionController extends Controller
 
     public function edit(string $id): Response
     {
-        $subscriptionPlan = SubscriptionPlan::select('subscription_plans.*')
+        $subscription = SubscriptionPlan::select('*')
             ->join('microsites', 'subscription_plans.microsite_id', '=', 'microsites.id')
-            ->where('subscription_plans.id', $id)->get();
+            ->join('subscriptions', 'subscriptions.subscription_plan_id', '=', 'subscription_plans.id')
+            ->where('subscriptions.id', $id)->get();
 
         $subscriptionPlans = SubscriptionPlan::select('subscription_plans.*')
             ->join('microsites', 'subscription_plans.microsite_id', '=', 'microsites.id')->get();
 
-        return Inertia::render('Subscriptions/Edit', compact('subscriptionPlan','subscriptionPlans'));
+        return Inertia::render('Subscriptions/Edit', compact('subscription','subscriptionPlans'));
     }
 
+    public function update(UpdateSubscriptionRequest $request,string $id,UpdateSubscriptionAction $updateAction): RedirectResponse
+    {
+        $updateAction->execute($id, $request->validated());
 
+        return redirect()->route('subscriptions.index');
+    }
 
     public function destroy(string $id, DestroySubscriptionAction $action): RedirectResponse
     {

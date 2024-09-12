@@ -124,7 +124,7 @@ const typeMicrosite = {
                                 <div class="text-gray-400 flex justify-center items-center space-x-2">
 
                                     <Link
-                                        v-if="can('subscriptions.edit')" class="mx-1"
+                                        v-if="can('subscriptions.edit') && item.status !== 'REJECTED'" class="mx-1"
                                         :href="route('subscriptions.edit', item.id)"
                                         :title="$t('subscription.editSubscription')"
                                     >

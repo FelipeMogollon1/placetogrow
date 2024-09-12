@@ -3,28 +3,36 @@ import { ref } from 'vue';
 import {Head, Link, useForm, usePage} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { route } from "ziggy-js";
-import {CheckBadgeIcon,CheckIcon} from "@heroicons/vue/24/outline/index.js";
+import {CheckBadgeIcon} from "@heroicons/vue/24/outline/index.js";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+
+const page = usePage()
 
 defineProps({
     subscriptionPlans: {
+        type: Array,
+        default: () => []
+    },
+    subscription: {
         type: Array,
         default: () => []
     }
 });
 
 const form = useForm({
-    subscription_plan_id: ''
+    subscription_plan_id: '',
+    reference: page.props.subscription[0].reference,
 });
 
-const selectedPlan = ref(usePage().props.subscriptionPlan[0].id); // Ahora seleccionamos el ID inicial correctamente.
+const selectedPlan = ref(page.props.subscription[0].subscription_plan_id);
 
 const selectPlan = (id) => {
-    selectedPlan.value = id; // Cambiamos el valor de selectedPlan al hacer clic en el plan.
+    selectedPlan.value = id;
 };
 
 function updateSubscription() {
-    form.subscription_plan_id = selectedPlan.value; // Aseguramos que el plan seleccionado sea parte del form.
-    form.put(route('subscriptions.update', form.id));
+    form.subscription_plan_id = selectedPlan.value;
+    form.put(route('subscriptions.update', page.props.subscription[0].id));
 }
 </script>
 
@@ -79,10 +87,15 @@ function updateSubscription() {
                 </div>
             </div>
 
-            <p class="text-sm text-gray-500 mt-6">
-                La disponibilidad del contenido en HD (720p), Full HD (1080p), Ultra HD (4K) y HDR depende de tu servicio de internet y del dispositivo en uso. Consulta nuestros
-                <a href="#" class="text-blue-500 underline">Términos de uso</a> para obtener más información.
-            </p>
+            <div class="mt-6 flex justify-end">
+                <div class="col-span-1 sm:col-span-2 flex justify-center">
+                    <PrimaryButton
+                    @click="updateSubscription()"
+                    >
+                        {{ $t('subscription.continue') }}
+                    </PrimaryButton>
+                </div>
+            </div>
         </div>
     </AuthenticatedLayout>
 </template>
