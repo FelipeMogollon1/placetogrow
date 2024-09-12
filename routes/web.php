@@ -18,6 +18,7 @@ Route::get('/microsites/{slug}/payment-form', [MicrositeController::class, 'paym
 Route::resource('/payments', PaymentController::class);
 Route::get('/returnBusiness/{payment}', [PaymentController::class,'returnBusiness'])->name('returnBusiness');
 Route::get('/returnSubscription/{subscription}', [SubscriptionController::class,'returnSubscription'])->name('returnSubscription');
+Route::resource('/subscriptions', SubscriptionController::class);
 
 Route::group(['middleware' => 'auth', 'verified'], function () {
 
@@ -39,7 +40,6 @@ Route::group(['middleware' => 'auth', 'verified'], function () {
     Route::resource('/invoices', InvoiceController::class);
     Route::post('/invoices', [InvoiceController::class, 'import'])->name('invoices.import');
     Route::post('/invoices/{invoiceId}/process-payment', [InvoiceController::class, 'processPayment'])->name('invoices.processPayment');
-    Route::resource('/subscriptions', SubscriptionController::class);
 
 });
 

@@ -74,6 +74,7 @@ enum Permissions: string
             self::INVOICES_SHOW->value,
             self::INVOICES_IMPORT->value,
             self::INVOICES_DESTROY->value
+
         ];
     }
 
@@ -84,6 +85,7 @@ enum Permissions: string
             self::PAYMENTS_SHOW->value,
             self::SUBSCRIPTIONS_INDEX->value,
             self::SUBSCRIPTIONS_SHOW->value,
+            self::SUBSCRIPTIONS_EDIT->value,
             self::SUBSCRIPTIONS_DESTROY->value,
             self::INVOICES_INDEX->value,
             self::INVOICES_SHOW->value,
