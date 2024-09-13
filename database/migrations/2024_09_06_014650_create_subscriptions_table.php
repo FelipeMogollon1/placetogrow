@@ -25,6 +25,7 @@ return new class () extends Migration {
             $table->timestamp('paid_at')->nullable();
             $table->text('token')->nullable();
             $table->text('sub_token')->nullable();
+            $table->text('franchiseName')->nullable();
             $table->text('lastDigits')->nullable();
             $table->date('validUntil')->nullable();
             $table->enum('status', PaymentStatus::getPaymentStatus())->nullable();
