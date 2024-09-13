@@ -287,10 +287,11 @@ watch(() => form.document, validateDocument);
                     colorClasses.primaryText,
                 ]"
             >
-                <h2 :class="['lg:text-3xl md:text-3xl sm:text-4xl font-bold mb-2', colorClasses.primaryText]">{{ subscription.name }}</h2>
+                <h2 :class="['lg:text-3xl md:text-3xl sm:text-4xl font-bold mb-2 capitalize', colorClasses.primaryText]">{{ subscription.name }}</h2>
                 <p :class="['lg:text-4xl md:text-3xl sm:text-4xl font-bold mb-4', colorClasses.secondaryText]">
-                    {{ subscription.expiration_time }}x ${{ subscription.amount}} {{ subscription.currency}} / {{ $t(`subscription.${subscription.subscription_period}`) }}</p>
-                <p class="mb-4 lg:text-2xl md:text-xl sm:text-3xl">{{ $t('subscription.totalPrice') }} ${{ (subscription.expiration_time * subscription.amount).toFixed(2) }} {{ subscription.currency}}</p>
+                    {{ subscription.expiration_time }}x $ {{ (subscription.amount * 1).toLocaleString(subscription.currency === 'USD' ? 'en-US' : 'es-CO') }} {{ subscription.currency}} / {{ $t(`subscription.${subscription.subscription_period}`) }}
+                </p>
+                <p class="mb-4 lg:text-2xl md:text-xl sm:text-3xl">{{ $t('subscription.totalPrice') }} ${{ (subscription.expiration_time * subscription.amount).toLocaleString(subscription.currency === 'USD' ? 'en-US' : 'es-CO') }} {{ subscription.currency}}</p>
                 <div class="flex justify-center">
                     <ul class="grid grid-cols-1 gap-1">
                         <li
