@@ -161,7 +161,8 @@ class PlacetopayGateway implements PaymentGatewayContract
                 $subscription->paid_at = new Carbon($response->status()->date());
                 $subscription->token = Crypt::encrypt($instrumentData[0]['value']);
                 $subscription->sub_token = Crypt::encrypt($instrumentData[1]['value']);
-                $subscription->lastDigits = Crypt::encrypt($instrumentData[5]['value']);
+                $subscription->franchiseName = $instrumentData[3]['value'];
+                $subscription->lastDigits = $instrumentData[5]['value'];
                 $subscription->validUntil = $instrumentData[6]['value'];
 
             } elseif ($response->status()->isRejected()) {
