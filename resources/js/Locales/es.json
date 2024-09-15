@@ -331,7 +331,12 @@
         "selectedSubscription" : "Suscripción Seleccionada",
         "send" : "Enviar",
         "return" : "Volver",
-        "currency": "Moneda"
+        "currency": "Moneda",
+        "editSubscription" : "Editar subscripción",
+        "continue" : "Continuar",
+        "changePlan": "Cambiar de plan",
+        "paymentMethod": "Método de pago actual",
+        "creditCard": "Tarjeta de credito"
     },
     "invoices": {
         "title" : "Facturas",

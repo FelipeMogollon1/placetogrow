@@ -317,7 +317,7 @@
         "totalPrice" : "Total Price",
         "additional_info": "Additional Information",
         "expiration_additional_info": "Expiration Information",
-        "noSubscriptions" : "Looks like there are no subscriptions available yet. Come back later!",
+        "noSubscriptions": "It appears that there are no subscriptions available yet. Come back later!",
         "reference": "Reference",
         "subscriptionPlans": "PLan",
         "surname": "Last Name",
@@ -331,7 +331,12 @@
         "selectedSubscription" : "Selected Subscription",
         "send" : "Send",
         "return" : "Return",
-        "currency": "Currency"
+        "currency": "Currency",
+        "editSubscription" : "Edit Subscription",
+        "continue" : "Continue",
+        "changePlan": "Change Plan",
+        "paymentMethod": "Current Payment Method",
+        "creditCard": "Credit Card"
     },
     "invoices": {
         "title" : "Invoices",
