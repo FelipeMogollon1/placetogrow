@@ -260,7 +260,6 @@ watch(() => form.document, validateDocument);
 
         <div v-if="subscriptionPlans.data && subscriptionPlans.data.length > 0">
 
-
             <p class="text-center mb-6" :class="colorClasses.primaryText">
                 {{ forms.additional_info || '' }}
             </p>

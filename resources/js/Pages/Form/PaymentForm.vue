@@ -170,7 +170,9 @@ watch(() => form.currency, (newCurrency) => {
                                :subscriptionPlans="subscriptionPlans"
                                :fields="formConfig.configuration.fields"
                                :documentTypes="documentTypes"
+                               :forms="formConfig"
             />
+
         </main>
 
 
