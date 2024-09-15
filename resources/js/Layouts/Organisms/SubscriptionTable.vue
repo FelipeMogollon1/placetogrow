@@ -124,21 +124,21 @@ const typeMicrosite = {
                                 <div class="text-gray-400 flex justify-center items-center space-x-2">
 
                                     <Link
-                                        v-if="can('subscriptions.edit') && item.status !== 'REJECTED'" class="mx-1"
+                                        v-if="can('subscriptions.edit') && item.status === 'APPROVED'" class="mx-1"
                                         :href="route('subscriptions.edit', item.id)"
                                         :title="$t('subscription.editSubscription')"
                                     >
                                         <PencilIcon class="w-6 hover:text-gray-500"/>
                                     </Link>
                                     <Link
-                                        v-if="can('subscriptions.show')" class="mx-1"
+                                        v-if="can('subscriptions.show') " class="mx-1"
                                         :href="route('subscriptions.show', item.id)"
                                         :title="$t('subscription.detailer')"
                                     >
                                         <EyeIcon class="w-6 hover:text-gray-500"/>
                                     </Link>
                                     <Link
-                                        v-if="can('subscriptions.destroy') && item.status !== 'REJECTED'" class="mx-1"
+                                        v-if="can('subscriptions.destroy') && item.status === 'APPROVED'" class="mx-1"
                                         :href="route('subscriptions.destroy', item.id)"
                                         method="delete"
                                         as="button"

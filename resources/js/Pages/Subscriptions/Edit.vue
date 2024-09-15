@@ -54,115 +54,120 @@ const formatDate = (dateStr) => {
     <AuthenticatedLayout>
         <template #header>
             <div class="flex justify-between items-center">
-                <h2 class="font-semibold text-2xl text-gray-800 leading-tight">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                     {{ $t('subscription.editSubscription') }}
                 </h2>
                 <Link
                     :href="route('subscriptions.index')"
-                    class="inline-flex items-center px-5 py-3 bg-orange-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition duration-150 ease-in-out"
+                    class="inline-flex items-center px-4 py-2 bg-orange-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition duration-150 ease-in-out"
                 >
                     {{ $t('subscription.subscriptions') }}
                 </Link>
             </div>
         </template>
 
-        <main class="max-w-4xl mx-auto mt-10 p-8 bg-white shadow-2xl rounded-xl space-y-10">
-            <!-- Sección de la tarjeta de crédito -->
-            <section>
-                <h2 class="text-4xl font-extrabold text-center text-gray-800 mb-6">
-                    {{ $t('subscription.paymentMethod') }} 💳
+        <main class="flex flex-col md:flex-row justify-center">
+
+            <section class="w-full md:w-3/5 bg-white grid grid-cols-1  sm:grid-cols-1 p-7 m-7 rounded-2xl shadow-lg">
+                <h2 class="text-3xl font-bold mb-4 text-gray-800">
+                    {{ $t('subscription.changePlan') }}
                 </h2>
 
-                <div v-for="(sub, index) in subscription" :key="index" class="w-[350px] h-[200px] mx-auto perspective-1000" @click="rotateCard">
-                    <div :class="{'rotate-y-180': isFlipped}" class="relative w-full h-full transition-transform duration-700 transform-style-preserve-3d">
-
-                        <div class="absolute w-full h-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-6 rounded-lg shadow-xl backface-hidden">
-                            <div class="flex justify-between items-center mb-4">
-                                <p class="text-xl font-semibold">Credit Card</p>
-                                <img
-                                    v-if="sub.franchiseName === 'Visa'"
-                                    src="https://cdn.visa.com/v2/assets/images/logos/visa/blue/logo.png"
-                                    alt="Visa"
-                                    class="w-12">
-                                <img
-                                    v-else-if="sub.franchiseName === 'MasterCard'"
-                                    src="https://mtf.mastercard.co.za/content/dam/public/mastercardcom/mea/za/logos/mc-logo-52.svg"
-                                    alt="Master Card"
-                                    class="w-12">
-                                <p v-else>{{ sub.franchiseName }}</p>
-                            </div>
-                            <div class="mt-10">
-                                <p class="text-lg">•••• •••• •••• {{ sub.lastDigits }}</p>
-                                <div class="flex justify-between mt-4 text-sm">
-                                    <p>{{ sub.name }} {{ sub.surname }}</p>
-                                    <p>{{ formatDate(sub.validUntil) }}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Cara trasera de la tarjeta -->
-                        <div class="absolute w-full h-full bg-gray-800 text-white p-6 rounded-lg shadow-xl transform rotate-y-180 backface-hidden">
-                            <div class="w-full bg-black h-10 mb-4"></div>
-                            <div class="flex justify-between items-center text-sm">
-                                <p>CVV</p>
-                                <p class="text-lg bg-white text-black p-2 rounded-md">123</p>
-                            </div>
-                            <p class="text-sm text-gray-300 mt-4">{{ $t(`payment_status.${sub.status}`) }}</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Sección de cambio de plan -->
-            <section>
-                <h2 class="text-4xl font-bold mb-6 text-gray-800">{{ $t('subscription.changePlan') }}</h2>
-
-                <div class="space-y-6">
+                <div class="space-y-4">
                     <div
                         v-for="plan in subscriptionPlans"
                         :key="plan.id"
-                        :class="[
-                            'p-8 border rounded-xl flex items-center justify-between transition-transform duration-300 cursor-pointer hover:scale-105',
-                            plan.id === selectedPlan ? 'border-blue-600 bg-blue-50 shadow-lg' : 'border-gray-300 hover:bg-gray-50'
-                        ]"
+                        :class="[ 'p-6 border rounded-md flex items-center justify-between transition-transform duration-300 cursor-pointer hover:scale-105', plan.id === selectedPlan ? 'border-orange-600 bg-orange-50 shadow-lg' : 'border-gray-300 hover:bg-gray-50' ]"
                         @click="selectPlan(plan.id)"
                     >
                         <div>
-                            <p class="font-extrabold text-2xl capitalize text-blue-700">
+                            <p class="font-bold text-xl capitalize text-gray-600">
                                 {{ plan.name }}
                             </p>
-                            <div class="space-y-2 mt-4">
+                            <div class="space-y-1 mt-2">
                                 <p
                                     v-for="(feature, i) in JSON.parse(plan.description)"
                                     :key="i"
-                                    class="flex items-center text-gray-700 text-sm"
+                                    class="flex items-center text-gray-600 text-sm"
                                 >
-                                    <CheckBadgeIcon class="w-5 h-5 mr-2 text-green-500" />
+                                    <CheckBadgeIcon class="w-4 h-4 mr-1 text-orange-500" />
                                     <span>{{ feature }}</span>
                                 </p>
                             </div>
                         </div>
 
                         <div class="text-right">
-                            <p class="text-xl font-bold text-gray-900">
-                                {{ plan.expiration_time }} x ${{ (1 * plan.amount).toLocaleString(plan.currency === 'USD' ? 'en-US' : 'es-CO') }} {{ plan.currency }} / {{ $t(`subscription.${plan.subscription_period}`) }}
+                            <p class="text-lg font-bold text-gray-900">
+                                {{ plan.expiration_time }} x ${{ (1 * plan.amount).toLocaleString(plan.currency === 'USD' ? 'en-US' : 'es-CO') }}
+                                {{ plan.currency }} /
+                                <span class="text-sm">{{ $t(`subscription.${plan.subscription_period}`) }}</span>
                             </p>
-                            <p class="text-xl font-bold text-blue-700 mt-2">
+                            <p class="text-lg font-bold text-orange-700 mt-1">
                                 {{ $t('subscription.totalPrice') }} ${{ (plan.expiration_time * plan.amount).toLocaleString(plan.currency === 'USD' ? 'en-US' : 'es-CO') }} {{ plan.currency }}
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-8 flex justify-end">
+                <div class="mt-6 flex justify-end">
                     <PrimaryButton @click="updateSubscription()">
                         {{ $t('subscription.continue') }}
                     </PrimaryButton>
                 </div>
             </section>
+
+            <section class="w-full md:w-2/5 mt-4">
+                <div class="bg-white rounded-2xl shadow-lg p-4 m-4">
+                    <h2 class="text-2xl font-bold mb-4 text-gray-800">
+                        {{ $t('subscription.paymentMethod') }}
+                    </h2>
+
+                    <div v-for="(sub, index) in subscription"
+                         :key="index" class="w-[300px] h-[150px] mx-auto perspective-1000"
+                         @click="rotateCard"
+                    >
+                        <div :class="{'rotate-y-180': isFlipped}" class="relative w-full h-full transition-transform duration-700 transform-style-preserve-3d">
+                            <div class="absolute w-full h-full bg-gradient-to-r from-orange-600 to-orange-300 text-white p-4 rounded-md shadow-lg backface-hidden">
+                                <div class="flex justify-between items-center mb-2">
+                                    <p class="text-lg font-semibold">{{ $t('subscription.creditCard') }}</p>
+                                    <img
+                                        v-if="sub.franchiseName === 'Visa'"
+                                        src="https://cdn.visa.com/v2/assets/images/logos/visa/blue/logo.png"
+                                        alt="Visa"
+                                        class="w-10">
+                                    <img
+                                        v-else-if="sub.franchiseName === 'MasterCard'"
+                                        src="https://mtf.mastercard.co.za/content/dam/public/mastercardcom/mea/za/logos/mc-logo-52.svg"
+                                        alt="Master Card"
+                                        class="w-10">
+                                    <p v-else>{{ sub.franchiseName }}</p>
+                                </div>
+                                <div class="mt-6">
+                                    <p class="text-md">•••• •••• •••• {{ sub.lastDigits }}</p>
+                                    <div class="flex justify-between mt-2 text-xs">
+                                        <p>{{ sub.name }} {{ sub.surname }}</p>
+                                        <p>{{ formatDate(sub.validUntil) }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="absolute w-full h-full bg-gray-700 text-white p-4 rounded-md shadow-lg transform rotate-y-180 backface-hidden">
+                                <div class="w-full bg-black h-8 mb-2"></div>
+                                <div class="flex justify-between items-center text-xs">
+                                    <p>CVV</p>
+                                    <p class="text-md bg-white text-black p-1 rounded-md">123</p>
+                                </div>
+                                <p class="text-xs text-gray-300 mt-2">{{ $t(`payment_status.${sub.status}`) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
         </main>
     </AuthenticatedLayout>
 </template>
+
 
 <style scoped>
 .perspective-1000 {
