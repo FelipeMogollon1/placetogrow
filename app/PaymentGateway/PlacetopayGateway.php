@@ -150,26 +150,33 @@ class PlacetopayGateway implements PaymentGatewayContract
 
     public function querySubscription(Subscription $subscription): Subscription
     {
-        $response = $this->placetopay->query($subscription->request_id);
+        if ($subscription->request_id) {
 
+            $response = $this->placetopay->query($subscription->request_id);
 
-        if ($response->isSuccessful()) {
-            if ($response->status()->isApproved()) {
-                $instrumentData = $response->subscription()->instrumentToArray();
+            if ($response->isSuccessful()) {
+                if ($response->status()->isApproved()) {
+                    $instrumentData = $response->subscription()->instrumentToArray();
 
-                $subscription->status = PaymentStatus::APPROVED->value;
-                $subscription->paid_at = new Carbon($response->status()->date());
-                $subscription->token = Crypt::encrypt($instrumentData[0]['value']);
-                $subscription->sub_token = Crypt::encrypt($instrumentData[1]['value']);
-                $subscription->franchiseName = $instrumentData[3]['value'];
-                $subscription->lastDigits = $instrumentData[5]['value'];
-                $subscription->validUntil = $instrumentData[6]['value'];
+                        $subscription->status = PaymentStatus::APPROVED->value;
+                        $subscription->paid_at = new Carbon($response->status()->date());
+                        $subscription->token = Crypt::encrypt($instrumentData[0]['value']);
+                        $subscription->sub_token = Crypt::encrypt($instrumentData[1]['value']);
+                        $subscription->franchiseName = $instrumentData[3]['value'];
+                        $subscription->lastDigits = $instrumentData[5]['value'];
+                        $subscription->validUntil = $instrumentData[6]['value'];
 
-            } elseif ($response->status()->isRejected()) {
-                $subscription->status = PaymentStatus::REJECTED->value;
+                } elseif ($response->status()->isRejected()) {
+                    $subscription->status = PaymentStatus::REJECTED->value;
+                }
             }
-            $subscription->save();
+
+        } else {
+            $subscription->status = PaymentStatus::REJECTED->value;
         }
+
+        $subscription->save();
+
         return $subscription;
     }
 

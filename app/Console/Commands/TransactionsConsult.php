@@ -32,12 +32,12 @@ class TransactionsConsult extends Command
      */
     public function handle(): void
     {
-        $payments = Payment::where('status', 'pending')->get();
+        $payments = Payment::where('status', 'pending')->orWhereNull('status')->get();
         foreach ($payments as $payment) {
             SolutionPaymentJob::dispatch($payment);
         }
 
-        $subscriptions = Subscription::where('status', 'approved')->get();
+        $subscriptions = Subscription::where('status', 'PENDING')->orWhereNull('status')->get();
         foreach ($subscriptions as $subscription) {
             SolutionSubscriptionJob::dispatch($subscription);
         }
