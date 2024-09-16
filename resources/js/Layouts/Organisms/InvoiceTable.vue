@@ -138,6 +138,10 @@ const typeMicrosite = {
                                         <TrashIcon class="w-6 hover:text-red-500"/>
                                     </Link>
 
+                                    <Link v-if="can('invoices.show')" class="mx-1" :href="route('invoices.show', item.id)">
+                                        <EyeIcon class="w-6 hover:text-gray-500"/>
+                                    </Link>
+
                                 </div>
                             </td>
                         </tr>

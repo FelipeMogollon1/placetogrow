@@ -14,7 +14,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
-use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -60,9 +59,11 @@ class InvoiceController extends Controller
     }
 
 
-    public function show(Invoice $invoice): View
+    public function show(string $id): Response
     {
-        return view('invoices.show', compact('invoice'));
+        $invoice = Invoice::with('microsite')->findOrFail($id);
+
+        return Inertia::render('Invoices/Show', compact('invoice'));
     }
 
     public function destroy(string $id): RedirectResponse
