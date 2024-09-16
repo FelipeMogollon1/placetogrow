@@ -81,10 +81,10 @@ class SubscriptionController extends Controller
         $subscriptionPlans = SubscriptionPlan::select('subscription_plans.*')
             ->join('microsites', 'subscription_plans.microsite_id', '=', 'microsites.id')->get();
 
-        return Inertia::render('Subscriptions/Edit', compact('subscription','subscriptionPlans'));
+        return Inertia::render('Subscriptions/Edit', compact('subscription', 'subscriptionPlans'));
     }
 
-    public function update(UpdateSubscriptionRequest $request,string $id,UpdateSubscriptionAction $updateAction): RedirectResponse
+    public function update(UpdateSubscriptionRequest $request, string $id, UpdateSubscriptionAction $updateAction): RedirectResponse
     {
         $this->authorize(Abilities::UPDATE->value, Subscription::class);
         $updateAction->execute($id, $request->validated());

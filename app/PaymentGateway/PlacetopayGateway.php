@@ -158,13 +158,13 @@ class PlacetopayGateway implements PaymentGatewayContract
                 if ($response->status()->isApproved()) {
                     $instrumentData = $response->subscription()->instrumentToArray();
 
-                        $subscription->status = PaymentStatus::APPROVED->value;
-                        $subscription->paid_at = new Carbon($response->status()->date());
-                        $subscription->token = Crypt::encrypt($instrumentData[0]['value']);
-                        $subscription->sub_token = Crypt::encrypt($instrumentData[1]['value']);
-                        $subscription->franchiseName = $instrumentData[3]['value'];
-                        $subscription->lastDigits = $instrumentData[5]['value'];
-                        $subscription->validUntil = $instrumentData[6]['value'];
+                    $subscription->status = PaymentStatus::APPROVED->value;
+                    $subscription->paid_at = new Carbon($response->status()->date());
+                    $subscription->token = Crypt::encrypt($instrumentData[0]['value']);
+                    $subscription->sub_token = Crypt::encrypt($instrumentData[1]['value']);
+                    $subscription->franchiseName = $instrumentData[3]['value'];
+                    $subscription->lastDigits = $instrumentData[5]['value'];
+                    $subscription->validUntil = $instrumentData[6]['value'];
 
                 } elseif ($response->status()->isRejected()) {
                     $subscription->status = PaymentStatus::REJECTED->value;

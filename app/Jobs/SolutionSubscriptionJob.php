@@ -14,7 +14,10 @@ use Illuminate\Queue\SerializesModels;
 
 class SolutionSubscriptionJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
 
     protected Subscription $subscription;

@@ -2,7 +2,6 @@
 
 namespace App\Domain\Subscription\Actions;
 
-
 use App\Constants\PaymentStatus;
 use App\Infrastructure\Persistence\Models\Subscription;
 use Illuminate\Support\Facades\Crypt;

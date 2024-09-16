@@ -21,7 +21,6 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-
 class InvoiceController extends Controller
 {
     use AuthorizesRequests;
@@ -29,7 +28,7 @@ class InvoiceController extends Controller
     {
         Log::info('Generating the invoice template...');
 
-        return Excel::download(new InvoiceTemplateExport, 'invoice_template.xlsx');
+        return Excel::download(new InvoiceTemplateExport(), 'invoice_template.xlsx');
     }
 
     public function import(ImportInvoicesRequest $request): RedirectResponse

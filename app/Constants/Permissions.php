@@ -43,7 +43,7 @@ enum Permissions: string
 
     case SUBSCRIPTIONS_INDEX = 'subscriptions.index';
     case SUBSCRIPTIONS_SHOW = 'subscriptions.show';
-    case SUBSCRIPTIONS_EDIT= 'subscriptions.edit';
+    case SUBSCRIPTIONS_EDIT = 'subscriptions.edit';
     case SUBSCRIPTIONS_UPDATE  = 'subscriptions.update';
     case SUBSCRIPTIONS_DESTROY  = 'subscriptions.destroy';
 

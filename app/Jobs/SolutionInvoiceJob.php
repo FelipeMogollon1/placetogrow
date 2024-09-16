@@ -14,7 +14,10 @@ use Illuminate\Queue\SerializesModels;
 
 class SolutionInvoiceJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     protected Invoice $invoice;
     protected PlacetopayGateway $paymentGateway;

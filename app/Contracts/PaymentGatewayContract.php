@@ -19,7 +19,7 @@ interface PaymentGatewayContract
 
 
     public function createSessionSubscription(Subscription $subscription, Request $request): RedirectResponse;
-    public function cancelSubscription(Subscription $subscription,Request $request): RedirectResponse;
+    public function cancelSubscription(Subscription $subscription, Request $request): RedirectResponse;
     public function querySubscription(Subscription $subscription): Subscription;
 
     public function queryInvoice(Invoice $invoice): Invoice;

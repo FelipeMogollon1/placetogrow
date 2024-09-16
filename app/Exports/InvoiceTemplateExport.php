@@ -9,8 +9,6 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 class InvoiceTemplateExport implements FromCollection, ShouldAutoSize
 {
-
-
     public function collection(): Collection
     {
         Log::info('in collect');
