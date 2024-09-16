@@ -356,6 +356,8 @@
         "selectMicrosite": "Select the microsite",
         "matter": "Import",
         "searchInvoice" : "Search invoice...",
-        "noFile": "No You have selected a file"
+        "noFile": "No file selected",
+        "paymentDate": "Payment date",
+        "downloadTemplate" : "Download Template"
     }
 }

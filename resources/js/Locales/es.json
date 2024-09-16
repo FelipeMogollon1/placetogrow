@@ -356,6 +356,8 @@
         "selectMicrosite": "Selecciona el micrositio",
         "matter": "Importar",
         "searchInvoice" : "Buscar factura...",
-        "noFile": "No se  ha seleccionado un archivo"
+        "noFile": "No se  ha seleccionado un archivo",
+        "paymentDate": "Fecha de pago",
+        "downloadTemplate" : "Descargar Template"
     }
 }
