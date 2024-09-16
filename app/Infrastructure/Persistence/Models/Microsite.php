@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Persistence\Models;
 
 use Database\Factories\MicrositeFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -26,29 +27,53 @@ class Microsite extends Model
         'currency',
         'payment_expiration_time',
         'category_id',
+        'user_id',
+        'form_id',
         'enabled_at',
     ];
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
 
-    public function scopeWithCategory($query, $id = null)
+    public function form(): BelongsTo
     {
-        if ($id !== null) {
-            return $query->with('category')->where('id', $id);
-        }
+        return $this->belongsTo(Form::class);
+    }
 
-        return $query->join('categories', 'microsites.category_id', '=', 'categories.id')
+    public function scopeWithCategory(Builder $query, $id = null): Builder
+    {
+        return $query
+            ->with(['category', 'user', 'form'])
+            ->when($id, function ($query, $id) {
+                return $query->where(function ($query) use ($id) {
+                    $query->where('id', $id)
+                        ->orWhere('form_id', $id);
+                });
+            })
+            ->orderBy('microsites.name', 'asc');
+    }
+
+    public function scopeAllWithCategories(Builder $query): Builder
+    {
+        return $query
+            ->leftJoin('categories', 'microsites.category_id', '=', 'categories.id')
+            ->leftJoin('users', 'microsites.user_id', '=', 'users.id')
             ->select([
                 'microsites.id',
                 'microsites.name',
                 'microsites.microsite_type',
                 'microsites.logo',
-                'categories.name as category_name'
-            ]);
+                'microsites.slug',
+                'categories.name as category_name',
+                'users.name as user_name',
+            ])->orderBy('microsites.name', 'asc');
     }
 
     protected static function newFactory(): Factory|MicrositeFactory

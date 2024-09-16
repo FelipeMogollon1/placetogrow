@@ -20,7 +20,6 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue';
 import Modal from '@/Components/Modal.vue';
 
 const props = defineProps({

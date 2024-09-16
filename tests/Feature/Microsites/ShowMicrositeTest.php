@@ -40,10 +40,10 @@ class ShowMicrositeTest extends TestCase
         $microsite = Microsite::factory()->create([
             'name' => 'andres',
             'logo' => $logoPath,
-            'document_type' => DocumentTypes::CC,
+            'document_type' => DocumentTypes::CC->value,
             'document' => '1321657',
-            'microsite_type' => MicrositesTypes::INVOICE,
-            'currency' => CurrencyTypes::COP,
+            'microsite_type' => MicrositesTypes::INVOICE->value,
+            'currency' => CurrencyTypes::COP->value,
             'payment_expiration_time' => 12,
             'category_id' => $category->id,
         ]);
@@ -59,17 +59,18 @@ class ShowMicrositeTest extends TestCase
                     ->has(
                         'microsite',
                         fn ($microsite) =>
-                    $microsite
-                        ->where('name', 'andres')
-                        ->where('logo', $logoPath)
-                        ->where('document_type', DocumentTypes::CC)
-                        ->where('document', '1321657')
-                        ->where('microsite_type', MicrositesTypes::INVOICE)
-                        ->where('currency', CurrencyTypes::COP)
-                        ->where('payment_expiration_time', 12)
-                        ->where('category_id', $category->id)
-                        ->etc()
+                        $microsite
+                            ->where('name', 'andres')
+                            ->where('logo', $logoPath)
+                            ->where('document_type', DocumentTypes::CC->value)
+                            ->where('document', '1321657')
+                            ->where('microsite_type', MicrositesTypes::INVOICE->value)
+                            ->where('currency', CurrencyTypes::COP->value)
+                            ->where('payment_expiration_time', 12)
+                            ->where('category_id', $category->id)
+                            ->etc()
                     )
             );
     }
+
 }

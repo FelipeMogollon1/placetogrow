@@ -3,17 +3,13 @@
 namespace App\Domain\User\Actions;
 
 use App\Infrastructure\Persistence\Models\User;
-use Illuminate\Http\RedirectResponse;
 
 class StoreUserAction
 {
-    public function execute(array $data): RedirectResponse
+    public function execute(array $data): bool
     {
+        User::query()->create($data)->assignRole($data['role']);
 
-        $user = User::query()->create($data);
-
-        $user->assignRole($data['role']);
-
-        return to_route('users.index');
+        return true;
     }
 }

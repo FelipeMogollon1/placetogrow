@@ -6,10 +6,15 @@ import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import {defineProps} from "vue";
 
 const props = defineProps({
     user:{
+        type:Object
+    },
+    role:{
+        type:Object
+    },
+    roles:{
         type:Object
     }
 })
@@ -17,6 +22,7 @@ const props = defineProps({
 const initialValues = {
     name : props.user.name,
     email : props.user.email,
+    role: props.user.roles[0].name,
     password: "",
     password_confirmation: ""
 }
@@ -30,17 +36,17 @@ const submit = () => {
 </script>
 
 <template>
+    <Head :title="$t('user.update_user')"/>
 
-    <Head title="Actualizar categoria"/>
     <AuthenticatedLayout>
         <template #header>
             <div class="flex justify-between items-center">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">Actualizar Categoria</h2>
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ $t('user.update_user') }}</h2>
                 <Link
                     :href="route('users.index')"
-                    class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                    class="inline-flex items-center px-4 py-2 bg-orange-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-700 focus:bg-orange-700 active:bg-orange-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition ease-in-out duration-150"
                 >
-                    Lista de categorias
+                    {{ $t('user.list_users') }}
                 </Link>
             </div>
         </template>
@@ -48,11 +54,11 @@ const submit = () => {
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="flex justify-center p-6 text-gray-900">
-                        <form class="w-1/3 py-8 space-y-5" @submit.prevent="submit">
+                <div class="bg-white overflow-hidden border border-gray-100 sm:rounded-lg shadow-2xl">
+                    <div class="p-6 text-gray-900 ">
+                        <form class="grid grid-cols-1 gap-6 sm:grid-cols-2 " @submit.prevent="submit" >
                             <div>
-                                <InputLabel for="name" value="Nombre" />
+                                <InputLabel for="name" :value="$t('user.name')" />
                                 <TextInput
                                     id="name"
                                     type="text"
@@ -60,13 +66,13 @@ const submit = () => {
                                     v-model="form.name"
                                     autofocus
                                     autocomplete="name"
-                                    placeholder="Pedro Jose"
+                                    :placeholder="$t('user.name')"
                                 />
                                 <InputError class="mt-2" :message="form.errors.name" />
                             </div>
 
                             <div>
-                                <InputLabel for="email" value="Email" />
+                                <InputLabel for="email" :value="$t('user.email')" />
                                 <TextInput
                                     id="email"
                                     type="email"
@@ -80,7 +86,33 @@ const submit = () => {
                             </div>
 
                             <div>
-                                <InputLabel for="password" value="Contraseña" />
+                                <InputLabel for="role" value="Roles" />
+
+                                <select name="role"
+                                        id="role"
+                                        v-model="form.role"
+                                        class="w-full mt-1 border-gray-300 focus:border-orange-500 focus:ring-orange-500 rounded-md shadow-sm"
+                                >
+
+                                    <option value="">{{$t('select')}}</option>
+                                    <option
+                                        v-for="role in props.roles"
+                                        :value="role.name"
+                                    >
+                                        <template class="capitalize" v-if="['admin', 'guest', 'sa'].includes(role.name)">
+                                            {{ $t(`roles_table.${role.name}`) }}
+                                        </template>
+                                        <template class="capitalize" v-else>
+                                            {{ role.name }}
+                                        </template>
+                                    </option>
+
+                                </select>
+                                <InputError class="mt-2" :message="form.errors.role" />
+                            </div>
+
+                            <div>
+                                <InputLabel for="password" :value="$t('user.password')" />
                                 <TextInput
                                     id="password"
                                     type="password"
@@ -94,7 +126,7 @@ const submit = () => {
 
 
                             <div>
-                                <InputLabel for="password" value="Confirmar Contraseña" />
+                                <InputLabel for="password" :value="$t('user.confirm_password')" />
                                 <TextInput
                                     id="password_confirmation"
                                     type="password"
@@ -106,14 +138,12 @@ const submit = () => {
                                 <InputError class="mt-2" :message="form.errors.password_confirmation" />
                             </div>
 
-                            <div class="flex justify-center">
+                            <div class="flex justify-center col-span-2">
                                 <PrimaryButton >
-                                    Actualizar Usuario
+                                    {{ $t('user.create_user') }}
                                 </PrimaryButton>
                             </div>
-                            <div class="flex justify-center">
 
-                            </div>
                         </form>
 
                     </div>

@@ -36,15 +36,57 @@ enum Permissions: string
     case ROLES_UPDATE = 'roles.update';
     case ROLES_DESTROY = 'roles.destroy';
 
+
+    case PAYMENTS_INDEX = 'payments.index';
+    case PAYMENTS_SHOW = 'payments.show';
+
+
+    case SUBSCRIPTIONS_INDEX = 'subscriptions.index';
+    case SUBSCRIPTIONS_SHOW = 'subscriptions.show';
+    case SUBSCRIPTIONS_DESTROY  = 'subscriptions.destroy';
+
+
+    case INVOICES_INDEX = 'invoices.index';
+    case INVOICES_IMPORT = 'invoices.import';
+    case INVOICES_SHOW = 'invoices.show';
+    case INVOICES_DESTROY  = 'invoices.destroy';
+    case INVOICE_PROCESS_PAYMENT = 'invoices.processPayment';
+
+
+
     public static function getAllPermissions(): array
     {
-        return array_map(fn($enum) => $enum->value, self::cases());
+        return array_map(fn ($enum) => $enum->value, self::cases());
+    }
+
+    public static function getAdminPermissions(): array
+    {
+        return [
+            self::MICROSITES_INDEX->value,
+            self::MICROSITES_SHOW->value,
+            self::PAYMENTS_INDEX->value,
+            self::PAYMENTS_SHOW->value,
+            self::SUBSCRIPTIONS_INDEX->value,
+            self::SUBSCRIPTIONS_SHOW->value,
+            self::SUBSCRIPTIONS_DESTROY->value,
+            self::INVOICES_INDEX->value,
+            self::INVOICES_SHOW->value,
+            self::INVOICES_IMPORT->value,
+            self::INVOICES_DESTROY->value
+        ];
     }
 
     public static function getGuestPermissions(): array
     {
         return [
-            self::MICROSITES_INDEX->value,
+            self::PAYMENTS_INDEX->value,
+            self::PAYMENTS_SHOW->value,
+            self::SUBSCRIPTIONS_INDEX->value,
+            self::SUBSCRIPTIONS_SHOW->value,
+            self::SUBSCRIPTIONS_DESTROY->value,
+            self::INVOICES_INDEX->value,
+            self::INVOICES_SHOW->value,
+            self::INVOICE_PROCESS_PAYMENT->value
         ];
     }
 }

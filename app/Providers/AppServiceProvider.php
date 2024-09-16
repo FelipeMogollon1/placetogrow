@@ -2,18 +2,19 @@
 
 namespace App\Providers;
 
-use App\Domain\Microsite\Repositories\MicrositeRepositoryInterface;
-use App\Infrastructure\Persistence\Repositories\EloquentMicrositeRepository;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    public $bindings = [
+        ServiceProvider::class => PaymentServiceProvider::class
+    ];
     /**
      * Register any application services.
      */
     public function register(): void
     {
-        $this->app->bind(MicrositeRepositoryInterface::class, EloquentMicrositeRepository::class);
+
     }
 
     /**

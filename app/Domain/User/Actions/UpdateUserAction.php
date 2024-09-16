@@ -3,14 +3,21 @@
 namespace App\Domain\User\Actions;
 
 use App\Infrastructure\Persistence\Models\User;
-use Illuminate\Http\RedirectResponse;
 
 class UpdateUserAction
 {
-    public function execute(int $id, array $data): RedirectResponse
+    public function execute(int $id, array $data): bool
     {
-        $user = User::find($id);
-        $user->update($data);
-        return to_route('users.index');
+        $user = User::findOrFail($id);
+
+        $updateSuccess = $user->update($data);
+
+        if ($updateSuccess) {
+            $user->syncRoles([$data['role']]);
+
+            return true;
+        }
+
+        return false;
     }
 }

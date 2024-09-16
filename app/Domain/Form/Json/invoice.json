@@ -1,0 +1,72 @@
+{
+    "type": "invoice",
+    "additional_information": "",
+    "fields": [
+        {
+            "type": "text",
+            "name": "name",
+            "active": "true",
+            "required": "true"
+        },
+        {
+            "type": "text",
+            "name": "surname",
+            "active": "true",
+            "required": "true"
+        },
+        {
+            "type": "email",
+            "name": "email",
+            "active": "true",
+            "required": "true"
+        },
+        {
+            "type": "select",
+            "name": "document_type",
+            "active": "true",
+            "required": "true"
+        },
+        {
+            "type": "number",
+            "name": "document",
+            "active": "true",
+            "required": "true"
+        },
+        {
+            "type": "number",
+            "name": "mobile",
+             "active": "false",
+            "required": "false"
+        },
+        {
+            "type": "text",
+            "name": "reference",
+            "active": "false",
+            "required": "false"
+        },
+        {
+            "type": "text",
+            "name": "company",
+            "active": "false",
+            "required": "false"
+        },
+        {
+            "type": "text",
+            "name": "description",
+            "active": "false",
+            "required": "false"
+        },
+        {
+            "type": "select",
+            "name": "currency_type",
+            "active": "true",
+            "required": "true"
+        },
+        {
+            "type": "number",
+            "name": "amount",
+            "active": "true",
+            "required": "true"
+        }
+    ]
+}

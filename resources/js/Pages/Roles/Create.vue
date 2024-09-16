@@ -6,7 +6,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import { defineProps, ref } from "vue";
+import { ref } from "vue";
 
 const selectedRoles = ref({});
 
@@ -82,27 +82,27 @@ const isPermissionChecked = (group, permission) => {
 </script>
 
 <template>
-    <Head title="Crear Rol" />
+    <Head :title="$t('role.create_role')" />
     <AuthenticatedLayout>
         <template #header>
             <div class="flex justify-between items-center">
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">Crear Rol</h2>
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ $t('role.create_role') }}</h2>
                 <Link
                     :href="route('roles.index')"
-                    class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                    class="inline-flex items-center px-4 py-2 bg-orange-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-orange-700 focus:bg-orange-700 active:bg-orange-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 transition ease-in-out duration-150"
                 >
-                    Lista de roles
+                    {{ $t('role.list_role') }}
                 </Link>
             </div>
         </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="flex justify-center p-6 text-gray-900">
+                <div class="bg-white overflow-hidden border border-gray-100 sm:rounded-lg shadow-2xl">
+                    <div class="p-6 text-gray-900 justify-center flex ">
                         <form class="w-full max-w-3xl py-8 space-y-5" @submit.prevent="submit" id="formPermissions">
                             <div>
-                                <InputLabel for="name" value="Nombre" />
+                                <InputLabel for="name" :value="$t('role.name')" />
                                 <TextInput
                                     id="name"
                                     type="text"
@@ -110,12 +110,12 @@ const isPermissionChecked = (group, permission) => {
                                     v-model="form.name"
                                     autofocus
                                     autocomplete="name"
-                                    placeholder="Administrador general"
+                                    :placeholder="$t('role.description')"
                                 />
                                 <InputError class="mt-2" :message="form.errors.name" />
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                                 <div v-for="(permissions, group) in groupedPermissions" :key="group">
                                     <div class="flex items-center">
                                         <input
@@ -123,8 +123,10 @@ const isPermissionChecked = (group, permission) => {
                                             :id="'group_' + group"
                                             v-model="selectedRoles[group]"
                                             @click="toggleGroup(group, selectedRoles, groupedPermissions)"
+                                            class="w-4 h-4 text-orange-400 bg-gray-50 border-orange-500 rounded focus:ring-orange-500 focus:ring-2"
                                         />
-                                        <InputLabel :for="'group_' + group" :value="group" class="ml-2" />
+                                        <InputLabel :for="'group_' + group" :value="$t(`role.group.${group}`)" class="ml-2 text-orange-500 font-black" />
+
                                     </div>
                                     <div class="ml-6">
                                         <div v-for="permission in permissions" :key="permission" class="flex items-center mt-2">
@@ -133,11 +135,12 @@ const isPermissionChecked = (group, permission) => {
                                                 :id="`${group}.${permission}`"
                                                 :value="`${group}.${permission}`"
                                                 name="permissions[]"
-                                                class="form-checkbox"
+                                                class="w-4 h-4 text-orange-400 bg-gray-50 border-orange-500 rounded focus:ring-orange-500 focus:ring-2"
                                                 @change="e => handlePermissionChange(group, permission, e)"
                                                 :checked="isPermissionChecked(group, permission)"
+
                                             />
-                                            <InputLabel :for="`${group}.${permission}`" :value="permission" class="ml-2" />
+                                            <InputLabel :for="`${group}.${permission}`" :value="$t(`role.permissions.${permission}`)" class="ml-2" />
                                         </div>
                                     </div>
                                 </div>
@@ -145,7 +148,7 @@ const isPermissionChecked = (group, permission) => {
 
                             <div class="flex justify-center">
                                 <PrimaryButton>
-                                    Crear Rol
+                                    {{ $t('role.create_role') }}
                                 </PrimaryButton>
                             </div>
                         </form>

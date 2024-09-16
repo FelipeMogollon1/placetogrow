@@ -6,6 +6,7 @@ use App\Constants\Abilities;
 use App\Constants\CurrencyTypes;
 use App\Constants\DocumentTypes;
 use App\Constants\MicrositesTypes;
+use App\Constants\SubscriptionPeriods;
 use App\Domain\Microsite\Actions\DestroyMicrositeAction;
 use App\Domain\Microsite\Actions\StoreMicrositeAction;
 use App\Domain\Microsite\Actions\UpdateMicrositeAction;
@@ -14,6 +15,9 @@ use App\Http\Requests\Microsite\StoreMicrositeRequest;
 use App\Http\Requests\Microsite\UpdateMicrositeRequest;
 use App\Infrastructure\Persistence\Models\Category;
 use App\Infrastructure\Persistence\Models\Microsite;
+use App\Infrastructure\Persistence\Models\SubscriptionPlan;
+use App\Infrastructure\Persistence\Models\User;
+use App\ViewModels\Microsites\MicrositeIndexViewModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
@@ -23,17 +27,18 @@ class MicrositeController extends Controller
 {
     use AuthorizesRequests;
 
-    public function index(): Response
+    public function index(MicrositeIndexViewModel $viewModel): Response
     {
         $this->authorize(Abilities::VIEW_ANY->value, Microsite::class);
-        $microsites = Microsite::withCategory()->get();
 
-        return Inertia::render('Microsites/Index', compact('microsites'));
+        return Inertia::render('Microsites/Index', [
+            'microsites'  => $viewModel->fromAuthenticatedUser()
+        ]);
     }
 
     public function create(): Response
     {
-        $this->authorize(Abilities::CREATE->value   , Microsite::class);
+        $this->authorize(Abilities::CREATE->value, Microsite::class);
         $arrayConstants = $this->getCommonData();
 
         return Inertia::render('Microsites/Create', $arrayConstants);
@@ -44,15 +49,17 @@ class MicrositeController extends Controller
         $this->authorize(Abilities::STORE->value, Microsite::class);
         $storeAction->execute($request->validated());
 
-        return to_route('microsites.index');
+        return to_route('microsites.index')->with('success', 'Microsite created.');
     }
 
     public function show(string $id): Response
     {
         $this->authorize(Abilities::VIEW->value, Microsite::class);
         $microsite = Microsite::withCategory($id)->firstOrFail()->toArray();
+        $subscriptionPlans = SubscriptionPlan::where('microsite_id', $id)->orderBy('name', 'asc')->paginate(6);
+        $arrayConstants = $this->getCommonData();
 
-        return Inertia::render('Microsites/Show', compact('microsite'));
+        return Inertia::render('Microsites/Show', compact('microsite', 'arrayConstants', 'subscriptionPlans'));
     }
 
     public function edit(string $id): Response
@@ -72,7 +79,7 @@ class MicrositeController extends Controller
         return to_route('microsites.index');
     }
 
-    public function destroy(int $id,DestroyMicrositeAction $destroyAction): RedirectResponse
+    public function destroy(int $id, DestroyMicrositeAction $destroyAction): RedirectResponse
     {
         $this->authorize(Abilities::DELETE->value, Microsite::class);
         $destroyAction->execute($id);
@@ -82,14 +89,18 @@ class MicrositeController extends Controller
 
     public function welcomeIndex(): Response
     {
-        $microsites = Microsite::withCategory()->get();
+        $microsites = Microsite::AllWithCategories()->get();
 
         return Inertia::render('Welcome', compact('microsites'));
 
     }
-    public function paymentForm(): Response
+    public function paymentForm(string $slug): Response
     {
-        return Inertia::render('PaymentForm');
+        $microsite = Microsite::where('slug', $slug)->with('form')->firstOrFail();
+        $subscriptionPlans = SubscriptionPlan::where('microsite_id', $microsite->id)->orderBy('name', 'asc')->paginate(6);
+        $arrayConstants = $this->getCommonData();
+
+        return Inertia::render('Form/PaymentForm', compact('microsite', 'subscriptionPlans', 'arrayConstants'));
     }
 
     private function getCommonData(): array
@@ -99,6 +110,8 @@ class MicrositeController extends Controller
             'micrositesTypes' => MicrositesTypes::getMicrositesTypes(),
             'currencyTypes' => CurrencyTypes::getCurrencyType(),
             'categories' => Category::select('id', 'name')->get(),
+            'users' => User::role('admin')->select('id', 'name')->get(),
+            'periods' => SubscriptionPeriods::getAllSubscriptionPeriods()
         ];
     }
 }

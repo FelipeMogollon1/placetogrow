@@ -22,22 +22,29 @@ class IndexCategoryTest extends TestCase
         $user->assignRole(Roles::ADMIN);
 
         $adminRole = $user->roles()->first();
-        $adminRole->givePermissionTo(Permissions::CATEGORIES_INDEX);
+        $adminRole->givePermissionTo(Permissions::CATEGORIES_INDEX->value);
 
         Category::factory()->count(3)->create();
 
         $response = $this->actingAs($user)
             ->get(route('categories.index'));
 
-        $totalCategories = Category::all();
+        $totalCategories = Category::select(['id', 'name', 'description'])
+            ->orderby('name', 'asc')
+            ->paginate(5);
+
+        $categories = $totalCategories->toArray()['data'];
 
         $response->assertOk()
             ->assertInertia(
                 fn (AssertableInertia $page) => $page
                     ->component('Categories/Index')
-                    ->has('categories', $totalCategories->count())
-                    ->where('categories.0.id', $totalCategories[0]->id)
-                    ->where('categories.1.id', $totalCategories[1]->id)
+                    ->has('categories.data', count($categories))
+                    ->where('categories.data.0.id', $categories[0]['id'])
+                    ->where('categories.data.1.id', $categories[1]['id'])
+                    ->where('categories.data.2.id', $categories[2]['id'])
             );
     }
+
+
 }

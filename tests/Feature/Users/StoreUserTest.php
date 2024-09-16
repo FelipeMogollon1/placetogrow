@@ -14,7 +14,7 @@ class StoreUserTest extends TestCase
 
     public function test_can_store_user(): void
     {
-       $this->seed();
+        $this->seed();
 
         $user = User::factory()->create();
         $user->assignRole(Roles::ADMIN);

@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Constants\Roles;
-use App\Infrastructure\Persistence\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
