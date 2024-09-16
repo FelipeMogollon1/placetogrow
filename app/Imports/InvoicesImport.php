@@ -4,14 +4,17 @@ namespace App\Imports;
 
 use App\Constants\CurrencyTypes;
 use App\Constants\DocumentTypes;
+use App\Constants\PaymentStatus;
 use App\Infrastructure\Persistence\Models\Invoice;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Carbon\Carbon;
 
 class InvoicesImport implements ToCollection, WithHeadingRow
 {
@@ -19,7 +22,7 @@ class InvoicesImport implements ToCollection, WithHeadingRow
     protected $micrositeId;
     public $errors = [];
 
-    public function __construct($userId, $micrositeId)
+    public function __construct(int $userId, int $micrositeId)
     {
         $this->userId = $userId;
         $this->micrositeId = $micrositeId;
@@ -28,47 +31,52 @@ class InvoicesImport implements ToCollection, WithHeadingRow
     public function collection(Collection $collection): void
     {
         foreach ($collection as $row) {
+            $rowArray = $row->toArray();
+
             try {
-                $this->validateRow($row);
+                $this->validateRow($rowArray);
+
+                $existingInvoice = Invoice::where('document', (string) $rowArray['document'])
+                    ->where('microsite_id', $this->micrositeId)
+                    ->orWhere('amount', $rowArray['amount'])
+                    ->first();
+
+                if ($existingInvoice && $existingInvoice->status === PaymentStatus::APPROVED->value) {
+                    Log::info("La factura con el documento {$rowArray['document']} ya está aprobada y no puede ser modificada.");
+                    continue;
+                }
 
                 Invoice::updateOrCreate(
-                    ['document' => $row['document']],
                     [
-                        'reference' => $row['reference'],
+                        'document' => $rowArray['document'],
+                        'microsite_id' => $this->micrositeId,
+                    ],
+                    [
+                        'reference' => $rowArray['reference'] ?: Str::random(10),
                         'user_id' => $this->userId,
                         'microsite_id' => $this->micrositeId,
-                        'name' => $row['name'],
-                        'surname' => $row['surname'],
-                        'email' => $row['email'],
-                        'document_type' => $row['document_type'],
-                        'document' => (string) $row['document'],
-                        'description' => $row['description'],
-                        'currency_type' => $row['currency_type'],
-                        'amount' => $row['amount'],
+                        'name' => $rowArray['name'],
+                        'surname' => $rowArray['surname'],
+                        'email' => $rowArray['email'],
+                        'document_type' => $rowArray['document_type'],
+                        'document' => (string) $rowArray['document'],
+                        'description' => $rowArray['description'] ?? 'Payment by ' . $rowArray['reference'],
+                        'currency_type' => $rowArray['currency_type'],
+                        'amount' => $rowArray['amount'],
                     ]
                 );
             } catch (ValidationException $e) {
-                Log::warning('Fila inválida: ' . json_encode($row) . ' - Errores: ' . json_encode($e->errors()));
-                $this->errors[] = [
-                    'row' => $row->toArray(),
-                    'errors' => $e->errors()
-                ];
-                continue;
+                $this->logValidationErrors($row, $e);
             } catch (\Exception $e) {
-                Log::error('Error general en la fila: ' . json_encode($row) . ' - Error: ' . $e->getMessage());
-                continue;
+                $this->logGeneralError($row, $e);
             }
         }
     }
 
-    private function validateRow(Collection $row): void
+    private function validateRow(array $data): void
     {
-        $data = $row->toArray();
-
         $rules = [
-            'reference' => 'required|string',
-            'user_id' => 'nullable|integer|exists:users,id',
-            'microsite_id' => 'nullable|integer|exists:microsites,id',
+            'reference' => 'nullable|string',
             'name' => 'required|string',
             'surname' => 'required|string',
             'email' => [
@@ -77,7 +85,7 @@ class InvoicesImport implements ToCollection, WithHeadingRow
                 'regex:/^[^@]+@[^@]+\.[a-zA-Z]{2,}$/'
             ],
             'document_type' => [
-                'nullable',
+                'required',
                 'string',
                 Rule::in(DocumentTypes::getDocumentTypes())
             ],
@@ -90,15 +98,16 @@ class InvoicesImport implements ToCollection, WithHeadingRow
                 ];
                 $documentType = $data['document_type'];
 
-                if (isset($patterns[$documentType])) {
-                    if (!preg_match($patterns[$documentType], $value)) {
-                        $fail("El $attribute no es válido para el tipo de documento $documentType.");
-                    }
-                } else {
+                if (!isset($patterns[$documentType])) {
                     $fail("Tipo de documento $documentType no reconocido.");
+                    return;
+                }
+
+                if (!preg_match($patterns[$documentType], $value)) {
+                    $fail("El $attribute no es válido para el tipo de documento $documentType.");
                 }
             }],
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'currency_type' => ['required', Rule::in(CurrencyTypes::getCurrencyType())],
             'amount' => 'required|numeric|min:1|max:999999999',
         ];
@@ -110,14 +119,37 @@ class InvoicesImport implements ToCollection, WithHeadingRow
         }
     }
 
+    private function logValidationErrors($row, ValidationException $e): void
+    {
+        Log::warning('Fila inválida: ' . json_encode($row) . ' - Errores: ' . json_encode($e->errors()));
+        $this->errors[] = [
+            'row' => $row->toArray(),
+            'errors' => $e->errors()
+        ];
+    }
+
+    private function logGeneralError($row, \Exception $e): void
+    {
+        Log::error('Error general en la fila: ' . json_encode($row) . ' - Error: ' . $e->getMessage());
+    }
 
     public function chunkSize(): int
     {
         return 1000;
     }
 
-    private function isValidRow($row): bool
+    public function headings(): array
     {
-        return isset($row['document']);
+        return [
+            'reference',
+            'name',
+            'surname',
+            'email',
+            'document_type',
+            'document',
+            'description',
+            'currency_type',
+            'amount',
+        ];
     }
 }

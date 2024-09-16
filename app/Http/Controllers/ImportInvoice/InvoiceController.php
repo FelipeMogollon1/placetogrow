@@ -3,38 +3,45 @@
 namespace App\Http\Controllers\ImportInvoice;
 
 use App\Contracts\PaymentGatewayContract;
+use App\Exports\InvoiceTemplateExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Invoice\ImportInvoicesRequest;
 use App\Imports\InvoicesImport;
 use App\Infrastructure\Persistence\Models\Invoice;
-use App\Infrastructure\Persistence\Models\Microsite;
 use App\ViewModels\Invoice\InvoiceIndexViewModel;
 use App\ViewModels\Invoice\InvoiceMicrositeIndexViewModel;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
 
 class InvoiceController extends Controller
 {
-    public function import(ImportInvoicesRequest $request): Response
+    public function downloadTemplate(): BinaryFileResponse
+    {
+        Log::info('Generating the invoice template...');
+
+        return Excel::download(new InvoiceTemplateExport, 'invoice_template.xlsx');
+    }
+
+    public function import(ImportInvoicesRequest $request): RedirectResponse
     {
         $request->validated();
         $import = new InvoicesImport(auth()->user()->id, $request->input('microsite_id'));
-
         Excel::import($import, $request->file('invoices'));
-        $microsites = Microsite::where('microsite_type', 'invoice')->get();
 
-        return Inertia::render('Invoices/Index', [
-            'invoices' => Invoice::orderBy('name', 'asc')->paginate(5),
-            'microsites' => $microsites
-        ]);
+        return to_route('invoices.index')->with('success', 'import done successfully.');
     }
 
     public function index(Request $request, InvoiceIndexViewModel $viewModel, InvoiceMicrositeIndexViewModel $viewModelMicrosite): Response
     {
+        Artisan::call('app:transactions-consult');
         $search = $request->only(['search']);
 
         return Inertia::render('Invoices/Index', [
@@ -62,7 +69,9 @@ class InvoiceController extends Controller
     {
         Invoice::findOrFail($id)->delete();
 
-        return redirect()->route('invoices.index')->with('success', 'Invoice deleted successfully.');
+        return to_route('invoices.index')->with('success', 'Invoice deleted successfully.');
     }
+
+
 
 }

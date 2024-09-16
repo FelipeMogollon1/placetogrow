@@ -19,6 +19,8 @@ Route::resource('/payments', PaymentController::class);
 Route::get('/returnBusiness/{payment}', [PaymentController::class,'returnBusiness'])->name('returnBusiness');
 Route::get('/returnSubscription/{subscription}', [SubscriptionController::class,'returnSubscription'])->name('returnSubscription');
 Route::resource('/subscriptions', SubscriptionController::class);
+Route::get('/invoices/download-template', [InvoiceController::class, 'downloadTemplate'])
+    ->name('invoices.download-template');
 
 Route::group(['middleware' => 'auth', 'verified'], function () {
 
