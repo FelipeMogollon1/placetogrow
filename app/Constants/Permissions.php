@@ -86,6 +86,7 @@ enum Permissions: string
             self::SUBSCRIPTIONS_INDEX->value,
             self::SUBSCRIPTIONS_SHOW->value,
             self::SUBSCRIPTIONS_EDIT->value,
+            self::SUBSCRIPTIONS_UPDATE->value,
             self::SUBSCRIPTIONS_DESTROY->value,
             self::INVOICES_INDEX->value,
             self::INVOICES_SHOW->value,

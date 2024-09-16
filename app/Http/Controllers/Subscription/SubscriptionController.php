@@ -71,6 +71,8 @@ class SubscriptionController extends Controller
 
     public function edit(string $id): Response
     {
+        $this->authorize(Abilities::EDIT->value, Subscription::class);
+
         $subscription = SubscriptionPlan::select('*')
             ->join('microsites', 'subscription_plans.microsite_id', '=', 'microsites.id')
             ->join('subscriptions', 'subscriptions.subscription_plan_id', '=', 'subscription_plans.id')
@@ -84,6 +86,7 @@ class SubscriptionController extends Controller
 
     public function update(UpdateSubscriptionRequest $request,string $id,UpdateSubscriptionAction $updateAction): RedirectResponse
     {
+        $this->authorize(Abilities::UPDATE->value, Subscription::class);
         $updateAction->execute($id, $request->validated());
 
         return redirect()->route('subscriptions.index');
@@ -91,6 +94,7 @@ class SubscriptionController extends Controller
 
     public function destroy(string $id, DestroySubscriptionAction $action): RedirectResponse
     {
+        $this->authorize(Abilities::DELETE->value, Subscription::class);
         $subscription = Subscription::findOrFail($id);
 
         if ($action->execute($subscription)) {
