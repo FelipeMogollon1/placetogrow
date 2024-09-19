@@ -333,6 +333,7 @@
         "return" : "Volver",
         "currency": "Moneda",
         "editSubscription" : "Editar subscripción",
+        "edit_subscription" : "Editar Plan de Suscripción",
         "continue" : "Continuar",
         "changePlan": "Cambiar de plan",
         "paymentMethod": "Método de pago actual",
