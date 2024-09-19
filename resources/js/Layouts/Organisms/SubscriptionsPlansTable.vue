@@ -76,7 +76,7 @@ const typeMicrosite = {
 <template>
     <Modal v-model:show="isModalOpenEdit">
         <template v-slot:default>
-            <h1 class="text-2xl font-semibold m-4">{{ $t('subscription.newSubscriptionPlan') }}</h1>
+            <h1 class="text-2xl font-semibold m-4">{{ $t('subscription.edit_subscription') }}</h1>
             <Edit :periods="periods"
                   :microsite="microsite"
                   :subscription="selectedSubscription"
