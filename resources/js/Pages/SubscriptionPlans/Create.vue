@@ -82,7 +82,8 @@
                 </div>
 
                 <div>
-                    <InputLabel for="amount" :value="$t('subscription.amount')" />
+                    <InputLabel v-if="microsite.currency === 'BOTH'"  for="amount" :value="$t('subscription.amount')"/>
+                    <InputLabel v-else for="amount" :value="$t('subscription.amount') + ' (' + $t('currencies.' + microsite.currency) + ')'"/>
                     <TextInput
                         id="amount"
                         type="number"

@@ -18,6 +18,7 @@ return new class () extends Migration {
             $table->enum('subscription_period', SubscriptionPeriods::getAllSubscriptionPeriods());
             $table->integer('expiration_time');
             $table->unsignedBigInteger('microsite_id');
+            $table->boolean('active')->default(true);
             $table->timestamps();
 
             $table->foreign('microsite_id')

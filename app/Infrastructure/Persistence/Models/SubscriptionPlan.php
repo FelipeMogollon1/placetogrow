@@ -21,8 +21,8 @@ class SubscriptionPlan extends Model
         'subscription_period',
         'expiration_time',
         'microsite_id',
+        'active',
     ];
-
 
     protected $casts = [
         'description' => 'array',
@@ -40,4 +40,8 @@ class SubscriptionPlan extends Model
         return $this->hasMany(Subscription::class);
     }
 
+    public function scopeActivos($query)
+    {
+        return $query->where('active', true);
+    }
 }
