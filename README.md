@@ -113,14 +113,19 @@ Para ejecutar este proyecto de forma eficaz, necesitarás los siguientes prerreq
        PLACETOPAY_LOGIN=
        PLACETOPAY_TRANKEY=
        PLACETOPAY_BASE_URL=
+       PLACETOPAY_TIME_OUT=
     ```
 
-4. El usuario super administrator por defecto es:
+4. El usuario super administrador por defecto es:
     ```env
     Email: sa@microsites.com
     Contraseña: password
     ```
-
+5. El usuario administrador por defecto es:
+    ```env
+    Email: admin@microsites.com
+    Contraseña: password
+    ```
 
 
 ### Modelo Entidad Relación

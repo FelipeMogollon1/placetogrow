@@ -11,17 +11,11 @@ use Illuminate\Http\Request;
 interface PaymentGatewayContract
 {
     public function connection(array $settings): self;
-
     public function createSession(Payment $payment, Request $request): RedirectResponse;
     public function queryPayment(Payment $payment): Payment;
-
     public function createSessionInvoice(Invoice $invoice, Request $request): RedirectResponse;
-
-
-    public function createSessionSubscription(Subscription $subscription, Request $request): RedirectResponse;
-    public function cancelSubscription(Subscription $subscription, Request $request): RedirectResponse;
-    public function querySubscription(Subscription $subscription): Subscription;
-
     public function queryInvoice(Invoice $invoice): Invoice;
+    public function createSessionSubscription(Subscription $subscription, Request $request): RedirectResponse;
+    public function querySubscription(Subscription $subscription): Subscription;
 
 }

@@ -11,11 +11,12 @@ class PaymentServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        $this->app->bind(PaymentGatewayContract::class, function () {
-            $service = config('payment.services.current');
+        $this->app->bind(PaymentGatewayContract::class, function ($app) {
 
-            return (app(PlacetopayGateway::class))
-                ->connection(Arr::get(config('payment.services.'.$service), 'settings'));
+            $service = config('payment.services.current');
+            $settings = config('payment.services.' . $service . '.settings');
+
+            return new PlacetopayGateway($settings);
         });
     }
 }
