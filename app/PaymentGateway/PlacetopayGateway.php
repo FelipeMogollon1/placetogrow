@@ -14,17 +14,20 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class PlacetopayGateway implements PaymentGatewayContract
 {
     public PlacetoPay $placetopay;
-    public string $baseUrl;
 
+    public function __construct(PlacetoPay $placetopay)
+    {
+        $this->placetopay = $placetopay;
+    }
     public function connection(array $settings): self
     {
         $this->placetopay = $this->getPaymentPlacetoPay($settings);
-        $this->baseUrl = Arr::get($settings, 'baseUrl');
         return $this;
     }
 
@@ -78,7 +81,7 @@ class PlacetopayGateway implements PaymentGatewayContract
 
         } catch (Throwable $exception) {
             report($exception);
-            throw new GatewayException($exception->getMessage());
+            Log::error('An error occurred while making the payment', ['exception' => $exception->getMessage()]);
         }
     }
 
@@ -127,7 +130,7 @@ class PlacetopayGateway implements PaymentGatewayContract
 
         } catch (Throwable $exception) {
             report($exception);
-            throw new GatewayException($exception->getMessage());
+            Log::error('An error occurred while creating the subscription session', ['exception' => $exception->getMessage()]);
         }
     }
 
@@ -180,42 +183,6 @@ class PlacetopayGateway implements PaymentGatewayContract
         return $subscription;
     }
 
-    public function cancelSubscription(Subscription $subscription, Request $request): RedirectResponse
-    {
-        $microsite = Microsite::findOrFail($subscription->microsite_id);
-
-        try {
-            $requestData = [
-                'instrument' => [
-                    "token" => Crypt::decrypt($subscription->token),
-                ],
-                'expiration' => now()->addMinutes($microsite->payment_expiration_time)->toIso8601String(),
-                'returnUrl' => route('subscription.index', $subscription->id),
-                'ipAddress' => $request->ip(),
-                'userAgent' => $request->userAgent(),
-            ];
-
-            $response = $this->placetopay->request($requestData);
-
-            if ($response->isSuccessful()) {
-                $subscription->status = PaymentStatus::PENDING->value;
-                $subscription->process_identifier = $response->processUrl();
-                $subscription->request_id = $response->requestId();
-            } else {
-                $subscription->status = PaymentStatus::REJECTED->value;
-                $subscription->request_id = $response->requestId();
-            }
-            $subscription->save();
-
-            return $response;
-
-        } catch (Throwable $exception) {
-            report($exception);
-            throw new GatewayException($exception->getMessage());
-        }
-    }
-
-
     public function createSessionInvoice(Invoice $invoice, Request $request): RedirectResponse
     {
         $microsite = Microsite::findOrFail($invoice->microsite_id);
@@ -267,20 +234,10 @@ class PlacetopayGateway implements PaymentGatewayContract
 
         } catch (Throwable $exception) {
             report($exception);
-            throw new GatewayException($exception->getMessage());
+            Log::error('An error occurred while creating the bill invoice session', ['exception' => $exception->getMessage()]);
+
         }
     }
-
-    public function getPaymentPlacetoPay(array $settings): PlacetoPay
-    {
-        return new PlacetoPay([
-            'login' => Arr::get($settings, 'login'),
-            'tranKey' => Arr::get($settings, 'tranKey'),
-            'baseUrl' => Arr::get($settings, 'baseUrl'),
-            'timeout' => 10,
-        ]);
-    }
-
 
     public function queryInvoice(Invoice $invoice): Invoice
     {
@@ -298,4 +255,15 @@ class PlacetopayGateway implements PaymentGatewayContract
         }
         return $invoice;
     }
+
+    public function getPaymentPlacetoPay(array $settings): PlacetoPay
+    {
+        return new PlacetoPay([
+            'login' => Arr::get($settings, 'login'),
+            'tranKey' => Arr::get($settings, 'tranKey'),
+            'baseUrl' => Arr::get($settings, 'baseUrl'),
+            'timeout' => Arr::get($settings, 'timeout', 10),
+        ]);
+    }
+
 }
