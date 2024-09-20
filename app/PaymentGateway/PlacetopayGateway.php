@@ -4,6 +4,7 @@ namespace App\PaymentGateway;
 
 use App\Constants\PaymentStatus;
 use App\Contracts\PaymentGatewayContract;
+use App\Exceptions\GatewayException;
 use App\Infrastructure\Persistence\Models\Invoice;
 use App\Infrastructure\Persistence\Models\Microsite;
 use App\Infrastructure\Persistence\Models\Payment;
@@ -19,15 +20,16 @@ use Throwable;
 
 class PlacetopayGateway implements PaymentGatewayContract
 {
-    public PlacetoPay $placetopay;
+    protected $placetoPay;
 
-    public function __construct(PlacetoPay $placetopay)
+    public function __construct(array $settings)
     {
-        $this->placetopay = $placetopay;
+        $this->placetoPay = $this->getPaymentPlacetoPay($settings);
     }
+
     public function connection(array $settings): self
     {
-        $this->placetopay = $this->getPaymentPlacetoPay($settings);
+        $this->placetoPay = $this->getPaymentPlacetoPay($settings);
         return $this;
     }
 
@@ -35,53 +37,25 @@ class PlacetopayGateway implements PaymentGatewayContract
     {
         $microsite = Microsite::findOrFail($payment->microsite_id);
 
-        $payerData = array_filter([
-            'document' => $payment->payer_document,
-            'documentType' => $payment->payer_document_type,
-            'name' => $payment->payer_name,
-            'surname' => $payment->payer_surname,
-            'company' => $payment->payer_company,
-            'email' => $payment->payer_email,
-            'mobile' => $payment->payer_phone,
-        ]);
-
-        $paymentData = array_filter([
-            'reference' => $payment->reference,
-            'description' => $payment->description,
-            'amount' => [
-                'currency' => $payment->currency,
-                'total' => $payment->amount,
-            ],
-        ]);
-
         try {
             $requestData = [
-                'payer' => $payerData,
+                'payer' => $this->getPayerData($payment),
+                'payment' => $this->getPaymentData($payment),
                 'expiration' => now()->addMinutes($microsite->payment_expiration_time)->toIso8601String(),
                 'returnUrl' => route('returnBusiness', $payment->id),
                 'ipAddress' => $request->ip(),
                 'userAgent' => $request->userAgent(),
-
             ];
 
-            $requestData['payment'] = $paymentData;
-            $response = $this->placetopay->request($requestData);
+            $response = $this->placetoPay->request($requestData);
 
-            if ($response->isSuccessful()) {
-                $payment->status = PaymentStatus::PENDING->value;
-                $payment->process_identifier = $response->processUrl();
-                $payment->request_id = $response->requestId();
-
-            } else {
-                $payment->status = PaymentStatus::REJECTED->value;
-            }
-            $payment->save();
-
+            $this->updateStatus($payment, $response);
             return $response;
 
         } catch (Throwable $exception) {
             report($exception);
             Log::error('An error occurred while making the payment', ['exception' => $exception->getMessage()]);
+            throw new GatewayException($exception->getMessage());
         }
     }
 
@@ -89,74 +63,85 @@ class PlacetopayGateway implements PaymentGatewayContract
     {
         $microsite = Microsite::findOrFail($subscription->microsite_id);
 
-        $payerData = array_filter([
-            'document' => $subscription->document,
-            'documentType' => $subscription->document_type,
-            'name' => $subscription->name,
-            'surname' => $subscription->surname,
-            'company' => $subscription->company,
-            'email' => $subscription->email,
-            'mobile' => $subscription->mobile,
-        ]);
-
-        $subscriptionData = array_filter([
-            'reference' => $subscription->reference,
-            'description' => $subscription->description,
-        ]);
-
         try {
             $requestData = [
-                'payer' => $payerData,
+                'payer' => $this->getPayerData($subscription),
+                'subscription' => [
+                    'reference' => $subscription->reference,
+                    'description' => $subscription->description,
+                ],
                 'expiration' => now()->addMinutes($microsite->payment_expiration_time)->toIso8601String(),
                 'returnUrl' => route('returnSubscription', $subscription->id),
                 'ipAddress' => $request->ip(),
                 'userAgent' => $request->userAgent(),
             ];
 
-            $requestData['subscription'] = $subscriptionData;
-            $response = $this->placetopay->request($requestData);
+            $response = $this->placetoPay->request($requestData);
 
-            if ($response->isSuccessful()) {
-                $subscription->status = PaymentStatus::PENDING->value;
-                $subscription->process_identifier = $response->processUrl();
-                $subscription->request_id = $response->requestId();
-            } else {
-                $subscription->status = PaymentStatus::REJECTED->value;
-                $subscription->request_id = $response->requestId();
-            }
-            $subscription->save();
-
+            $this->updateStatus($subscription, $response);
             return $response;
 
         } catch (Throwable $exception) {
             report($exception);
             Log::error('An error occurred while creating the subscription session', ['exception' => $exception->getMessage()]);
+            throw new GatewayException($exception->getMessage());
+        }
+    }
+
+    public function createSessionInvoice(Invoice $invoice, Request $request): RedirectResponse
+    {
+        $microsite = Microsite::findOrFail($invoice->microsite_id);
+
+        try {
+            $requestData = [
+                'payer' => $this->getPayerData($invoice),
+                'payment' => $this->getPaymentData($invoice),
+                'expiration' => now()->addMinutes($microsite->payment_expiration_time)->toIso8601String(),
+                'returnUrl' => route('invoices.index'),
+                'ipAddress' => $request->ip(),
+                'userAgent' => $request->userAgent(),
+
+            ];
+
+            $response = $this->placetoPay->request($requestData);
+
+            $this->updateStatus($invoice, $response);
+            return $response;
+
+        } catch (Throwable $exception) {
+            report($exception);
+            Log::error('An error occurred while creating the bill invoice session', ['exception' => $exception->getMessage()]);
+            throw new GatewayException($exception->getMessage());
         }
     }
 
     public function queryPayment(Payment $payment): Payment
     {
-        $response = $this->placetopay->query($payment->request_id);
-
-        if ($response->isSuccessful()) {
-            if ($response->status()->isApproved()) {
-                $payment->status = PaymentStatus::APPROVED->value;
-                $payment->paid_at = new Carbon($response->status()->date());
-                $payment->receipt = Arr::get($response->payment(), 'receipt');
-            } elseif ($response->status()->isRejected()) {
-                $payment->status = PaymentStatus::REJECTED->value;
+        if ($payment->request_id) {
+            $response = $this->placetoPay->query($payment->request_id);
+            if ($response->isSuccessful()) {
+                if ($response->status()->isApproved()) {
+                    $payment->status = PaymentStatus::APPROVED->value;
+                    $payment->paid_at = new Carbon($response->status()->date());
+                    $payment->receipt = Arr::get($response->payment(), 'receipt');
+                } elseif ($response->status()->isRejected()) {
+                    $payment->status = PaymentStatus::REJECTED->value;
+                }
+                $payment->save();
             }
-            $payment->save();
+        } else {
+            $payment->status = PaymentStatus::REJECTED->value;
         }
+
+        $payment->save();
+
         return $payment;
     }
 
     public function querySubscription(Subscription $subscription): Subscription
     {
         if ($subscription->request_id) {
-
-            $response = $this->placetopay->query($subscription->request_id);
-
+            $response = $this->placetoPay->query($subscription->request_id);
             if ($response->isSuccessful()) {
                 if ($response->status()->isApproved()) {
                     $instrumentData = $response->subscription()->instrumentToArray();
@@ -183,87 +168,78 @@ class PlacetopayGateway implements PaymentGatewayContract
         return $subscription;
     }
 
-    public function createSessionInvoice(Invoice $invoice, Request $request): RedirectResponse
-    {
-        $microsite = Microsite::findOrFail($invoice->microsite_id);
-
-        $payerData = array_filter([
-            'document' => strval($invoice->document),
-            'documentType' => $invoice->document_type,
-            'name' => $invoice->name,
-            'surname' => $invoice->surname,
-            'company' => $invoice->company ?? null,
-            'email' => $invoice->email,
-            'mobile' => $invoice->phone ?? null,
-        ]);
-
-        $paymentData = array_filter([
-            'reference' => $invoice->reference,
-            'description' => $invoice->description,
-            'amount' => [
-                'currency' => $invoice->currency_type,
-                'total' => $invoice->amount,
-            ],
-        ]);
-
-        try {
-            $requestData = [
-                'payer' => $payerData,
-                'expiration' => now()->addMinutes($microsite->payment_expiration_time)->toIso8601String(),
-                'returnUrl' => route('invoices.index'),
-                'ipAddress' => $request->ip(),
-                'userAgent' => $request->userAgent(),
-
-            ];
-
-            $requestData['payment'] = $paymentData;
-
-            $response = $this->placetopay->request($requestData);
-
-            if ($response->isSuccessful()) {
-                $invoice->status = PaymentStatus::PENDING->value;
-                $invoice->process_identifier = $response->processUrl();
-                $invoice->request_id = $response->requestId();
-
-            } else {
-                $invoice->status = PaymentStatus::REJECTED->value;
-            }
-            $invoice->save();
-
-            return $response;
-
-        } catch (Throwable $exception) {
-            report($exception);
-            Log::error('An error occurred while creating the bill invoice session', ['exception' => $exception->getMessage()]);
-
-        }
-    }
-
     public function queryInvoice(Invoice $invoice): Invoice
     {
-        $response = $this->placetopay->query($invoice->request_id);
+        if ($invoice->request_id) {
+            $response = $this->placetoPay->query($invoice->request_id);
 
-        if ($response->isSuccessful()) {
-            if ($response->status()->isApproved()) {
-                $invoice->status = PaymentStatus::APPROVED->value;
-                $invoice->paid_at = new Carbon($response->status()->date());
-                $invoice->receipt = Arr::get($response->payment(), 'receipt');
-            } elseif ($response->status()->isRejected()) {
-                $invoice->status = PaymentStatus::REJECTED->value;
+            if ($response->isSuccessful()) {
+                if ($response->status()->isApproved()) {
+                    $invoice->status = PaymentStatus::APPROVED->value;
+                    $invoice->paid_at = new Carbon($response->status()->date());
+                    $invoice->receipt = Arr::get($response->payment(), 'receipt');
+                } elseif ($response->status()->isRejected()) {
+                    $invoice->status = PaymentStatus::REJECTED->value;
+                }
+                $invoice->save();
             }
-            $invoice->save();
+            return $invoice;
+
+        } else {
+            $invoice->status = PaymentStatus::REJECTED->value;
         }
+
+        $invoice->save();
+
         return $invoice;
     }
+
 
     public function getPaymentPlacetoPay(array $settings): PlacetoPay
     {
         return new PlacetoPay([
-            'login' => Arr::get($settings, 'login'),
-            'tranKey' => Arr::get($settings, 'tranKey'),
-            'baseUrl' => Arr::get($settings, 'baseUrl'),
-            'timeout' => Arr::get($settings, 'timeout', 10),
+            'login'   => $settings['login'],
+            'tranKey' => $settings['tranKey'],
+            'baseUrl' => $settings['baseUrl'],
+            'timeout' => $settings['timeout'] ?? 10,
         ]);
     }
 
+    protected function getPayerData($entity): array
+    {
+        return array_filter([
+            'document' => $entity->document ?? $entity->payer_document,
+            'documentType' => $entity->document_type ?? $entity->payer_document_type,
+            'name' => $entity->name ?? $entity->payer_name,
+            'surname' => $entity->surname ?? $entity->payer_surname,
+            'company' => $entity->company ?? $entity->payer_company,
+            'email' => $entity->email ?? $entity->payer_email,
+            'mobile' => $entity->mobile ?? $entity->payer_phone,
+        ]);
+    }
+
+    protected function getPaymentData($entity): array
+    {
+        return array_filter([
+            'reference' => $entity->reference,
+            'description' => $entity->description,
+            'amount' => [
+                'currency' => $entity->currency ?? $entity->currency_type,
+                'total' => $entity->amount,
+            ],
+        ]);
+    }
+
+    protected function updateStatus($entity, RedirectResponse $response): void
+    {
+        if ($response->isSuccessful()) {
+            $entity->status = PaymentStatus::PENDING->value;
+            $entity->process_identifier = $response->processUrl();
+            $entity->request_id = $response->requestId();
+        } else {
+            $entity->status = PaymentStatus::REJECTED->value;
+        }
+
+        $entity->save();
+    }
 }
