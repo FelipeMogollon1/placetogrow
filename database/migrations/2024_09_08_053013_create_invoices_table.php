@@ -22,7 +22,7 @@ return new class () extends Migration {
             $table->string('surname')->nullable();
             $table->string('email')->nullable();
             $table->enum('document_type', DocumentTypes::getDocumentTypes());
-            $table->bigInteger('document')->nullable();
+            $table->string('document')->nullable();
             $table->text('description')->nullable();
             $table->enum('currency_type', CurrencyTypes::getCurrencyType());
             $table->decimal('amount', 10, 2)->nullable();
