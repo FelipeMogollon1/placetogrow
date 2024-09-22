@@ -2,7 +2,7 @@
 import {Head, Link, router, useForm, usePage} from '@inertiajs/vue3';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {MagnifyingGlassIcon, PhotoIcon} from "@heroicons/vue/24/outline/index.js";
-import {ref, computed, watch} from "vue";
+import {ref, computed, watch, watchEffect} from "vue";
 import { route } from "ziggy-js";
 import InvoiceTable from "@/Layouts/Organisms/InvoiceTable.vue";
 import {Listbox, ListboxButton, ListboxLabel, ListboxOption, ListboxOptions} from "@headlessui/vue";
@@ -53,10 +53,8 @@ watch(
 const headers = [
     "reference",
     "microsite_name",
-    "microsite_type",
     "name",
     "surname",
-    "email",
     "document_type",
     "document",
     "currency_type",
@@ -107,6 +105,15 @@ const submitForm = () => {
 const downloadTemplate = () => {
     window.location.href = route('invoices.download-template');
 };
+
+
+const page = usePage();
+const importErrors = ref( [])
+
+watchEffect(() => {
+    importErrors.value = page.props.flash.importErrors || [];
+});
+
 </script>
 
 <template>
@@ -119,6 +126,37 @@ const downloadTemplate = () => {
         </template>
 
         <form v-if="can('invoices.import')" @submit.prevent="submitForm" class="space-y-6 p-6 mt-5 bg-white rounded-lg shadow-md ">
+
+            <div v-if="importErrors.length > 0" class="bg-red-100 text-red-700 p-4 mb-4 rounded-lg">
+                <p class="font-bold mb-2">Errores encontrados durante la importación:</p>
+                <ul class="space-y-4">
+                    <li v-for="(errorData, index) in importErrors" :key="index">
+                        <div class="mb-2">
+                            <p><strong>Fila {{ index + 1 }}:</strong></p>
+                            <ul class="ml-4">
+                                <li v-for="(value, key) in errorData.row" :key="key">
+                                    <strong>{{ key }}:</strong> {{ value }}
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="ml-4 text-sm text-red-600">
+                            <ul>
+                                <li v-for="(fieldErrors, field) in errorData.errors" :key="field">
+                                    <strong>Error en el campo {{ field }}:</strong>
+                                    <ul class="ml-4 list-disc">
+                                        <li v-for="(message, messageIndex) in fieldErrors" :key="messageIndex">
+                                            {{ message }}
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+
 
             <div class="flex justify-between">
                 <p class="text-gray-700 mb-2">{{ $t('invoices.selectImport') }}</p>

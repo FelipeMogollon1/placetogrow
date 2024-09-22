@@ -37,6 +37,12 @@ class InvoiceController extends Controller
         $import = new InvoicesImport(auth()->user()->id, $request->input('microsite_id'));
         Excel::import($import, $request->file('invoices'));
 
+        if (!empty($import->errors)) {
+            return to_route('invoices.index')
+                ->with('importErrors', $import->errors)
+                ->with('error', 'Some invoices failed to import.');
+        }
+
         return to_route('invoices.index')->with('success', 'import done successfully.');
     }
 

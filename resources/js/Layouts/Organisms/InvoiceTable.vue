@@ -131,15 +131,15 @@ const typeMicrosite = {
                                         <CreditCardIcon title="Realizar el pago" class="w-6 hover:text-gray-500"/>
                                     </Link>
 
+                                    <Link v-if="can('invoices.show')" class="mx-1" :href="route('invoices.show', item.id)">
+                                        <EyeIcon class="w-6 hover:text-gray-500"/>
+                                    </Link>
+
                                     <Link v-if="can('invoices.destroy') && item.status !== 'APPROVED'"
                                           :href="route('invoices.destroy', item.id)"
                                           method="delete" as="button"
                                     >
                                         <TrashIcon class="w-6 hover:text-red-500"/>
-                                    </Link>
-
-                                    <Link v-if="can('invoices.show')" class="mx-1" :href="route('invoices.show', item.id)">
-                                        <EyeIcon class="w-6 hover:text-gray-500"/>
                                     </Link>
 
                                 </div>
@@ -151,8 +151,10 @@ const typeMicrosite = {
             </div>
         </div>
     </div>
-
-    <div class="flex justify-center mt-4">
+    <div class="flex justify-end items-center mt-2">
+        <p class="text-sm text-gray-600">{{ $t('total_records') }}: {{ paginator.total }}</p>
+    </div>
+    <div class="flex justify-center">
         <Paginator :paginator="paginator.links"/>
     </div>
 </template>

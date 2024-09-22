@@ -20,6 +20,7 @@ class InvoicesImport implements ToCollection, WithHeadingRow
     protected $userId;
     protected $micrositeId;
     public $errors = [];
+    private $validRecordsCount = 0;
 
     public function __construct(int $userId, int $micrositeId)
     {
@@ -64,12 +65,16 @@ class InvoicesImport implements ToCollection, WithHeadingRow
                         'amount' => $rowArray['amount'],
                     ]
                 );
+                $this->validRecordsCount++;
+
             } catch (ValidationException $e) {
                 $this->logValidationErrors($row, $e);
             } catch (\Exception $e) {
                 $this->logGeneralError($row, $e);
             }
         }
+        Log::info("Total de registros válidos importados: {$this->validRecordsCount}");
+
     }
 
     private function validateRow(array $data): void
@@ -108,7 +113,12 @@ class InvoicesImport implements ToCollection, WithHeadingRow
             }],
             'description' => 'nullable|string',
             'currency_type' => ['required', Rule::in(CurrencyTypes::getCurrencyType())],
-            'amount' => 'required|numeric|min:1|max:999999999',
+            'amount' => array_merge([
+                'required',
+                'numeric',
+                'min:1',
+                'max:999999999',
+            ], $this->amountRule($data['currency_type'])),
         ];
 
         $validator = Validator::make($data, $rules);
@@ -123,14 +133,21 @@ class InvoicesImport implements ToCollection, WithHeadingRow
         Log::warning('Fila inválida: ' . json_encode($row) . ' - Errores: ' . json_encode($e->errors()));
         $this->errors[] = [
             'row' => $row->toArray(),
-            'errors' => $e->errors()
+            'errors' => $e->errors(),
+            'type' => 'validation'
         ];
     }
 
     private function logGeneralError($row, \Exception $e): void
     {
         Log::error('Error general en la fila: ' . json_encode($row) . ' - Error: ' . $e->getMessage());
+        $this->errors[] = [
+            'row' => $row->toArray(),
+            'error' => $e->getMessage(),
+            'type' => 'general'
+        ];
     }
+
 
     public function chunkSize(): int
     {
@@ -150,5 +167,22 @@ class InvoicesImport implements ToCollection, WithHeadingRow
             'currency_type',
             'amount',
         ];
+    }
+
+    public function getValidRecordsCount(): int
+    {
+        return $this->validRecordsCount;
+    }
+
+    private function amountRule($data): array
+    {
+        $rules = [];
+
+        if ($data=== CurrencyTypes::USD->value) {
+            $rules[] = 'max:99999';
+        } elseif ($data=== CurrencyTypes::COP->value) {
+            $rules[] = 'max:999999999';
+        }
+        return $rules;
     }
 }

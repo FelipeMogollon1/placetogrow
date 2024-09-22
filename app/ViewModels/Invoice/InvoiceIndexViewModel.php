@@ -47,6 +47,8 @@ class InvoiceIndexViewModel extends ViewModel
                     ->orWhere('invoices.surname', 'like', '%' . $search . '%')
                     ->orWhere('invoices.email', 'like', '%' . $search . '%')
                     ->orWhere('invoices.document_type', 'like', '%' . $search . '%')
+                    ->orWhere('invoices.document', 'like', '%' . $search . '%')
+                    ->orWhere('invoices.amount', 'like', '%' . $search . '%')
                     ->orWhere('microsites.name', 'like', '%' . $search . '%');
             });
         }
