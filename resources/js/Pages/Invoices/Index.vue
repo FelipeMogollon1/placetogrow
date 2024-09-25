@@ -9,6 +9,7 @@ import {Listbox, ListboxButton, ListboxLabel, ListboxOption, ListboxOptions} fro
 import {CheckIcon, ChevronUpDownIcon, InboxArrowDownIcon} from "@heroicons/vue/20/solid/index.js";
 import {debounce} from "@/Utils/debounce.js";
 import { useI18n } from 'vue-i18n';
+import InvoiceUploadTable from "@/Layouts/Organisms/InvoiceUploadTable.vue";
 
 const { t } = useI18n();
 
@@ -18,6 +19,10 @@ defineProps({
         default: () => []
     },
     microsites: {
+        type: Object,
+        default: () => []
+    },
+    uploadInvoice:{
         type: Object,
         default: () => []
     }
@@ -113,6 +118,14 @@ const importErrors = ref( [])
 watchEffect(() => {
     importErrors.value = page.props.flash.importErrors || [];
 });
+
+const headersUploadInvoice = [
+    "microsite",
+    "name",
+    "storage_path",
+    "error_file_path",
+    "created_at",
+];
 
 </script>
 
@@ -244,6 +257,7 @@ watchEffect(() => {
                     {{ $t('invoices.matter') }}
                 </button>
             </div>
+            <InvoiceUploadTable :data="uploadInvoice.data" :headers="headersUploadInvoice"  :paginator="uploadInvoice"/>
         </form>
 
 

@@ -4,10 +4,10 @@ namespace App\Http\Controllers\ImportInvoice;
 
 use App\Constants\Abilities;
 use App\Contracts\PaymentGatewayContract;
+use App\Domain\Invoice\Actions\ImportInvoicesAction;
 use App\Exports\InvoiceTemplateExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Invoice\ImportInvoicesRequest;
-use App\Imports\InvoicesImport;
 use App\Infrastructure\Persistence\Models\Invoice;
 use App\ViewModels\Invoice\InvoiceIndexViewModel;
 use App\ViewModels\Invoice\InvoiceMicrositeIndexViewModel;
@@ -31,19 +31,17 @@ class InvoiceController extends Controller
         return Excel::download(new InvoiceTemplateExport(), 'invoice_template.xlsx');
     }
 
-    public function import(ImportInvoicesRequest $request): RedirectResponse
+    public function import(ImportInvoicesRequest $request, ImportInvoicesAction $importAction): BinaryFileResponse|RedirectResponse
     {
-        $request->validated();
-        $import = new InvoicesImport(auth()->user()->id, $request->input('microsite_id'));
-        Excel::import($import, $request->file('invoices'));
+        $result = $importAction->execute($request->validated());
 
-        if (!empty($import->errors)) {
-            return to_route('invoices.index')
-                ->with('importErrors', $import->errors)
-                ->with('error', 'Some invoices failed to import.');
+        if ($result['errorFilePath']) {
+            session()->flash('error', 'Some invoices failed to import. Download error file here: ' . $result['errorFilePath']);
+        } else {
+            session()->flash('success', 'Import done successfully.');
         }
 
-        return to_route('invoices.index')->with('success', 'import done successfully.');
+        return to_route('invoices.index');
     }
 
     public function index(Request $request, InvoiceIndexViewModel $viewModel, InvoiceMicrositeIndexViewModel $viewModelMicrosite): Response
@@ -56,7 +54,8 @@ class InvoiceController extends Controller
         return Inertia::render('Invoices/Index', [
             'invoices' => $viewModel->fromAuthenticatedUser()->getInvoices($search),
             'filter' => $search ?? '',
-            'microsites' => $viewModelMicrosite->getMicrosites()
+            'microsites' => $viewModelMicrosite->getMicrosites(),
+            'uploadInvoice' => $viewModel->getUploadInvoices()
         ]);
     }
 
