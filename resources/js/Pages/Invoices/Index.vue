@@ -125,6 +125,8 @@ const headersUploadInvoice = [
     "storage_path",
     "error_file_path",
     "created_at",
+    "valid_records_count",
+    "total_records",
 ];
 
 </script>
@@ -170,7 +172,6 @@ const headersUploadInvoice = [
             </div>
 
 
-
             <div class="flex justify-between">
                 <p class="text-gray-700 mb-2">{{ $t('invoices.selectImport') }}</p>
                 <button
@@ -181,9 +182,6 @@ const headersUploadInvoice = [
                     <InboxArrowDownIcon class="ml-4 w-6 text-gray-50" />
                 </button>
             </div>
-
-
-
 
             <div class="flex items-center space-x-10">
 
@@ -257,6 +255,7 @@ const headersUploadInvoice = [
                     {{ $t('invoices.matter') }}
                 </button>
             </div>
+
             <InvoiceUploadTable :data="uploadInvoice.data" :headers="headersUploadInvoice"  :paginator="uploadInvoice"/>
         </form>
 

@@ -100,6 +100,17 @@ const formatDate = (dateString) => {
                                     {{ formatDate(item[header]) }}
                                 </template>
 
+                                <template v-else-if="header === 'storage_path'">
+                                    <a :href="`/storage/${item[header]}`" class="text-blue-600 hover:underline" download>
+                                        Descargar Original
+                                    </a>
+                                </template>
+
+                                <template v-else-if="header === 'error_file_path'">
+                                    <a :href="`/storage/${item[header]}`" class="text-blue-600 hover:underline" download>
+                                        Descargar errores
+                                    </a>
+                                </template>
                                 <span v-else>
                                     {{ item[header] }}
                                 </span>
