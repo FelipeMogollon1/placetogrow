@@ -360,6 +360,13 @@
         "searchInvoice" : "Search invoice...",
         "noFile": "No file selected",
         "paymentDate": "Payment date",
-        "downloadTemplate" : "Download Template"
+        "downloadTemplate" : "Download Template",
+        "microsite": "Microsite",
+        "storage_path": "Storage path",
+        "error_file_path": "Error path",
+        "created_at": "Created date",
+        "valid_records_count": "Valid records",
+        "total_records": "Total records",
+        "importErrors": "Import errors"
     }
 }

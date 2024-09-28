@@ -360,6 +360,13 @@
         "searchInvoice" : "Buscar factura...",
         "noFile": "No se  ha seleccionado un archivo",
         "paymentDate": "Fecha de pago",
-        "downloadTemplate" : "Descargar Template"
+        "downloadTemplate" : "Descargar Template",
+        "microsite": "Micrositio",
+        "storage_path": "Ruta de almacenamiento",
+        "error_file_path": "Ruta de error",
+        "created_at": "Fecha de creación",
+        "valid_records_count": "Registros válidos",
+        "total_records": "Registros totales",
+        "importErrors": "Errores de importación"
     }
 }
