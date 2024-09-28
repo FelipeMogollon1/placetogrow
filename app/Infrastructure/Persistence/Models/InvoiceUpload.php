@@ -17,6 +17,8 @@ class InvoiceUpload extends Model
         'microsite_id',
         'storage_path',
         'error_file_path',
+        'valid_records_count',
+        'total_records',
     ];
 
     public function user(): BelongsTo

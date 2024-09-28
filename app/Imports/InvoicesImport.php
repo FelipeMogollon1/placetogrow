@@ -2,47 +2,74 @@
 
 namespace App\Imports;
 
-use App\Constants\CurrencyTypes;
-use App\Constants\DocumentTypes;
 use App\Constants\PaymentStatus;
+use App\Exports\ErrorsExport;
 use App\Infrastructure\Persistence\Models\Invoice;
+use App\Infrastructure\Persistence\Models\InvoiceUpload;
+use App\Services\InvoiceValidationService;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\ToCollection;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class InvoicesImport implements ToCollection, WithHeadingRow
+class InvoicesImport implements ToCollection, WithHeadingRow, WithChunkReading, ShouldQueue
 {
+    protected int $invoiceUploadId;
     protected $userId;
-    protected $micrositeId;
-    public $errors = [];
-    private $validRecordsCount = 0;
+    protected mixed $micrositeId;
+    protected mixed $filePath;
+    public array $errors = [];
+    public int $validRecordsCount = 0;
+    public int $total_records = 0;
 
-    public function __construct(int $userId, int $micrositeId)
+    public $tries = 3;
+    public $timeout = 120;
+
+    public function __construct(array $data, string $filePath)
     {
-        $this->userId = $userId;
-        $this->micrositeId = $micrositeId;
+        $this->invoiceUploadId = $data['id'] ?? null;
+        $this->userId = $data['user_id'] ?? null;
+        $this->micrositeId = $data['microsite_id'];
+        $this->filePath = $filePath;
+
+        if (!$this->userId) {
+            Log::error('User ID is missing en InvoicesImport constructor.');
+            throw new \Exception('User ID is required for InvoicesImport.');
+        }
+
+        Log::info('InvoicesImport creado con user_id: ' . $this->userId . ', microsite_id: ' . $this->micrositeId);
     }
 
     public function collection(Collection $collection): void
     {
+        $validatorService = new InvoiceValidationService();
+
         foreach ($collection as $row) {
             $rowArray = $row->toArray();
+            $this->total_records++;
 
             try {
-                $this->validateRow($rowArray);
+                $validatorService->validate($rowArray);
 
-                $existingInvoice = Invoice::where('document', (string) $rowArray['document'])
-                    ->where('microsite_id', $this->micrositeId)
-                    ->orWhere('amount', $rowArray['amount'])
-                    ->first();
+                $existingInvoice = Invoice::where([
+                    ['document', '=', (string)$rowArray['document']],
+                    ['microsite_id', '=', $this->micrositeId],
+                    ['amount', '=', $rowArray['amount']],
+                    ['reference', '=', $rowArray['reference']]
+                ])->first();
 
                 if ($existingInvoice && $existingInvoice->status === PaymentStatus::APPROVED->value) {
                     Log::info("La factura con el documento {$rowArray['document']} ya está aprobada y no puede ser modificada.");
+                    continue;
+                }
+
+                if ($existingInvoice) {
+                    Log::info("La factura con el documento {$rowArray['document']} ya existe y será omitida.");
                     continue;
                 }
 
@@ -50,6 +77,7 @@ class InvoicesImport implements ToCollection, WithHeadingRow
                     [
                         'document' => $rowArray['document'],
                         'microsite_id' => $this->micrositeId,
+                        'reference' => $rowArray['reference'],
                     ],
                     [
                         'reference' => $rowArray['reference'] ?: Str::random(10),
@@ -60,11 +88,12 @@ class InvoicesImport implements ToCollection, WithHeadingRow
                         'email' => $rowArray['email'],
                         'document_type' => $rowArray['document_type'],
                         'document' => (string) $rowArray['document'],
-                        'description' => $rowArray['description'] ?? 'Payment by ' . $rowArray['reference'],
+                        'description' => $rowArray['description'] ?? 'Payment by invoice',
                         'currency_type' => $rowArray['currency_type'],
                         'amount' => $rowArray['amount'],
                     ]
                 );
+
                 $this->validRecordsCount++;
 
             } catch (ValidationException $e) {
@@ -73,59 +102,11 @@ class InvoicesImport implements ToCollection, WithHeadingRow
                 $this->logGeneralError($row, $e);
             }
         }
+
+        $errorFilePath = $this->handleErrors();
+        $this->createInvoiceUploadRecord($errorFilePath);
         Log::info("Total de registros válidos importados: {$this->validRecordsCount}");
-
-    }
-
-    private function validateRow(array $data): void
-    {
-        $rules = [
-            'reference' => 'nullable|string',
-            'name' => 'required|string',
-            'surname' => 'required|string',
-            'email' => [
-                'required',
-                'email',
-                'regex:/^[^@]+@[^@]+\.[a-zA-Z]{2,}$/'
-            ],
-            'document_type' => [
-                'required',
-                'string',
-                Rule::in(DocumentTypes::getDocumentTypes())
-            ],
-            'document' => ['required', 'max:255', function ($attribute, $value, $fail) use ($data) {
-                $patterns = [
-                    'CC' => '/^[1-9][0-9]{3,9}$/',
-                    'CE' => '/^([a-zA-Z]{1,5})?[1-9][0-9]{3,7}$/',
-                    'TI' => '/^[1-9][0-9]{4,11}$/',
-                    'NIT' => '/^[1-9]\d{6,9}$/',
-                ];
-                $documentType = $data['document_type'];
-
-                if (!isset($patterns[$documentType])) {
-                    $fail("Tipo de documento $documentType no reconocido.");
-                    return;
-                }
-
-                if (!preg_match($patterns[$documentType], $value)) {
-                    $fail("El $attribute no es válido para el tipo de documento $documentType.");
-                }
-            }],
-            'description' => 'nullable|string',
-            'currency_type' => ['required', Rule::in(CurrencyTypes::getCurrencyType())],
-            'amount' => array_merge([
-                'required',
-                'numeric',
-                'min:1',
-                'max:999999999',
-            ], $this->amountRule($data['currency_type'])),
-        ];
-
-        $validator = Validator::make($data, $rules);
-
-        if ($validator->fails()) {
-            throw new ValidationException($validator);
-        }
+        to_route('invoices.index');
     }
 
     private function logValidationErrors($row, ValidationException $e): void
@@ -148,6 +129,53 @@ class InvoicesImport implements ToCollection, WithHeadingRow
         ];
     }
 
+    public function handleErrors(): ?string
+    {
+        $errorFilePath = null;
+        LOG::info('ENTRA AL HANDLE ERRORS');
+
+        if (!empty($this->errors) && count($this->errors) > 0) {
+            $now = now()->format('Y-m-d_H-i-s');
+
+            $fileName = basename($this->filePath);
+            $timestamp = pathinfo($fileName, PATHINFO_FILENAME);
+
+            $parts = explode('_', $timestamp, 2);
+            if (count($parts) < 2) {
+                $timestamp = $now;
+            } else {
+                $timestamp = $parts[1];
+            }
+
+            $errorFileName = 'import_errors_' . $timestamp . '.xlsx';
+            $errorFilePath = 'invoicesErrors/' . $errorFileName;
+
+            $errorExports = new ErrorsExport($this->errors);
+            Excel::store($errorExports, $errorFilePath, 'public');
+
+            Log::info('Archivo de errores creado: ' . $errorFileName);
+        }
+
+        return $errorFilePath;
+    }
+
+    public function createInvoiceUploadRecord(?string $errorFilePath): void
+    {
+        InvoiceUpload::updateOrCreate(
+            [
+                'user_id' => $this->userId,
+                'microsite_id' => $this->micrositeId,
+                'storage_path' => $this->filePath,
+            ],
+            [
+                'error_file_path' => $errorFilePath,
+                'valid_records_count' => $this->validRecordsCount,
+                'total_records' => $this->total_records,
+            ]
+        );
+
+        Log::info('Registro de InvoiceUpload creado.');
+    }
 
     public function chunkSize(): int
     {
@@ -167,22 +195,5 @@ class InvoicesImport implements ToCollection, WithHeadingRow
             'currency_type',
             'amount',
         ];
-    }
-
-    public function getValidRecordsCount(): int
-    {
-        return $this->validRecordsCount;
-    }
-
-    private function amountRule($data): array
-    {
-        $rules = [];
-
-        if ($data=== CurrencyTypes::USD->value) {
-            $rules[] = 'max:99999';
-        } elseif ($data=== CurrencyTypes::COP->value) {
-            $rules[] = 'max:999999999';
-        }
-        return $rules;
     }
 }

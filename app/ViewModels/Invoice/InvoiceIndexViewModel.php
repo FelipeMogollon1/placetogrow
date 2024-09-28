@@ -70,7 +70,9 @@ class InvoiceIndexViewModel extends ViewModel
                 'users.name as name',
                 'invoice_uploads.storage_path',
                 'invoice_uploads.error_file_path',
-                'invoice_uploads.created_at'
+                'invoice_uploads.created_at',
+                'invoice_uploads.valid_records_count',
+                'invoice_uploads.total_records'
             )
             ->join('microsites', 'microsites.id', '=', 'invoice_uploads.microsite_id')
             ->join('users', 'users.id', '=', 'invoice_uploads.user_id');

@@ -35,10 +35,10 @@ class InvoiceController extends Controller
     {
         $result = $importAction->execute($request->validated());
 
-        if ($result['errorFilePath']) {
-            session()->flash('error', 'Some invoices failed to import. Download error file here: ' . $result['errorFilePath']);
-        } else {
+        if ($result) {
             session()->flash('success', 'Import done successfully.');
+        } else {
+            session()->flash('error', 'Some invoices failed to import. Download error file here: ' . $errorFilePath);
         }
 
         return to_route('invoices.index');
