@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\Invoice;
 
 use App\Constants\PaymentStatus;
 use App\Contracts\PaymentGatewayContract;
