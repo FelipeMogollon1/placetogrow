@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Infrastructure\Persistence\Models\Invoice;
 use App\Infrastructure\Persistence\Models\Payment;
 use App\Infrastructure\Persistence\Models\Subscription;
-use App\Jobs\SolutionInvoiceJob;
+use App\Jobs\Invoice\SolutionInvoiceJob;
 use App\Jobs\SolutionPaymentJob;
 use App\Jobs\SolutionSubscriptionJob;
 use Illuminate\Console\Command;
