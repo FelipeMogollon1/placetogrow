@@ -11,15 +11,15 @@ return new class () extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('microsite_id')->constrained()->onDelete('cascade');
-            $table->string('storage_path');
+            $table->string('storage_path')->nullable();
             $table->string('error_file_path')->nullable();
+            $table->unsignedInteger('valid_records_count')->nullable();
+            $table->unsignedInteger('total_records')->nullable();
             $table->timestamps();
+            $table->unique(['user_id', 'microsite_id', 'storage_path']);
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('invoice_uploads');
