@@ -19,7 +19,7 @@ class InvoiceValidationService
             'email' => [
                 'required',
                 'email',
-                'regex:/^[^@]+@[^@]+\.[a-zA-Z]{2,}$/'
+                'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
             ],
             'document_type' => [
                 'required',
