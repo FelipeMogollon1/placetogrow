@@ -122,11 +122,9 @@ watchEffect(() => {
 const headersUploadInvoice = [
     "microsite",
     "name",
-    "storage_path",
-    "error_file_path",
-    "created_at",
     "valid_records_count",
     "total_records",
+    "created_at",
 ];
 
 </script>

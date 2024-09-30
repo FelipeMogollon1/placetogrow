@@ -2,11 +2,8 @@
 import { ref } from 'vue';
 import { Link } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
-import { EyeIcon, CreditCardIcon } from '@heroicons/vue/24/outline';
+import { DocumentCheckIcon,DocumentTextIcon } from '@heroicons/vue/24/outline';
 import Paginator from '@/Components/Paginator.vue';
-import SpanForm from "@/Layouts/Atoms/SpanForm.vue";
-import {TrashIcon, XCircleIcon} from "@heroicons/vue/24/outline/index.js";
-
 
 const props = defineProps({
     data: {
@@ -73,7 +70,7 @@ const formatDate = (dateString) => {
                                 </span>
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ $t('microsites_table.actions') }}
+                                {{ $t('invoices.downloadable') }}
                             </th>
                         </tr>
                         </thead>
@@ -106,7 +103,7 @@ const formatDate = (dateString) => {
                                     </a>
                                 </template>
 
-                                <template v-else-if="header === 'error_file_path'">
+                                <template v-else-if="header === 'error_file_path' && item[header] !== null">
                                     <a :href="`/storage/${item[header]}`" class="text-blue-600 hover:underline" download>
                                         Descargar errores
                                     </a>
@@ -117,30 +114,30 @@ const formatDate = (dateString) => {
 
                             </td>
                             <td>
-                                <!--
+
                                 <div class="text-gray-400 flex justify-center">
 
-                                    <Link v-if="can('invoices.processPayment') && item.status !== 'APPROVED'"
+                                    <a
                                           class="mx-1"
-                                          :href="route('invoices.processPayment', item.id)"
-                                          method="POST"
+                                          :href="`/storage/${item.storage_path}`"
+                                          :title="$t('invoices.storage_path')"
+                                          download
                                     >
-                                        <CreditCardIcon title="Realizar el pago" class="w-6 hover:text-gray-500"/>
-                                    </Link>
+                                        <DocumentCheckIcon :title="$t('invoices.storage_path')" class="w-6 hover:text-gray-500"/>
+                                    </a>
 
-                                    <Link v-if="can('invoices.show')" class="mx-1" :href="route('invoices.show', item.id)">
-                                        <EyeIcon class="w-6 hover:text-gray-500"/>
-                                    </Link>
-
-                                    <Link v-if="can('invoices.destroy') && item.status !== 'APPROVED'"
-                                          :href="route('invoices.destroy', item.id)"
-                                          method="delete" as="button"
+                                    <a
+                                        v-if="item.error_file_path !== null"
+                                        class="mx-1"
+                                        :href="`/storage/${item.error_file_path}`"
+                                        :title="$t('invoices.error_file_path')"
+                                        download
                                     >
-                                        <TrashIcon class="w-6 hover:text-red-500"/>
-                                    </Link>
+                                        <DocumentTextIcon :title="$t('invoices.error_file_path')" class="w-6 hover:text-red-500"/>
+                                    </a>
 
-                                </div>
-                                -->
+                                  </div>
+
                             </td>
                         </tr>
                         </tbody>

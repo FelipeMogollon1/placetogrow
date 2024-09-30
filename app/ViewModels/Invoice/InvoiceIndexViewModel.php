@@ -8,7 +8,6 @@ use App\Infrastructure\Persistence\Models\Invoice;
 use App\Infrastructure\Persistence\Models\InvoiceUpload;
 use App\Infrastructure\Persistence\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Log;
 use Spatie\ViewModels\ViewModel;
 
 class InvoiceIndexViewModel extends ViewModel
@@ -84,11 +83,9 @@ class InvoiceIndexViewModel extends ViewModel
                 $query->leftJoin('invoices', 'invoices.microsite_id', '=', 'microsites.id')
                     ->where('invoices.email', $this->user->email);
             }
-        } else {
-            log::Info('You do not have permissions to view invoices');
         }
 
-        return $query->orderBy('invoice_uploads.created_at', 'desc')->paginate(10);
+        return $query->orderBy('invoice_uploads.created_at', 'desc')->paginate(5);
     }
 
 }
