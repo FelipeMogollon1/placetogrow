@@ -107,7 +107,6 @@ class InvoicesImport implements ToCollection, WithHeadingRow, WithChunkReading, 
         $errorFilePath = $this->handleErrors();
         $this->createInvoiceUploadRecord($errorFilePath);
         Log::info("Total de registros válidos importados: {$this->validRecordsCount}");
-        to_route('invoices.index');
     }
 
     private function logValidationErrors($row, ValidationException $e): void

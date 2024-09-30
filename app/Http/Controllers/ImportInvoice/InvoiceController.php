@@ -9,12 +9,12 @@ use App\Exports\InvoiceTemplateExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Invoice\ImportInvoicesRequest;
 use App\Infrastructure\Persistence\Models\Invoice;
+use App\Infrastructure\Persistence\Models\Microsite;
 use App\ViewModels\Invoice\InvoiceIndexViewModel;
 use App\ViewModels\Invoice\InvoiceMicrositeIndexViewModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Inertia\Inertia;
@@ -24,6 +24,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 class InvoiceController extends Controller
 {
     use AuthorizesRequests;
+
     public function downloadTemplate(): BinaryFileResponse
     {
         Log::info('Generating the invoice template...');
@@ -33,29 +34,21 @@ class InvoiceController extends Controller
 
     public function import(ImportInvoicesRequest $request, ImportInvoicesAction $importAction): BinaryFileResponse|RedirectResponse
     {
-        $result = $importAction->execute($request->validated());
+        $importAction->execute($request->validated());
 
-        if ($result) {
-            session()->flash('success', 'Import done successfully.');
-        } else {
-            session()->flash('error', 'Some invoices failed to import. Download error file here: ' . $errorFilePath);
-        }
-
-        return to_route('invoices.index');
+        return to_route('invoices.index')->with('success', 'Import done successfully.');
     }
 
     public function index(Request $request, InvoiceIndexViewModel $viewModel, InvoiceMicrositeIndexViewModel $viewModelMicrosite): Response
     {
         $this->authorize(Abilities::VIEW_ANY->value, Invoice::class);
-
-        Artisan::call('app:transactions-consult');
         $search = $request->only(['search']);
 
         return Inertia::render('Invoices/Index', [
+            'uploadInvoice' => $viewModel->getUploadInvoices(),
             'invoices' => $viewModel->fromAuthenticatedUser()->getInvoices($search),
             'filter' => $search ?? '',
             'microsites' => $viewModelMicrosite->getMicrosites(),
-            'uploadInvoice' => $viewModel->getUploadInvoices()
         ]);
     }
 
@@ -67,11 +60,20 @@ class InvoiceController extends Controller
         return Inertia::location($response->processUrl());
     }
 
+    public function returnInvoice(Invoice $invoice, PaymentGatewayContract $gatewayContract): Response
+    {
+        $microsite = Microsite::query()->where('id', $invoice->microsite_id)->first();
+        $gatewayContract->queryInvoice($invoice);
+
+        return Inertia::render('Invoices/BackInvoice', [
+            'invoice' => $invoice,
+            'microsite' => $microsite
+        ]);
+    }
 
     public function show(string $id): Response
     {
         $this->authorize(Abilities::VIEW->value, Invoice::class);
-
         $invoice = Invoice::with('microsite')->findOrFail($id);
 
         return Inertia::render('Invoices/Show', compact('invoice'));
@@ -84,7 +86,4 @@ class InvoiceController extends Controller
 
         return to_route('invoices.index')->with('success', 'Invoice deleted successfully.');
     }
-
-
-
 }
