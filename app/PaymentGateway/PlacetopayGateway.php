@@ -97,14 +97,13 @@ class PlacetopayGateway implements PaymentGatewayContract
                 'payer' => $this->getPayerData($invoice),
                 'payment' => $this->getPaymentData($invoice),
                 'expiration' => now()->addMinutes($microsite->payment_expiration_time)->toIso8601String(),
-                'returnUrl' => route('invoices.index'),
+                'returnUrl' => route('returnInvoice', $invoice->id),
                 'ipAddress' => $request->ip(),
                 'userAgent' => $request->userAgent(),
 
             ];
 
             $response = $this->placetoPay->request($requestData);
-
             $this->updateStatus($invoice, $response);
             return $response;
 
@@ -178,33 +177,30 @@ class PlacetopayGateway implements PaymentGatewayContract
                     $invoice->status = PaymentStatus::APPROVED->value;
                     $invoice->paid_at = new Carbon($response->status()->date());
                     $invoice->receipt = Arr::get($response->payment(), 'receipt');
-                } elseif ($response->status()->isRejected()) {
-                    $invoice->status = PaymentStatus::REJECTED->value;
+                } else {
+                    $invoice->status = PaymentStatus::PENDING->value;
                 }
-                $invoice->save();
+                return $invoice;
+
+            } else {
+                $invoice->status = PaymentStatus::REJECTED->value;
             }
+
+            $invoice->save();
+
             return $invoice;
-
-        } else {
-            $invoice->status = PaymentStatus::REJECTED->value;
         }
-
-        $invoice->save();
-
-        return $invoice;
     }
-
 
     public function getPaymentPlacetoPay(array $settings): PlacetoPay
     {
         return new PlacetoPay([
-            'login'   => $settings['login'],
+            'login' => $settings['login'],
             'tranKey' => $settings['tranKey'],
             'baseUrl' => $settings['baseUrl'],
             'timeout' => $settings['timeout'] ?? 10,
         ]);
     }
-
     protected function getPayerData($entity): array
     {
         return array_filter([
@@ -217,7 +213,6 @@ class PlacetopayGateway implements PaymentGatewayContract
             'mobile' => $entity->mobile ?? $entity->payer_phone,
         ]);
     }
-
     protected function getPaymentData($entity): array
     {
         return array_filter([
@@ -242,4 +237,5 @@ class PlacetopayGateway implements PaymentGatewayContract
 
         $entity->save();
     }
+
 }
