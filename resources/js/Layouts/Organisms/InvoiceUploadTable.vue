@@ -1,10 +1,11 @@
 <script setup>
 import { ref } from 'vue';
-import { Link } from '@inertiajs/vue3';
-import { route } from 'ziggy-js';
 import { DocumentCheckIcon,DocumentTextIcon } from '@heroicons/vue/24/outline';
 import Paginator from '@/Components/Paginator.vue';
 import SpanForm from "@/Layouts/Atoms/SpanForm.vue";
+import {TrashIcon} from "@heroicons/vue/24/outline/index.js";
+import {route} from "ziggy-js";
+import { Link } from '@inertiajs/vue3';
 
 const props = defineProps({
     data: {
@@ -81,6 +82,9 @@ const statusColors = {
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 {{ $t('invoices.downloadable') }}
                             </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                {{ $t('microsites_table.actions') }}
+                            </th>
                         </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -127,7 +131,9 @@ const statusColors = {
                                           :title="$t('invoices.storage_path')"
                                           download
                                     >
-                                        <DocumentCheckIcon :title="$t('invoices.storage_path')" class="w-6 hover:text-gray-500"/>
+                                        <span class="material-symbols-outlined">
+                                            <DocumentCheckIcon :title="$t('invoices.storage_path')" class="w-6 hover:text-blue-500"/>
+                                        </span>
                                     </a>
 
                                     <a
@@ -135,13 +141,25 @@ const statusColors = {
                                         class="mx-1"
                                         :href="`/storage/${item.error_file_path}`"
                                         :title="$t('invoices.error_file_path')"
-                                        download
-                                    >
-                                        <DocumentTextIcon :title="$t('invoices.error_file_path')" class="w-6 hover:text-red-500"/>
+                                        download>
+                                        <span class="material-symbols-outlined">
+                                            <DocumentTextIcon :title="$t('invoices.error_file_path')" class="w-6 hover:text-orange-500"/>
+                                        </span>
                                     </a>
-
                                   </div>
-
+                            </td>
+                            <td>
+                                <div class="text-gray-400 flex justify-center">
+                                    <Link
+                                        class="m-1"
+                                        :href="route('invoicesUpload.destroy',item.id)"
+                                        method="delete"
+                                    >
+                                       <span class="material-symbols-outlined">
+                                            <TrashIcon class="w-6 hover:text-red-500" />
+                                        </span>
+                                    </Link>
+                                </div>
                             </td>
                         </tr>
                         </tbody>
