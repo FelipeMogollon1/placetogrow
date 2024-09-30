@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Constants\InvoiceUploadStatus;
 use App\Constants\PaymentStatus;
 use App\Exports\ErrorsExport;
 use App\Infrastructure\Persistence\Models\Invoice;
@@ -132,11 +133,9 @@ class InvoicesImport implements ToCollection, WithHeadingRow, WithChunkReading, 
     public function handleErrors(): ?string
     {
         $errorFilePath = null;
-        LOG::info('ENTRA AL HANDLE ERRORS');
-
         if (!empty($this->errors) && count($this->errors) > 0) {
+            log::info('errors found');
             $now = now()->format('Y-m-d_H-i-s');
-
             $fileName = basename($this->filePath);
             $timestamp = pathinfo($fileName, PATHINFO_FILENAME);
 
@@ -161,6 +160,13 @@ class InvoicesImport implements ToCollection, WithHeadingRow, WithChunkReading, 
 
     public function createInvoiceUploadRecord(?string $errorFilePath): void
     {
+        if ($errorFilePath) {
+            $status = InvoiceUploadStatus::COMPLETED_WITH_ERRORS->value;
+        }else{
+            $status = InvoiceUploadStatus::COMPLETED->value;
+        }
+            Log::info('register invoice upload status ' . $status);
+
         InvoiceUpload::updateOrCreate(
             [
                 'user_id' => $this->userId,
@@ -171,10 +177,11 @@ class InvoicesImport implements ToCollection, WithHeadingRow, WithChunkReading, 
                 'error_file_path' => $errorFilePath,
                 'valid_records_count' => $this->validRecordsCount,
                 'total_records' => $this->total_records,
+                'status' => $status
             ]
         );
 
-        Log::info('Registro de InvoiceUpload creado.');
+        Log::info('register update invoice upload status');
     }
 
     public function chunkSize(): int

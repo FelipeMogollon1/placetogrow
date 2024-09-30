@@ -2,6 +2,7 @@
 
 namespace App\Domain\Invoice\Actions;
 
+use App\Constants\InvoiceUploadStatus;
 use App\Jobs\Invoice\ProcessInvoiceImport;
 use Illuminate\Support\Facades\Log;
 use App\Infrastructure\Persistence\Models\InvoiceUpload;
@@ -23,6 +24,7 @@ class ImportInvoicesAction
             'user_id' => auth()->user()->id,
             'microsite_id' => $data['microsite_id'],
             'storage_path' => $relativeFilePath,
+            'status' => InvoiceUploadStatus::PENDING->value
         ]);
 
         Log::info('Importing invoices action initiated... ' . $invoiceUpload->id);

@@ -19,6 +19,7 @@ class InvoiceUpload extends Model
         'error_file_path',
         'valid_records_count',
         'total_records',
+        'status'
     ];
 
     public function user(): BelongsTo

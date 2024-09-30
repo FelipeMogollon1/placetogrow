@@ -4,6 +4,7 @@ import { Link } from '@inertiajs/vue3';
 import { route } from 'ziggy-js';
 import { DocumentCheckIcon,DocumentTextIcon } from '@heroicons/vue/24/outline';
 import Paginator from '@/Components/Paginator.vue';
+import SpanForm from "@/Layouts/Atoms/SpanForm.vue";
 
 const props = defineProps({
     data: {
@@ -45,6 +46,14 @@ const formatDate = (dateString) => {
         second: '2-digit',
     });
 }
+
+const statusColors = {
+    pending: 'yellow',
+    processing: 'cyan',
+    completed: 'green',
+    failed: 'red',
+    completed_with_errors: 'orange'
+};
 
 </script>
 
@@ -97,17 +106,12 @@ const formatDate = (dateString) => {
                                     {{ formatDate(item[header]) }}
                                 </template>
 
-                                <template v-else-if="header === 'storage_path'">
-                                    <a :href="`/storage/${item[header]}`" class="text-blue-600 hover:underline" download>
-                                        Descargar Original
-                                    </a>
-                                </template>
+                                <div v-else-if="header === 'status'">
+                                    <span-form class="capitalize" :color="statusColors[item[header]]">
+                                        {{ $t(`invoices.${item[header]}`) }}
+                                    </span-form>
+                                </div>
 
-                                <template v-else-if="header === 'error_file_path' && item[header] !== null">
-                                    <a :href="`/storage/${item[header]}`" class="text-blue-600 hover:underline" download>
-                                        Descargar errores
-                                    </a>
-                                </template>
                                 <span v-else>
                                     {{ item[header] }}
                                 </span>

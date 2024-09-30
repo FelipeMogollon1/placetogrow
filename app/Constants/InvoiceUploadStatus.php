@@ -2,13 +2,13 @@
 
 namespace App\Constants;
 
-enum InvoiceUpload: String
+enum InvoiceUploadStatus: String
 {
     case PENDING = 'pending';
     case PROCESSING = 'processing';
     case COMPLETED = 'completed';
     case FAILED = 'failed';
-    case COMPLETED_WITH_ERRORS = 'completed with errors';
+    case COMPLETED_WITH_ERRORS = 'completed_with_errors';
 
     public static function getInvoiceUploadStatus(): array
     {

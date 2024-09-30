@@ -125,6 +125,7 @@ const headersUploadInvoice = [
     "valid_records_count",
     "total_records",
     "created_at",
+    "status"
 ];
 
 </script>
@@ -254,7 +255,10 @@ const headersUploadInvoice = [
                 </button>
             </div>
 
-            <InvoiceUploadTable :data="uploadInvoice.data" :headers="headersUploadInvoice"  :paginator="uploadInvoice"/>
+            <InvoiceUploadTable v-if="uploadInvoice.data.length > 0"
+                                :data="uploadInvoice.data"
+                                :headers="headersUploadInvoice"
+                                :paginator="uploadInvoice"/>
         </form>
 
 

@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Invoice;
 
+use App\Constants\InvoiceUploadStatus;
 use App\Imports\InvoicesImport;
 use App\Infrastructure\Persistence\Models\InvoiceUpload;
 use Illuminate\Bus\Queueable;
@@ -26,7 +27,9 @@ class ProcessInvoiceImport implements ShouldQueue
     public function handle(): void
     {
         Log::info('Processing invoice import for file: ' . $this->filePath);
+
         $invoiceUpload = InvoiceUpload::find($this->invoiceUploadId);
+        $invoiceUpload->update(['status' => InvoiceUploadStatus::PROCESSING->value]);
 
         $import = new InvoicesImport([
             'id' => $invoiceUpload->id,
