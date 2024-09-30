@@ -9,12 +9,11 @@ use App\Infrastructure\Persistence\Models\InvoiceUpload;
 
 class ImportInvoicesAction
 {
-    public function execute(array $data): bool
+    public function execute(array $data): void
     {
         $file = $data['invoices'];
-        $now = now()->format('Y-m-d_H-i-s');
 
-        $fileName = 'invoice_' . $now . '.' . $file->getClientOriginalExtension();
+        $fileName = 'invoice_' . now()->format('Y-m-d_H-i-s') . '.' . $file->getClientOriginalExtension();
         $relativeFilePath = 'invoices/' . $fileName;
         $file->storeAs('public/invoices', $fileName);
 
@@ -28,9 +27,6 @@ class ImportInvoicesAction
         ]);
 
         Log::info('Importing invoices action initiated... ' . $invoiceUpload->id);
-
         ProcessInvoiceImport::dispatch($relativeFilePath, $invoiceUpload->id);
-
-        return true;
     }
 }
