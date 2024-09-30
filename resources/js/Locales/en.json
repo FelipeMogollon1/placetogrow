@@ -362,11 +362,17 @@
         "paymentDate": "Payment date",
         "downloadTemplate" : "Download Template",
         "microsite": "Microsite",
-        "storage_path": "Storage path",
-        "error_file_path": "Error path",
-        "created_at": "Created date",
+        "storage_path": "Original file",
+        "error_file_path": "Error file",
+        "created_at": "Creation date",
         "valid_records_count": "Valid records",
         "total_records": "Total records",
-        "importErrors": "Import errors"
+        "importErrors": "Import errors",
+        "downloadable": "Downloadable",
+        "pending": "Pending",
+        "processing": "Processing",
+        "completed": "Completed",
+        "failed": "Failed",
+        "completed_with_errors": "Completed with errors"
     }
 }
