@@ -1,4 +1,5 @@
 {
+    "total_records": "Registros totales",
     "about": "Acerca de",
     "all_rights_reserved": "Todos los derechos reservados.",
     "categories": "Categorias",
@@ -330,7 +331,14 @@
         "subscriptionForm" : "Formulario de Suscripción",
         "selectedSubscription" : "Suscripción Seleccionada",
         "send" : "Enviar",
-        "return" : "Volver"
+        "return" : "Volver",
+        "currency": "Moneda",
+        "editSubscription" : "Editar subscripción",
+        "edit_subscription" : "Editar Plan de Suscripción",
+        "continue" : "Continuar",
+        "changePlan": "Cambiar de plan",
+        "paymentMethod": "Método de pago actual",
+        "creditCard": "Tarjeta de credito"
     },
     "invoices": {
         "title" : "Facturas",
@@ -350,6 +358,21 @@
         "selectMicrosite": "Selecciona el micrositio",
         "matter": "Importar",
         "searchInvoice" : "Buscar factura...",
-        "noFile": "No se  ha seleccionado un archivo"
+        "noFile": "No se  ha seleccionado un archivo",
+        "paymentDate": "Fecha de pago",
+        "downloadTemplate" : "Descargar Template",
+        "microsite": "Micrositio",
+        "storage_path": "Archivo original",
+        "error_file_path": "Archivo de errores",
+        "created_at": "Fecha de creación",
+        "valid_records_count": "Registros válidos",
+        "total_records": "Registros totales",
+        "importErrors": "Errores de importación",
+        "downloadable": "Descargables",
+        "pending": "Pendiente",
+        "processing": "Procesando",
+        "completed": "Completado",
+        "failed": "Fallido",
+        "completed_with_errors": "Completado con errores"
     }
 }

@@ -12,6 +12,8 @@ return new class () extends Migration {
             $table->string('header')->nullable();
             $table->string('footer')->nullable();
             $table->string('color')->nullable();
+            $table->string('additional_info')->nullable();
+            $table->string('expiration_additional_info')->nullable();
             $table->json('configuration');
             $table->timestamps();
         });

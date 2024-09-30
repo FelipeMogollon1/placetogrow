@@ -25,6 +25,7 @@ class Subscription extends Model
         'paid_at',
         'token',
         'sub_token',
+        'franchiseName',
         'lastDigits',
         'validUntil',
         'subscription_plan_id',

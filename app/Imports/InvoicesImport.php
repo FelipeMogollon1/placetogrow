@@ -2,122 +2,204 @@
 
 namespace App\Imports;
 
-use App\Constants\CurrencyTypes;
-use App\Constants\DocumentTypes;
+use App\Constants\InvoiceUploadStatus;
+use App\Constants\PaymentStatus;
+use App\Exports\ErrorsExport;
 use App\Infrastructure\Persistence\Models\Invoice;
+use App\Infrastructure\Persistence\Models\InvoiceUpload;
+use App\Services\InvoiceValidationService;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\Rule;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\ToCollection;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-class InvoicesImport implements ToCollection, WithHeadingRow
+class InvoicesImport implements ToCollection, WithHeadingRow, WithChunkReading, ShouldQueue
 {
+    protected int $invoiceUploadId;
     protected $userId;
-    protected $micrositeId;
-    public $errors = [];
+    protected mixed $micrositeId;
+    protected mixed $filePath;
+    public array $errors = [];
+    public int $validRecordsCount = 0;
+    public int $total_records = 0;
 
-    public function __construct($userId, $micrositeId)
+    public $tries = 3;
+    public $timeout = 120;
+
+    public function __construct(array $data, string $filePath)
     {
-        $this->userId = $userId;
-        $this->micrositeId = $micrositeId;
+        $this->invoiceUploadId = $data['id'] ?? null;
+        $this->userId = $data['user_id'] ?? null;
+        $this->micrositeId = $data['microsite_id'];
+        $this->filePath = $filePath;
+
+        if (!$this->userId) {
+            Log::error('User ID is missing en InvoicesImport constructor.');
+            throw new \Exception('User ID is required for InvoicesImport.');
+        }
+
+        Log::info('InvoicesImport creado con user_id: ' . $this->userId . ', microsite_id: ' . $this->micrositeId);
     }
 
     public function collection(Collection $collection): void
     {
+        $validatorService = new InvoiceValidationService();
+
         foreach ($collection as $row) {
+            $rowArray = $row->toArray();
+            $this->total_records++;
+
             try {
-                $this->validateRow($row);
+                $validatorService->validate($rowArray);
+
+                $existingInvoice = Invoice::where([
+                    ['document', '=', (string)$rowArray['document']],
+                    ['microsite_id', '=', $this->micrositeId],
+                    ['amount', '=', $rowArray['amount']],
+                    ['reference', '=', $rowArray['reference']]
+                ])->first();
+
+                if ($existingInvoice && $existingInvoice->status === PaymentStatus::APPROVED->value) {
+                    Log::info("La factura con el documento {$rowArray['document']} ya está aprobada y no puede ser modificada.");
+                    continue;
+                }
+
+                if ($existingInvoice) {
+                    Log::info("La factura con el documento {$rowArray['document']} ya existe y será omitida.");
+                    continue;
+                }
 
                 Invoice::updateOrCreate(
-                    ['document' => $row['document']],
                     [
-                        'reference' => $row['reference'],
+                        'document' => $rowArray['document'],
+                        'microsite_id' => $this->micrositeId,
+                        'reference' => $rowArray['reference'],
+                    ],
+                    [
+                        'reference' => $rowArray['reference'] ?: Str::random(10),
                         'user_id' => $this->userId,
                         'microsite_id' => $this->micrositeId,
-                        'name' => $row['name'],
-                        'surname' => $row['surname'],
-                        'email' => $row['email'],
-                        'document_type' => $row['document_type'],
-                        'document' => (string) $row['document'],
-                        'description' => $row['description'],
-                        'currency_type' => $row['currency_type'],
-                        'amount' => $row['amount'],
+                        'name' => $rowArray['name'],
+                        'surname' => $rowArray['surname'],
+                        'email' => $rowArray['email'],
+                        'document_type' => $rowArray['document_type'],
+                        'document' => (string) $rowArray['document'],
+                        'description' => $rowArray['description'] ?? 'Payment by invoice',
+                        'currency_type' => $rowArray['currency_type'],
+                        'amount' => $rowArray['amount'],
                     ]
                 );
+
+                $this->validRecordsCount++;
+
             } catch (ValidationException $e) {
-                Log::warning('Fila inválida: ' . json_encode($row) . ' - Errores: ' . json_encode($e->errors()));
-                $this->errors[] = [
-                    'row' => $row->toArray(),
-                    'errors' => $e->errors()
-                ];
-                continue;
+                $this->logValidationErrors($row, $e);
             } catch (\Exception $e) {
-                Log::error('Error general en la fila: ' . json_encode($row) . ' - Error: ' . $e->getMessage());
-                continue;
+                $this->logGeneralError($row, $e);
             }
         }
+
+        $errorFilePath = $this->handleErrors();
+        $this->createInvoiceUploadRecord($errorFilePath);
+        Log::info("Total de registros válidos importados: {$this->validRecordsCount}");
     }
 
-    private function validateRow(Collection $row): void
+    private function logValidationErrors($row, ValidationException $e): void
     {
-        $data = $row->toArray();
-
-        $rules = [
-            'reference' => 'required|string',
-            'user_id' => 'nullable|integer|exists:users,id',
-            'microsite_id' => 'nullable|integer|exists:microsites,id',
-            'name' => 'required|string',
-            'surname' => 'required|string',
-            'email' => [
-                'required',
-                'email',
-                'regex:/^[^@]+@[^@]+\.[a-zA-Z]{2,}$/'
-            ],
-            'document_type' => [
-                'nullable',
-                'string',
-                Rule::in(DocumentTypes::getDocumentTypes())
-            ],
-            'document' => ['required', 'max:255', function ($attribute, $value, $fail) use ($data) {
-                $patterns = [
-                    'CC' => '/^[1-9][0-9]{3,9}$/',
-                    'CE' => '/^([a-zA-Z]{1,5})?[1-9][0-9]{3,7}$/',
-                    'TI' => '/^[1-9][0-9]{4,11}$/',
-                    'NIT' => '/^[1-9]\d{6,9}$/',
-                ];
-                $documentType = $data['document_type'];
-
-                if (isset($patterns[$documentType])) {
-                    if (!preg_match($patterns[$documentType], $value)) {
-                        $fail("El $attribute no es válido para el tipo de documento $documentType.");
-                    }
-                } else {
-                    $fail("Tipo de documento $documentType no reconocido.");
-                }
-            }],
-            'description' => 'required|string',
-            'currency_type' => ['required', Rule::in(CurrencyTypes::getCurrencyType())],
-            'amount' => 'required|numeric|min:1|max:999999999',
+        Log::warning('Fila inválida: ' . json_encode($row) . ' - Errores: ' . json_encode($e->errors()));
+        $this->errors[] = [
+            'row' => $row->toArray(),
+            'errors' => $e->errors(),
+            'type' => 'validation'
         ];
-
-        $validator = Validator::make($data, $rules);
-
-        if ($validator->fails()) {
-            throw new ValidationException($validator);
-        }
     }
 
+    private function logGeneralError($row, \Exception $e): void
+    {
+        Log::error('Error general en la fila: ' . json_encode($row) . ' - Error: ' . $e->getMessage());
+        $this->errors[] = [
+            'row' => $row->toArray(),
+            'error' => $e->getMessage(),
+            'type' => 'general'
+        ];
+    }
+
+    public function handleErrors(): ?string
+    {
+        $errorFilePath = null;
+        if (!empty($this->errors) && count($this->errors) > 0) {
+            log::info('errors found');
+            $now = now()->format('Y-m-d_H-i-s');
+            $fileName = basename($this->filePath);
+            $timestamp = pathinfo($fileName, PATHINFO_FILENAME);
+
+            $parts = explode('_', $timestamp, 2);
+            if (count($parts) < 2) {
+                $timestamp = $now;
+            } else {
+                $timestamp = $parts[1];
+            }
+
+            $errorFileName = 'import_errors_' . $timestamp . '.xlsx';
+            $errorFilePath = 'invoicesErrors/' . $errorFileName;
+
+            $errorExports = new ErrorsExport($this->errors);
+            Excel::store($errorExports, $errorFilePath, 'public');
+
+            Log::info('Archivo de errores creado: ' . $errorFileName);
+        }
+
+        return $errorFilePath;
+    }
+
+    public function createInvoiceUploadRecord(?string $errorFilePath): void
+    {
+        if ($errorFilePath) {
+            $status = InvoiceUploadStatus::COMPLETED_WITH_ERRORS->value;
+        }else{
+            $status = InvoiceUploadStatus::COMPLETED->value;
+        }
+            Log::info('register invoice upload status ' . $status);
+
+        InvoiceUpload::updateOrCreate(
+            [
+                'user_id' => $this->userId,
+                'microsite_id' => $this->micrositeId,
+                'storage_path' => $this->filePath,
+            ],
+            [
+                'error_file_path' => $errorFilePath,
+                'valid_records_count' => $this->validRecordsCount,
+                'total_records' => $this->total_records,
+                'status' => $status
+            ]
+        );
+
+        Log::info('register update invoice upload status');
+    }
 
     public function chunkSize(): int
     {
         return 1000;
     }
 
-    private function isValidRow($row): bool
+    public function headings(): array
     {
-        return isset($row['document']);
+        return [
+            'reference',
+            'name',
+            'surname',
+            'email',
+            'document_type',
+            'document',
+            'description',
+            'currency_type',
+            'amount',
+        ];
     }
 }

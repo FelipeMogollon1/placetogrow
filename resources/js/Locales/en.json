@@ -1,4 +1,5 @@
 {
+    "total_records": "Total records",
     "about": "About",
     "all_rights_reserved": "All rights reserved.",
     "categories": "Categories",
@@ -317,7 +318,7 @@
         "totalPrice" : "Total Price",
         "additional_info": "Additional Information",
         "expiration_additional_info": "Expiration Information",
-        "noSubscriptions" : "Looks like there are no subscriptions available yet. Come back later!",
+        "noSubscriptions": "It appears that there are no subscriptions available yet. Come back later!",
         "reference": "Reference",
         "subscriptionPlans": "PLan",
         "surname": "Last Name",
@@ -330,7 +331,14 @@
         "subscriptionForm" : "Subscription Form",
         "selectedSubscription" : "Selected Subscription",
         "send" : "Send",
-        "return" : "Return"
+        "return" : "Return",
+        "currency": "Currency",
+        "editSubscription" : "Edit Subscription",
+        "edit_subscription" : "Edit Subscription Plan",
+        "continue" : "Continue",
+        "changePlan": "Change Plan",
+        "paymentMethod": "Current Payment Method",
+        "creditCard": "Credit Card"
     },
     "invoices": {
         "title" : "Invoices",
@@ -350,6 +358,21 @@
         "selectMicrosite": "Select the microsite",
         "matter": "Import",
         "searchInvoice" : "Search invoice...",
-        "noFile": "No You have selected a file"
+        "noFile": "No file selected",
+        "paymentDate": "Payment date",
+        "downloadTemplate" : "Download Template",
+        "microsite": "Microsite",
+        "storage_path": "Original file",
+        "error_file_path": "Error file",
+        "created_at": "Creation date",
+        "valid_records_count": "Valid records",
+        "total_records": "Total records",
+        "importErrors": "Import errors",
+        "downloadable": "Downloadable",
+        "pending": "Pending",
+        "processing": "Processing",
+        "completed": "Completed",
+        "failed": "Failed",
+        "completed_with_errors": "Completed with errors"
     }
 }

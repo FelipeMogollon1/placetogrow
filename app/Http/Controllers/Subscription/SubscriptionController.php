@@ -3,26 +3,21 @@
 namespace App\Http\Controllers\Subscription;
 
 use App\Constants\Abilities;
-use App\Constants\PaymentStatus;
-use App\Constants\SubscriptionStatus;
 use App\Contracts\PaymentGatewayContract;
 use App\Domain\Subscription\Actions\DestroySubscriptionAction;
 use App\Domain\Subscription\Actions\StoreSubscriptionAction;
+use App\Domain\Subscription\Actions\UpdateSubscriptionAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Subscription\StoreSubscriptionRequest;
+use App\Http\Requests\Subscription\UpdateSubscriptionRequest;
 use App\Infrastructure\Persistence\Models\Microsite;
 use App\Infrastructure\Persistence\Models\Subscription;
 use App\Infrastructure\Persistence\Models\SubscriptionPlan;
 use App\ViewModels\Subscription\SubscriptionIndexViewModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -74,8 +69,33 @@ class SubscriptionController extends Controller
         return Inertia::render('Subscriptions/Show', compact('subscription'));
     }
 
+    public function edit(string $id): Response
+    {
+        $this->authorize(Abilities::EDIT->value, Subscription::class);
+
+        $subscription = SubscriptionPlan::select('*')
+            ->join('microsites', 'subscription_plans.microsite_id', '=', 'microsites.id')
+            ->join('subscriptions', 'subscriptions.subscription_plan_id', '=', 'subscription_plans.id')
+            ->where('subscriptions.id', $id)->get();
+
+        $subscriptionPlans = SubscriptionPlan::select('subscription_plans.*')
+            ->join('microsites', 'subscription_plans.microsite_id', '=', 'microsites.id')
+            ->where('active', true)->get();
+
+        return Inertia::render('Subscriptions/Edit', compact('subscription', 'subscriptionPlans'));
+    }
+
+    public function update(UpdateSubscriptionRequest $request, string $id, UpdateSubscriptionAction $updateAction): RedirectResponse
+    {
+        $this->authorize(Abilities::UPDATE->value, Subscription::class);
+        $updateAction->execute($id, $request->validated());
+
+        return redirect()->route('subscriptions.index');
+    }
+
     public function destroy(string $id, DestroySubscriptionAction $action): RedirectResponse
     {
+        $this->authorize(Abilities::DELETE->value, Subscription::class);
         $subscription = Subscription::findOrFail($id);
 
         if ($action->execute($subscription)) {

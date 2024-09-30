@@ -8,6 +8,9 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputComponent from '@/Layouts/Organisms/InputComponent.vue';
 import SubscriptionView from "@/Layouts/Organisms/SubscriptionView.vue";
 import Index from "@/Pages/SubscriptionPlans/Index.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import TextInput from "@/Components/TextInput.vue";
+import InputError from "@/Components/InputError.vue";
 
 const page = usePage();
 const microsite = ref(page.props.microsite || {});
@@ -40,6 +43,8 @@ const initialValues = {
     header: null,
     footer: null,
     color: formConfig.color ?? "",
+    additional_info: formConfig.additional_info ?? "",
+    expiration_additional_info : formConfig.expiration_additional_info ?? "",
     colorDefault: formConfig.colorDefault ?? "",
     configuration: formConfig.configuration
 }
@@ -124,6 +129,19 @@ const selectedColorDefault = ref(form.colorDefault);
 watch(selectedColorDefault, (newColor) => {
     form.colorDefault = newColor;
 });
+
+
+const liveAdditionalInfo = ref(form.additional_info);
+const liveExpirationInfo = ref(form.expiration_additional_info);
+
+watch(() => liveAdditionalInfo, (newValue) => {
+    form.additional_info = newValue;
+});
+
+watch(() => liveExpirationInfo, (newValue) => {
+    form.expiration_additional_info = newValue;
+});
+
 
 </script>
 
@@ -215,6 +233,7 @@ watch(selectedColorDefault, (newColor) => {
                                        :fields="form.configuration.fields"
                                        :documentTypes="page.props.arrayConstants.documentTypes"
                                        :disableSubmit="true"
+                                       :forms="formConfig"
                     />
                 </div>
 
@@ -260,6 +279,28 @@ watch(selectedColorDefault, (newColor) => {
                                 </select>
                             </li>
                         </ul>
+
+                        <div>
+                            <h2 class="text-lg font-semibold text-gray-900 my-4">{{ $t('subscription.additional_info') }}</h2>
+                            <TextInput
+                                id="additional_info"
+                                type="text"
+                                class="mt-1 block w-full border border-gray-300 rounded-md focus:ring-gray-500 focus:border-gray-500"
+                                v-model="form.additional_info"
+                                :placeholder="$t('subscription.additional_info')"
+                            />
+                            <InputError class="mt-2 text-red-600" :message="form.errors.additional_info" />
+
+                            <h2 class="text-lg font-semibold text-gray-900 my-4">{{ $t('subscription.expiration_additional_info') }}</h2>
+                            <TextInput
+                                id="expiration_additional_info"
+                                type="text"
+                                class="mt-1 block w-full border border-gray-300 rounded-md focus:ring-gray-500 focus:border-gray-500"
+                                v-model="form.expiration_additional_info"
+                                :placeholder="$t('subscription.expiration_additional_info')"
+                            />
+                            <InputError class="mt-2 text-red-600" :message="form.errors.expiration_additional_info" />
+                        </div>
 
                     </div>
 

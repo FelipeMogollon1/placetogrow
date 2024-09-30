@@ -3,20 +3,26 @@
 namespace App\Domain\SubscriptionPlan\Actions;
 
 use App\Infrastructure\Persistence\Models\SubscriptionPlan;
+use Illuminate\Support\Facades\DB;
 
 class UpdateSubscriptionPlanAction
 {
-    public function execute(string $id, array $data): SubscriptionPlan
+    public function execute(string $id, array $data): int
     {
-        $subscriptionPlan = SubscriptionPlan::findOrFail($id);
+        return DB::transaction(function () use ($id, $data) {
+            $subscriptionPlan = SubscriptionPlan::findOrFail($id);
+            $subscriptionPlan->active = false;
+            $subscriptionPlan->save();
 
-        if (isset($data['description'])) {
-            $data['description'] = is_array($data['description']) ? json_encode($data['description']) : $data['description'];
-        }
+            if (isset($data['description']) && is_array($data['description'])) {
+                $data['description'] = json_encode($data['description']);
+            }
 
-        $subscriptionPlan->update($data);
+            $newPlan = $subscriptionPlan->replicate()->fill($data);
+            $newPlan->active = true;
+            $newPlan->save();
 
-        return $subscriptionPlan;
+            return $subscriptionPlan->microsite_id;
+        });
     }
-
 }

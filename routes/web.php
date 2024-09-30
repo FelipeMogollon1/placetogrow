@@ -5,23 +5,24 @@ use App\Http\Controllers\Admin\FormController;
 use App\Http\Controllers\Admin\MicrositeController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ImportInvoice\InvoiceController;
+use App\Http\Controllers\ImportInvoice\InvoiceUploadController;
 use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Roles\RoleController;
 use App\Http\Controllers\Subscription\SubscriptionController;
-use App\Http\Controllers\Subscription\SubscriptionPlanController;
+use App\Http\Controllers\SubscriptionPlan\SubscriptionPlanController;
+use App\Infrastructure\Persistence\Models\Invoice;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', [MicrositeController::class, 'welcomeIndex'])->name('Welcome');
-
 Route::get('/microsites/{slug}/payment-form', [MicrositeController::class, 'paymentForm'])->name('microsites.paymentForm');
-
 Route::resource('/payments', PaymentController::class);
-Route::resource('/subscriptions', SubscriptionController::class);
-
 Route::get('/returnBusiness/{payment}', [PaymentController::class,'returnBusiness'])->name('returnBusiness');
 Route::get('/returnSubscription/{subscription}', [SubscriptionController::class,'returnSubscription'])->name('returnSubscription');
+Route::resource('/subscriptions', SubscriptionController::class);
+Route::get('/invoices/download-template', [InvoiceController::class, 'downloadTemplate'])
+    ->name('invoices.download-template');
 
 Route::group(['middleware' => 'auth', 'verified'], function () {
 
@@ -41,8 +42,10 @@ Route::group(['middleware' => 'auth', 'verified'], function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('/subscriptionsPlan', SubscriptionPlanController::class);
     Route::resource('/invoices', InvoiceController::class);
+    Route::resource('/invoicesUpload', InvoiceUploadController::class);
     Route::post('/invoices', [InvoiceController::class, 'import'])->name('invoices.import');
     Route::post('/invoices/{invoiceId}/process-payment', [InvoiceController::class, 'processPayment'])->name('invoices.processPayment');
+    Route::get('/returnInvoice/{invoice}', [InvoiceController::class,'returnInvoice'])->name('returnInvoice');
 
 });
 

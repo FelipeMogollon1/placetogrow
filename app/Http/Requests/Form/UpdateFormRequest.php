@@ -24,7 +24,14 @@ class UpdateFormRequest extends FormRequest
             'footer' => ['nullable'],
             'header' => ['nullable'],
             'color' => ['nullable'],
-            'additional_information' => ['nullable'],
+            'additional_info' => [
+                'nullable',
+                'string',
+            ],
+            'expiration_additional_info' => [
+                'nullable',
+                'string',
+            ],
         ];
     }
 }
