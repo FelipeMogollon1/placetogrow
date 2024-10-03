@@ -214,7 +214,9 @@
             "microsites": "Micrositios",
             "categories": "Categorías",
             "roles": "Roles",
-            "payments": "Pagos"
+            "payments": "Pagos",
+            "invoices": "Facturas",
+            "subscriptions": "Suscripciones"
         },
         "permissions": {
             "index": "Listar",
@@ -223,7 +225,9 @@
             "store": "Guardar",
             "edit": "Editar",
             "update": "Actualizar",
-            "destroy": "Eliminar"
+            "destroy": "Eliminar",
+            "import": "Importar",
+            "processPayment": "Procesar Pago"
         },
         "users": {
             "index": "Listar",
@@ -269,6 +273,26 @@
             "edit": "Editar",
             "update": "Actualizar",
             "destroy": "Eliminar"
+        },
+        "subscriptions": {
+            "index": "Listar",
+            "show": "Ver detalle",
+            "create": "Crear",
+            "store": "Guardar",
+            "edit": "Editar",
+            "update": "Actualizar",
+            "destroy": "Eliminar"
+        },
+        "invoices": {
+            "index": "Listar",
+            "show": "Ver detalle",
+            "create": "Crear",
+            "store": "Guardar",
+            "edit": "Editar",
+            "update": "Actualizar",
+            "destroy": "Eliminar",
+            "import": "Importar",
+            "processPayment": "Procesar Pago"
         }
     },
     "category": {

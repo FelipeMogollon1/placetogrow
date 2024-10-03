@@ -214,16 +214,20 @@
             "microsites": "Microsites",
             "categories": "Categories",
             "roles": "Roles",
-            "payments": "Payments"
+            "payments": "Payments",
+            "invoices": "Invoices",
+            "subscriptions": "Subscriptions"
         },
         "permissions": {
             "index": "List",
-            "show": "View detail",
+            "show": "View details",
             "create": "Create",
             "store": "Save",
             "edit": "Edit",
             "update": "Update",
-            "destroy": "Delete"
+            "destroy": "Delete",
+            "import": "Import",
+            "processPayment": "Process Payment"
         },
         "users": {
             "index": "List",
@@ -269,6 +273,26 @@
             "edit": "Edit",
             "update": "Update",
             "destroy": "Delete"
+        },
+        "subscriptions": {
+            "index": "List",
+            "show": "View details",
+            "create": "Create",
+            "store": "Save",
+            "edit": "Edit",
+            "update": "Update",
+            "destroy": "Delete"
+        },
+        "invoices": {
+            "index": "List",
+            "show": "View details",
+            "create": "Create",
+            "store": "Save",
+            "edit": "Edit",
+            "update": "Update",
+            "destroy": "Delete",
+            "import": "Import",
+            "processPayment": "Process Payment"
         }
     },
     "category": {
