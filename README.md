@@ -31,6 +31,23 @@ Para ejecutar este proyecto de forma eficaz, necesitarás los siguientes prerreq
 - [Composer](https://getcomposer.org/)
 - Entorno de desarrollo local configurado (Apache, Nginx, etc.)
 
+### Habilitar Extensiones en PHP
+Si estás usando PHP en tu entorno local, asegúrate de que las extensiones `gd` y `zip` estén habilitadas en tu servidor.
+Puedes hacerlo editando tu archivo `php.ini`:
+
+1. Abre tu archivo php.ini (puedes ubicarlo ejecutando `php --ini` en tu terminal).
+2. Descomenta (quita el `;` al inicio de la línea) las siguientes líneas:
+    ```bash
+    extension=gd
+    extension=zip
+    ```
+3.   Guarda los cambios y reinicia tu servidor PHP.
+
+En distribuciones como Ubuntu o Debian, puedes instalar estas extensiones con:
+```bash
+sudo apt-get install php-gd php-zip
+```
+
 ### Instalación
 
 #### Clonar el repositorio
@@ -50,15 +67,16 @@ Para ejecutar este proyecto de forma eficaz, necesitarás los siguientes prerreq
     git clone https://github.com/FelipeMogollon1/placetogrow.git
     cd placetogrow
     ```
-3. **Copiar el Archivo .env:**
+3. **Copiar el archivo `.env` de ejemplo**
    ```bash
    cp .env.example .env
    ```
 
 4. **Instalar Dependencias de PHP:**
-   ```bash
-   composer install
-   ```
+   Antes de ejecutar composer install, asegúrate de que las extensiones `gd` y `zip` están habilitadas.
+      ```bash
+      composer install
+      ```
 
 5. **Instalar Dependencias de Node.js:**
    ```bash
@@ -105,9 +123,9 @@ Para ejecutar este proyecto de forma eficaz, necesitarás los siguientes prerreq
 
 ## Configuración
 
-1. Configurar la base de datos en phpMyAdmin y en el archivo .env generado anteriormente.
-2. Configurar las credenciales de Mailtrap en el archivo .env para probar la funcionalidad de verificación de email del usuario.
-3. Configurar los datos de la pasarela de pagos en el archivo .env. Las variables necesarias para la pasarela de pagos PlacetoPay son:
+1. Configurar la base de datos en phpMyAdmin y en el archivo `.env` generado anteriormente.
+2. Configurar las credenciales de Mailtrap en el archivo `.env` para probar la funcionalidad de verificación de email del usuario.
+3. Configurar los datos de la pasarela de pagos en el archivo `.env`. Las variables necesarias para la pasarela de pagos PlacetoPay son:
   
     ```env
        PLACETOPAY_LOGIN=
