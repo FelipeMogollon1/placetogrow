@@ -40,8 +40,14 @@ class SubscriptionPlan extends Model
         return $this->hasMany(Subscription::class);
     }
 
+    public function payments(): HasMany
+    {
+        return $this->hasMany(SubscriptionPayment::class);
+    }
+
     public function scopeActivos($query)
     {
         return $query->where('active', true);
     }
+
 }
