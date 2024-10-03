@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Constants\Abilities;
+use App\Constants\DocumentTypes;
 use App\Domain\User\Actions\DestroyUserAction;
 use App\Domain\User\Actions\StoreUserAction;
 use App\Domain\User\Actions\UpdateUserAction;
@@ -33,7 +34,10 @@ class UserController extends Controller
     {
         $this->authorize(Abilities::CREATE->value, User::class);
 
-        return Inertia::render('Users/Create', ['roles' => Role::select('name')->get()]);
+        return Inertia::render('Users/Create', [
+            'roles' => Role::select('name')->get(),
+            'documentTypes' => DocumentTypes::getDocumentTypes(),
+        ]);
     }
 
     public function store(StoreUserRequest $request, StoreUserAction $storeAction): RedirectResponse
@@ -49,8 +53,9 @@ class UserController extends Controller
         $this->authorize(Abilities::EDIT->value, User::class);
         $user = User::with('roles')->findOrFail($id);
         $roles = Role::all();
+        $documentTypes = DocumentTypes::getDocumentTypes();
 
-        return Inertia::render('Users/Edit', compact('user', 'roles'));
+        return Inertia::render('Users/Edit', compact('user', 'roles', 'documentTypes'));
     }
 
     public function update(UpdateUserRequest $request, User $user, UpdateUserAction $updateAction): RedirectResponse
