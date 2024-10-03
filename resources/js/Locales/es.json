@@ -146,6 +146,9 @@
         "cancel": "Cancelar",
         "email": "Correo electrónico",
         "name": "Nombre",
+        "surname": "Apellido",
+        "document_type": "Tipo de documento",
+        "document": "Documento",
         "password": "Contraseña",
         "profile": "Mi perfil",
         "profile_information": "Información del perfil",
@@ -374,5 +377,18 @@
         "completed": "Completado",
         "failed": "Fallido",
         "completed_with_errors": "Completado con errores"
-    }
+    },
+    "Forgot_your_password": "¿Olvidaste tu contraseña? No hay problema. Solo indícanos tu dirección de correo electrónico y te enviaremos un enlace para restablecer tu contraseña que te permitirá elegir una nueva.",
+    "email": "Correo electrónico",
+    "Reset_password": "Restablecer contraseña",
+    "password": "Contraseña",
+    "Reset_password_instructions": "Instrucciones de restablecimiento de contraseña",
+    "If_you_did_not_request_a_password_reset": "Si no solicitaste un restablecimiento de contraseña, no tendrás ningún problema. Puedes continuar usando nuestra aplicación sin problemas.",
+    "reset_password": "Restablecer contraseña",
+    "send_password_reset_link": "Enviar enlace al correo electrónico",
+    "password_reset_link_sent": "Enlace de restablecimiento de contraseña enviado!",
+    "check_your_email": "Revisa tu correo electrónico para encontrar el enlace de restablecimiento de contraseña.",
+    "confirm_password": "Confirmar contraseña",
+    "your_password_has_been_reset": "Tu contraseña ha sido restablecida!",
+    "if_you_did_not_request_a_password_reset": "Si no solicitaste un restablecimiento de contraseña, no tendrás ningún problema. Puedes continuar usando nuestra aplicación sin problemas."
 }
