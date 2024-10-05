@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Subscription;
 
 use App\Constants\Abilities;
+use App\Constants\SubscriptionStatus;
 use App\Contracts\PaymentGatewayContract;
 use App\Domain\Subscription\Actions\DestroySubscriptionAction;
 use App\Domain\Subscription\Actions\StoreSubscriptionAction;
@@ -16,7 +17,6 @@ use App\Infrastructure\Persistence\Models\SubscriptionPlan;
 use App\ViewModels\Subscription\SubscriptionIndexViewModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -40,6 +40,9 @@ class SubscriptionController extends Controller
     public function store(StoreSubscriptionRequest $request, StoreSubscriptionAction $action, PaymentGatewayContract $gateway): \Symfony\Component\HttpFoundation\Response
     {
         $subscription = $action->execute($request->validated());
+        if ($subscription === false) {
+            return redirect()->back()->with('error', 'Parece que ya tienes una subscripción activa a este plan de micrositio, por favor, revisa tus subscripciones.');
+        }
         $response = $gateway->createSessionSubscription($subscription, $request);
 
         return Inertia::location($response->processUrl());
@@ -51,6 +54,10 @@ class SubscriptionController extends Controller
         $microsite = Microsite::query()->where('id', $subscription->microsite_id)->first();
         $subscriptionPlans = SubscriptionPlan::all();
         $gatewayContract->querySubscription($subscription);
+
+        if ($subscription->status === SubscriptionStatus::ACTIVE->value) {
+            $gatewayContract->collectSubscription($subscription);
+        }
 
         return Inertia::render('Subscriptions/ReturnSubscription', [
             'subscription' => $subscription,
@@ -99,7 +106,6 @@ class SubscriptionController extends Controller
         $subscription = Subscription::findOrFail($id);
 
         if ($action->execute($subscription)) {
-            Artisan::call('app:transactions-consult');
             return redirect()->route('subscriptions.index')
                 ->with('success', 'Subscription successfully canceled and transactions updated.');
         }

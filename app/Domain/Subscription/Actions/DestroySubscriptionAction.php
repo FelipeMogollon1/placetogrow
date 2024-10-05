@@ -2,7 +2,7 @@
 
 namespace App\Domain\Subscription\Actions;
 
-use App\Constants\PaymentStatus;
+use App\Constants\SubscriptionStatus;
 use App\Infrastructure\Persistence\Models\Subscription;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
@@ -42,7 +42,7 @@ class DestroySubscriptionAction
             $response = Http::post($this->baseUrl . 'api/instrument/invalidate', $requestData);
 
             if ($response->successful() && $response->json('status.status') === 'OK') {
-                $subscription->status = PaymentStatus::REJECTED;
+                $subscription->status = SubscriptionStatus::CANCELLED->value;
                 $subscription->save();
 
                 return true;

@@ -1,7 +1,7 @@
 <?php
 
 use App\Constants\DocumentTypes;
-use App\Constants\PaymentStatus;
+use App\Constants\SubscriptionStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -28,7 +28,7 @@ return new class () extends Migration {
             $table->text('franchiseName')->nullable();
             $table->text('lastDigits')->nullable();
             $table->date('validUntil')->nullable();
-            $table->enum('status', PaymentStatus::getPaymentStatus())->nullable();
+            $table->enum('status', SubscriptionStatus::getAllSubscriptionStatus())->default(SubscriptionStatus::PENDING);
             $table->string('process_identifier')->nullable();
             $table->foreignId('subscription_plan_id')->constrained()->onDelete('cascade');
             $table->foreignId('microsite_id')->constrained()->onDelete('cascade');
