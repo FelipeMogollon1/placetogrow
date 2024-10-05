@@ -60,8 +60,6 @@ const headers = [
     "microsite_name",
     "name",
     "surname",
-    "document_type",
-    "document",
     "currency_type",
     "amount",
     "status",
