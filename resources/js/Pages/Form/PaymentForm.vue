@@ -11,6 +11,8 @@ import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 import SubscriptionView from "@/Layouts/Organisms/SubscriptionView.vue";
+import FlashMessages from '@/Layouts/Molecules/FlashMessages.vue';
+
 
 const page = usePage();
 const microsite = ref(page.props.microsite || {});
@@ -162,7 +164,7 @@ watch(() => form.currency, (newCurrency) => {
                 <LanguageDropdown />
             </nav>
         </header>
-
+        <flash-messages />
         <main v-if="microsite.microsite_type === 'subscription'">
 
             <SubscriptionView  :color="colorOptions[formConfig.color]"

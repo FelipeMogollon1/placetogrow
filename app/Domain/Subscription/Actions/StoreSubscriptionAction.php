@@ -2,17 +2,28 @@
 
 namespace App\Domain\Subscription\Actions;
 
+use App\Constants\SubscriptionStatus;
 use App\Infrastructure\Persistence\Models\Subscription;
 use App\Infrastructure\Persistence\Models\SubscriptionPlan;
 use Illuminate\Support\Str;
 
 class StoreSubscriptionAction
 {
-    public function execute(array $data)
+    public function execute(array $data): bool | Subscription
     {
+        $subscriptionExists = Subscription::where('email', $data['email'])
+            ->where('document_type', $data['document_type'])
+            ->where('document', $data['document'])
+            ->where('status', SubscriptionStatus::ACTIVE->value)
+            ->exists();
+
+        if ($subscriptionExists) {
+            return false;
+        }
+
         $subscriptionPlans = SubscriptionPlan::findOrFail($data['subscription_plan_id']);
 
-        return Subscription::create([
+        return  Subscription::create([
             'reference' => $data['reference'] ?? Str::upper(Str::random(10)),
             'description' => $data['description'] ?? "You just subscribed " . $subscriptionPlans->name,
             'name' => $data['name'] ?? null,
@@ -29,5 +40,7 @@ class StoreSubscriptionAction
             'subscription_plan_id' => $data['subscription_plan_id'],
             'microsite_id' => $data['microsite_id']
         ]);
+
     }
+
 }

@@ -41,7 +41,7 @@ class SubscriptionController extends Controller
     {
         $subscription = $action->execute($request->validated());
         if ($subscription === false) {
-            return redirect()->back()->with('error', 'Parece que ya tienes una subscripción activa a este plan de micrositio, por favor, revisa tus subscripciones.');
+            return redirect()->back()->with('success', 'Parece que ya tienes una subscripción activa a este plan de micrositio, por favor, revisa tus subscripciones.');
         }
         $response = $gateway->createSessionSubscription($subscription, $request);
 
