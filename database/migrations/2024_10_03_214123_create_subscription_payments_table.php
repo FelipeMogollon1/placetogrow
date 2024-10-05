@@ -1,13 +1,12 @@
 <?php
 
+use App\Constants\CurrencyTypes;
 use App\Constants\PaymentStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-
+return new class () extends Migration {
     public function up(): void
     {
         Schema::create('subscription_payments', function (Blueprint $table) {
@@ -20,11 +19,14 @@ return new class extends Migration
                 ->constrained('subscription_plans')
                 ->onUpdate('restrict')
                 ->onDelete('cascade');
+            $table->enum('currency', CurrencyTypes::getCurrencyType());
             $table->decimal('amount', 10, 2);
             $table->enum('status', PaymentStatus::getPaymentStatus())->default(PaymentStatus::PENDING);
             $table->integer('attempt_count')->default(0);
             $table->timestamp('last_attempt_at')->nullable();
             $table->timestamp('next_retry_at')->nullable();
+            $table->string('request_id')->nullable();
+            $table->timestamp('paid_at')->nullable();
             $table->timestamps();
         });
     }
