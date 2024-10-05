@@ -29,7 +29,17 @@ class InvoiceIndexViewModel extends ViewModel
         $rolesUser = $this->user->roles->pluck('name')->toArray();
 
         $query = Invoice::query()
-            ->select('invoices.*', 'microsites.microsite_type', 'microsites.name as microsite_name')
+
+            ->select(
+                'invoices.id',
+                'invoices.reference',
+                'invoices.name',
+                'invoices.surname',
+                'invoices.currency_type',
+                'invoices.amount',
+                'invoices.status',
+                'microsites.name as microsite_name'
+            )
             ->join('microsites', 'invoices.microsite_id', '=', 'microsites.id');
 
         if (in_array(Permissions::INVOICES_INDEX->value, $permissionsUser)) {
@@ -37,6 +47,8 @@ class InvoiceIndexViewModel extends ViewModel
                 $query->where('microsites.user_id', $this->user->id);
             } elseif (in_array(Roles::GUEST->value, $rolesUser)) {
                 $query->leftJoin('users', 'users.email', '=', 'invoices.email')
+                    ->where('invoices.document_type', $this->user->document_type)
+                    ->where('invoices.document', $this->user->document)
                     ->where('invoices.email', $this->user->email);
             }
         }
@@ -44,13 +56,10 @@ class InvoiceIndexViewModel extends ViewModel
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('invoices.reference', 'like', '%' . $search . '%')
+                    ->orWhere('microsites.name', 'like', '%' . $search . '%')
                     ->orWhere('invoices.name', 'like', '%' . $search . '%')
                     ->orWhere('invoices.surname', 'like', '%' . $search . '%')
-                    ->orWhere('invoices.email', 'like', '%' . $search . '%')
-                    ->orWhere('invoices.document_type', 'like', '%' . $search . '%')
-                    ->orWhere('invoices.document', 'like', '%' . $search . '%')
-                    ->orWhere('invoices.amount', 'like', '%' . $search . '%')
-                    ->orWhere('microsites.name', 'like', '%' . $search . '%');
+                    ->orWhere('invoices.amount', 'like', '%' . $search . '%');
             });
         }
 
@@ -82,8 +91,7 @@ class InvoiceIndexViewModel extends ViewModel
             if (in_array(Roles::ADMIN->value, $rolesUser)) {
                 $query->where('microsites.user_id', $this->user->id);
             } elseif (in_array(Roles::GUEST->value, $rolesUser)) {
-                $query->leftJoin('invoices', 'invoices.microsite_id', '=', 'microsites.id')
-                    ->where('invoices.email', $this->user->email);
+                return new LengthAwarePaginator([], 0, 5, 1);
             }
         }
 
