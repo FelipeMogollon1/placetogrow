@@ -39,11 +39,11 @@ const sortData = (key) => {
 
 const statusColors = {
     PENDING: 'yellow',
-    APPROVED: 'green',
-    REJECTED: 'red',
-    APPROVED_PARTIAL: 'cyan',
-    PARTIAL_EXPIRED: 'orange',
-    UNKNOWN: 'blue'
+    ACTIVE: 'green',
+    CANCELLED: 'red',
+    PAUSED: 'cyan',
+    REJECTED: 'orange',
+    EXPIRED: 'blue'
 };
 
 const typeMicrosite = {
@@ -124,7 +124,7 @@ const typeMicrosite = {
                                 <div class="text-gray-400 flex justify-center items-center space-x-2">
 
                                     <Link
-                                        v-if="can('subscriptions.edit') && item.status === 'APPROVED'" class="mx-1"
+                                        v-if="can('subscriptions.edit') && item.status === 'ACTIVE'" class="mx-1"
                                         :href="route('subscriptions.edit', item.id)"
                                         :title="$t('subscription.editSubscription')"
                                     >
@@ -138,7 +138,7 @@ const typeMicrosite = {
                                         <EyeIcon class="w-6 hover:text-gray-500"/>
                                     </Link>
                                     <Link
-                                        v-if="can('subscriptions.destroy') && item.status === 'APPROVED'" class="mx-1"
+                                        v-if="can('subscriptions.destroy') && item.status === 'ACTIVE'" class="mx-1"
                                         :href="route('subscriptions.destroy', item.id)"
                                         method="delete"
                                         as="button"

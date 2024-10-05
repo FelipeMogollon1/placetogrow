@@ -13,11 +13,11 @@ defineProps({
 
 const statusColors = {
     PENDING: 'yellow',
-    APPROVED: 'green',
-    REJECTED: 'red',
-    APPROVED_PARTIAL: 'cyan',
-    PARTIAL_EXPIRED: 'orange',
-    UNKNOWN: 'blue'
+    ACTIVE: 'green',
+    CANCELLED: 'red',
+    PAUSED: 'cyan',
+    REJECTED: 'orange',
+    EXPIRED: 'blue'
 };
 
 const formatDate = (dateString) => {
@@ -80,7 +80,6 @@ const formatDate = (dateString) => {
                                 <dd class="text-md leading-6 text-gray-700 font-semibold">{{ formatDate(subscription.created_at) }}</dd>
                             </div>
 
-                            <!-- Subscription Plan Info -->
                             <div v-if="subscription.subscription_plan.name !== null" class="px-4 py-3">
                                 <dt class="text-sm font-medium leading-6 text-gray-400">Plan de Suscripción:</dt>
                                 <dd class="text-md leading-6 text-gray-700 font-semibold">{{ subscription.subscription_plan.name }}</dd>
