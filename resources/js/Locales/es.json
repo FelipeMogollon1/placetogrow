@@ -196,6 +196,10 @@
     },
     "payment_status": {
         "PENDING" : "Pendiente",
+        "ACTIVE" : "Activo",
+        "CANCELLED" : "Cancelado",
+        "PAUSED" : "Pausado",
+        "EXPIRED" : "Expirado",
         "APPROVED" : "Aprobado",
         "REJECTED" : "Rechazado",
         "APPROVED_PARTIAL" : "Aprobado Parcialmente",
