@@ -12,13 +12,21 @@ defineProps({
     status: {
         type: String,
     },
+    documentTypes: {
+        type: Object,
+        default: () => {}
+    }
 });
 
 const user = usePage().props.auth.user;
+const documentTypes = usePage().props.documentTypes;
 
 const form = useForm({
     name: user.name,
     email: user.email,
+    surname: user.surname,
+    document_type: user.document_type,
+    document: user.document,
 });
 </script>
 
@@ -31,41 +39,80 @@ const form = useForm({
                 {{ $t('user.profile_information_additional') }}
             </p>
         </header>
-
         <form @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-6">
-            <div>
-                <InputLabel for="name" :value="$t('user.name')" />
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <InputLabel for="name" :value="$t('user.name')" />
+                    <TextInput
+                        id="name"
+                        type="text"
+                        class="mt-1 block w-full"
+                        v-model="form.name"
+                        required
+                        autofocus
+                        autocomplete="name"
+                    />
+                    <InputError class="mt-2" :message="form.errors.name" />
+                </div>
 
-                <TextInput
-                    id="name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.name"
-                    required
-                    autofocus
-                    autocomplete="name"
-                />
+                <div>
+                    <InputLabel for="surname" :value="$t('user.surname')" />
+                    <TextInput
+                        id="surname"
+                        type="text"
+                        class="mt-1 block w-full"
+                        v-model="form.surname"
+                        required
+                        autocomplete="surname"
+                        :placeholder="$t('user.name')"
+                    />
+                    <InputError class="mt-2" :message="form.errors.surname" />
+                </div>
 
-                <InputError class="mt-2" :message="form.errors.name" />
-            </div>
+                <div>
+                    <InputLabel for="document_type" :value="$t('microsites_table.document_type')" />
+                    <select
+                        name="document_type"
+                        id="document_type"
+                        class="w-full mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                        v-model="form.document_type"
+                    >
+                        <option value="">{{ $t('select') }}</option>
+                        <option v-for="(type, index) in documentTypes" :key="index" :value="type">{{ $t(`documentType.${type}`) }}</option>
+                    </select>
+                    <InputError class="mt-2" :message="form.errors.document_type" />
+                </div>
 
-            <div>
-                <InputLabel for="email" :value="$t('user.email')" />
+                <div>
+                    <InputLabel for="document" :value="$t('microsites_table.document')" />
+                    <TextInput
+                        id="document"
+                        type="text"
+                        class="mt-1 block w-full"
+                        v-model="form.document"
+                        required
+                        autocomplete="document"
+                        placeholder="1234567890"
+                    />
+                    <InputError class="mt-2" :message="form.errors.document" />
+                </div>
 
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autocomplete="username"
-                />
-
-                <InputError class="mt-2" :message="form.errors.email" />
+                <div class="col-span-2 ">
+                    <InputLabel for="email" :value="$t('user.email')" />
+                    <TextInput
+                        id="email"
+                        type="email"
+                        class="mt-1 block w-full"
+                        v-model="form.email"
+                        required
+                        autocomplete="username"
+                    />
+                    <InputError class="mt-2" :message="form.errors.email" />
+                </div>
             </div>
 
             <div v-if="mustVerifyEmail && user.email_verified_at === null">
-                <p class="text-sm mt-2 text-gray-800">
+                <p class="text-sm mt-2 text-gray-800 ">
                     Your email address is unverified.
                     <Link
                         :href="route('verification.send')"
@@ -76,7 +123,6 @@ const form = useForm({
                         Click here to re-send the verification email.
                     </Link>
                 </p>
-
                 <div
                     v-show="status === 'verification-link-sent'"
                     class="mt-2 font-medium text-sm text-green-600"
@@ -87,7 +133,6 @@ const form = useForm({
 
             <div class="flex items-center gap-4">
                 <PrimaryButton :disabled="form.processing">{{ $t('save') }}</PrimaryButton>
-
                 <Transition
                     enter-active-class="transition ease-in-out"
                     enter-from-class="opacity-0"
