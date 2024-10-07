@@ -11,10 +11,19 @@ class StoreSubscriptionAction
 {
     public function execute(array $data): bool | Subscription
     {
-        $subscriptionExists = Subscription::where('email', $data['email'])
-            ->where('document_type', $data['document_type'])
-            ->where('document', $data['document'])
-            ->where('status', SubscriptionStatus::ACTIVE->value)
+        $subscriptionExists = Subscription::select(
+            'subscriptions.id',
+            'subscriptions.email',
+            'subscriptions.document_type',
+            'subscriptions.document',
+            'subscriptions.status'
+        )
+            ->join('subscription_plans', 'subscriptions.subscription_plan_id', '=', 'subscription_plans.id')
+            ->where('subscriptions.email', $data['email'])
+            ->where('subscriptions.document_type', $data['document_type'])
+            ->where('subscriptions.document', $data['document'])
+            ->where('subscription_plans.id', $data['subscription_plan_id'])
+            ->where('subscriptions.status', SubscriptionStatus::ACTIVE->value)
             ->exists();
 
         if ($subscriptionExists) {
