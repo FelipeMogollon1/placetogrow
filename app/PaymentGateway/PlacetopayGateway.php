@@ -12,6 +12,7 @@ use App\Infrastructure\Persistence\Models\Payment;
 use App\Infrastructure\Persistence\Models\Subscription;
 use App\Infrastructure\Persistence\Models\SubscriptionPayment;
 use App\Infrastructure\Persistence\Models\SubscriptionPlan;
+use App\Jobs\Subscription\SolutionCollectSubscriptionJob;
 use Dnetix\Redirection\Message\RedirectInformation;
 use Dnetix\Redirection\Message\RedirectResponse;
 use Dnetix\Redirection\PlacetoPay;
@@ -257,26 +258,9 @@ class PlacetopayGateway implements PaymentGatewayContract
 
     public function collectSubscription(Subscription $subscription): RedirectInformation
     {
-        $subscriptionPlan = SubscriptionPlan::findOrFail($subscription->subscription_plan_id);
-
         try {
-            $requestData = [
-                'payer' => $this->getPayerData($subscription),
-                'payment' => [
-                    'reference' => $subscription->reference,
-                    'description' => $subscription->description,
-                    'amount' => [
-                        'currency' => $subscriptionPlan->currency,
-                        'total' => (int) ($subscriptionPlan->amount),
-                    ],
-                ],
-                'instrument' => [
-                    'token' => [
-                        'token' => Crypt::decrypt($subscription->token),
-                    ],
-                ]
-            ];
-
+            $subscriptionPlan = SubscriptionPlan::findOrFail($subscription->subscription_plan_id);
+            $requestData = $this->buildRequestData($subscription, $subscriptionPlan);
             $response = $this->placetoPay->collect($requestData);
             $this->updateCollectSubscriptionStatus($subscription, $subscriptionPlan, $response);
 
@@ -298,22 +282,133 @@ class PlacetopayGateway implements PaymentGatewayContract
             'subscription_plan_id' => $subscriptionPlan->id,
             'status' => $status,
             'request_id' => $response->requestId(),
+            'currency' => $response->request()->payment()->amount()->currency(),
+            'amount' => $response->request()->payment()->amount()->total(),
+            'attempt_count' => 0,
         ];
 
         if ($status === PaymentStatus::APPROVED->value) {
             $data = array_merge($data, [
-                'currency' => $response->request()->payment()->amount()->currency(),
-                'amount' => $response->request()->payment()->amount()->total(),
-                'attempt_count' => 0,
                 'paid_at' => $date,
             ]);
-        } else {
+        } elseif ($status === PaymentStatus::REJECTED->value) {
             $data = array_merge($data, [
-                'attempt_count' => 1,
                 'last_attempt_at' => $date,
                 'next_retry_at' => $date->copy()->addMinutes(5),
             ]);
         }
-        SubscriptionPayment::create($data);
+
+        $subscriptionPayment = SubscriptionPayment::create($data);
+
+        if ($status === PaymentStatus::REJECTED->value) {
+            SolutionCollectSubscriptionJob::dispatch($subscriptionPayment);
+        }
+
+    }
+
+    public function querySubscriptionCollect(SubscriptionPayment $subscriptionPayment): SubscriptionPayment
+    {
+        try {
+            Log::info('Iniciando consulta de colecta para la suscripción.', [
+                'subscription_payment_id' => $subscriptionPayment->id,
+            ]);
+
+            $subscriptionPlan = SubscriptionPlan::findOrFail($subscriptionPayment->subscription_plan_id);
+            Log::info('Plan de suscripción encontrado.', [
+                'subscription_plan_id' => $subscriptionPlan->id,
+                'amount' => $subscriptionPlan->amount,
+            ]);
+
+            $subscription = Subscription::findOrFail($subscriptionPayment->subscription_id);
+            Log::info('Suscripción encontrada.', [
+                'subscription_id' => $subscription->id,
+                'reference' => $subscription->reference,
+            ]);
+
+            $requestData = $this->buildRequestData($subscription, $subscriptionPlan);
+            Log::info('Datos de la solicitud preparados.', [
+                'request_data' => $requestData,
+            ]);
+
+            $response = $this->placetoPay->collect($requestData);
+            Log::info('Respuesta de PlaceToPay recibida.', [
+                'response' => $response,
+            ]);
+
+            if ($response->requestId()) {
+                Log::info('requestId recibido.', [
+                    'request_id' => $response->requestId(),
+                ]);
+
+                $date = Carbon::parse($response->status()->date());
+                $status = $response->status()->status();
+                Log::info('Estado de la transacción.', [
+                    'status' => $status,
+                    'date' => $date,
+                ]);
+
+                $data = [
+                    'request_id' => $response->requestId(),
+                    'attempt_count' => $subscriptionPayment->attempt_count + 1,
+                ];
+
+                if ($status === PaymentStatus::APPROVED->value) {
+                    Log::info('El pago fue aprobado.');
+                    $data = array_merge($data, [
+                        'status' => PaymentStatus::APPROVED->value,
+                        'paid_at' => $date,
+                    ]);
+                } elseif ($status === PaymentStatus::REJECTED->value) {
+                    Log::warning('El pago fue rechazado.');
+                    $data = array_merge($data, [
+                        'status' => PaymentStatus::PENDING->value,
+                        'last_attempt_at' => $date,
+                        'next_retry_at' => $date->copy()->addMinutes(5),
+                    ]);
+                }
+
+                $subscriptionPayment->update($data);
+                Log::info('Datos de la suscripción actualizados.', [
+                    'updated_data' => $data,
+                ]);
+
+                if ($status === PaymentStatus::REJECTED->value) {
+                    throw new GatewayException('Payment rejected. Retrying...');
+                }
+            } else {
+                Log::error('No se pudo obtener el requestId del collect de la subscripción');
+            }
+
+            return $subscriptionPayment;
+
+        } catch (Throwable $exception) {
+            Log::error('An error occurred while collecting subscription', [
+                'subscription_payment_id' => $subscriptionPayment->id,
+                'exception' => $exception->getMessage(),
+            ]);
+            report($exception);
+            throw new GatewayException($exception->getMessage());
+        }
+    }
+
+
+    protected function buildRequestData(Subscription $subscription, SubscriptionPlan $subscriptionPlan): array
+    {
+        return [
+            'payer' => $this->getPayerData($subscription),
+            'payment' => [
+                'reference' => $subscription->reference,
+                'description' => $subscription->description,
+                'amount' => [
+                    'currency' => $subscriptionPlan->currency,
+                    'total' => (int) $subscriptionPlan->amount,
+                ],
+            ],
+            'instrument' => [
+                'token' => [
+                    'token' => Crypt::decrypt($subscription->token),
+                ],
+            ]
+        ];
     }
 }
