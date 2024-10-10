@@ -5,6 +5,7 @@ namespace App\Infrastructure\Persistence\Models;
 use Database\Factories\FormFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Form extends Model
@@ -26,6 +27,10 @@ class Form extends Model
         'color',
         'additional_info',
         'expiration_additional_info',
+        'tries',
+        'backoff',
+        'additionalValue',
+        'additionalValueType'
     ];
 
     /**
@@ -37,7 +42,11 @@ class Form extends Model
         'configuration' => 'array',
         'header' => 'string',
         'footer' => 'string',
-        'color' => 'string'
+        'color' => 'string',
+        'tries' => 'integer',
+        'backoff' => 'integer',
+        'additionalValue' => 'integer',
+        'additionalValueType' => 'string',
     ];
 
     public function microsite(): HasOne
@@ -48,5 +57,9 @@ class Form extends Model
     protected static function newFactory(): FormFactory
     {
         return FormFactory::new();
+    }
+    public function form(): BelongsTo
+    {
+        return $this->belongsTo(Form::class);
     }
 }
