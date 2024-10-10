@@ -526,7 +526,7 @@ watch(() => liveExpirationInfo, (newValue) => {
                                                 <option value="">{{ $t('select') }}</option>
                                                 <option value="seconds">{{ $t('seconds') }}</option>
                                                 <option value="minutes">{{ $t('minutes') }}</option>
-                                                <option value="horas">{{ $t('horas') }}</option>
+                                                <option value="hours">{{ $t('hours') }}</option>
                                             </select>
                                         </div>
                                         <InputError class="mt-2 text-red-600" :message="form.errors.additionalValueType" />
