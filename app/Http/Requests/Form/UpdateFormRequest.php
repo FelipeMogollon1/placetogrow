@@ -4,6 +4,7 @@ namespace App\Http\Requests\Form;
 
 use App\Rules\Form\ValidateFormConfiguration;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateFormRequest extends FormRequest
 {
@@ -31,6 +32,28 @@ class UpdateFormRequest extends FormRequest
             'expiration_additional_info' => [
                 'nullable',
                 'string',
+            ],
+            'tries' => [
+                'required',
+                'integer',
+                'min:1',
+            ],
+            'backoff' => [
+                'required',
+                'integer',
+                'min:1',
+            ],
+            'additionalValue' => [
+                'nullable',
+                'integer',
+                'min:1',
+                'required_with:additionalValueType',
+            ],
+            'additionalValueType' => [
+                'nullable',
+                'string',
+                Rule::in(['fixedValue', 'percentage']),
+                'required_with:additionalValue',
             ],
         ];
     }
