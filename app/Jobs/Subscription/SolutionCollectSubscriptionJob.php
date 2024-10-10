@@ -25,13 +25,21 @@ class SolutionCollectSubscriptionJob implements ShouldQueue
     protected SubscriptionPayment $subscriptionPayment;
     protected PlacetopayGateway $paymentGateway;
 
-    public int $tries = 5;
-    // public int $backoff = 300;
-
     public function __construct(SubscriptionPayment $subscriptionPayment)
     {
         $this->paymentGateway = resolve(PaymentGatewayContract::class);
-        $this->subscriptionPayment = $subscriptionPayment;
+        $this->subscriptionPayment = $subscriptionPayment->load('subscription.microsite.form');
+
+    }
+
+    public function backoff(): int
+    {
+        return ($this->subscriptionPayment->subscription->microsite->form->backoff ?? 5) * 60;
+    }
+
+    public function tries(): int
+    {
+        return $this->subscriptionPayment->subscription->microsite->form->tries ?? 5;
 
     }
 
