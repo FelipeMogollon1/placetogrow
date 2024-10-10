@@ -2,13 +2,12 @@
 import {ref, reactive, watch, computed} from 'vue';
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import {PhotoIcon} from "@heroicons/vue/24/outline/index.js";
+import {PhotoIcon,PercentBadgeIcon,CurrencyDollarIcon} from "@heroicons/vue/24/outline/index.js";
 import { route } from 'ziggy-js';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import InputComponent from '@/Layouts/Organisms/InputComponent.vue';
 import SubscriptionView from "@/Layouts/Organisms/SubscriptionView.vue";
 import Index from "@/Pages/SubscriptionPlans/Index.vue";
-import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 
@@ -46,11 +45,31 @@ const initialValues = {
     additional_info: formConfig.additional_info ?? "",
     expiration_additional_info : formConfig.expiration_additional_info ?? "",
     colorDefault: formConfig.colorDefault ?? "",
-    configuration: formConfig.configuration
+    configuration: formConfig.configuration,
+    tries: formConfig.tries != null ? Number(formConfig.tries) : 5,
+    backoff: formConfig.backoff,
+    additionalValue: formConfig.additionalValue ?? "",
+    additionalValueType: formConfig.additionalValueType ?? "",
 }
 
 const form = useForm(initialValues)
 const formErrors = ref(form.errors);
+const backoffValue = ref(formConfig.backoff != null ? formConfig.backoff : 300);
+const selectedUnit = ref('seconds');
+
+watch([backoffValue, selectedUnit], ([newValue, unit]) => {
+    let convertedValue;
+
+    if (unit === 'seconds') {
+        convertedValue = newValue;
+    } else if (unit === 'minutes') {
+        convertedValue = newValue * 60;
+    } else if (unit === 'hours') {
+        convertedValue = newValue * 3600;
+    }
+
+    form.backoff = convertedValue;
+});
 
 const toggleFieldActive = (field) => {
     field.active = field.active === 'true' ? 'false' : 'true';
@@ -219,11 +238,13 @@ watch(() => liveExpirationInfo, (newValue) => {
                 </dl>
             </div>
         </main>
+
+
         <main v-if="microsite.microsite_type === 'subscription' " id="subscriptions" class="py-5">
 
             <index :periods="periods" :microsite="microsite" :subscriptionPlans="subscriptionPlans" :currency="constants.currencyTypes.value"/>
 
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ $t('subscription.Preview') }}</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight mt-6">{{ $t('subscription.Preview') }}</h2>
 
             <div class="flex justify-center items-center">
                 <div id="form" class="border border-1 container bg-white grid grid-cols-2 md:grid-cols-1 gap-4 sm:grid-cols-1 m-4 rounded-2xl shadow-lg">
@@ -280,28 +301,6 @@ watch(() => liveExpirationInfo, (newValue) => {
                             </li>
                         </ul>
 
-                        <div>
-                            <h2 class="text-lg font-semibold text-gray-900 my-4">{{ $t('subscription.additional_info') }}</h2>
-                            <TextInput
-                                id="additional_info"
-                                type="text"
-                                class="mt-1 block w-full border border-gray-300 rounded-md focus:ring-gray-500 focus:border-gray-500"
-                                v-model="form.additional_info"
-                                :placeholder="$t('subscription.additional_info')"
-                            />
-                            <InputError class="mt-2 text-red-600" :message="form.errors.additional_info" />
-
-                            <h2 class="text-lg font-semibold text-gray-900 my-4">{{ $t('subscription.expiration_additional_info') }}</h2>
-                            <TextInput
-                                id="expiration_additional_info"
-                                type="text"
-                                class="mt-1 block w-full border border-gray-300 rounded-md focus:ring-gray-500 focus:border-gray-500"
-                                v-model="form.expiration_additional_info"
-                                :placeholder="$t('subscription.expiration_additional_info')"
-                            />
-                            <InputError class="mt-2 text-red-600" :message="form.errors.expiration_additional_info" />
-                        </div>
-
                     </div>
 
                     <div class="flex justify-center pt-4">
@@ -351,9 +350,9 @@ watch(() => liveExpirationInfo, (newValue) => {
                         </div>
                     </div>
                     <div class="col-span-2 flex">
-                        <div class="text-md pb-2">
-                             {{ $t('form.additional_information') }}
-                        </div>
+                        <p class="text-center mb-6" >
+                            {{ form.additional_info }}
+                        </p>
                     </div>
 
                     <template v-for="field in form.configuration.fields" :key="field.name">
@@ -379,7 +378,9 @@ watch(() => liveExpirationInfo, (newValue) => {
                             {{ $t('form.start_payment') }}
                         </PrimaryButton>
                     </div>
-
+                    <p :class="['text-sm text-center mt-6 text-gray-500 col-span-2']">
+                        *{{ form.expiration_additional_info  }}
+                    </p>
                     <div class="col-span-2 flex items-center justify-center w-full">
                         <label for="dropzone-footer" class="flex flex-col items-center justify-center w-full h-40 border-2 border-orange-300 border-dashed rounded-lg cursor-pointer bg-orange-50 hover:bg-orange-50 hover:border-orange-500">
                             <div v-if="selectedFooterImage" class="flex items-center justify-center w-full h-full">
@@ -450,6 +451,133 @@ watch(() => liveExpirationInfo, (newValue) => {
                         <PrimaryButton @click="submit">
                             {{ $t('save') }}
                         </PrimaryButton>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <main>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight mt-6">{{ $t('form.Settings') }} {{ $t(`micrositeTypes.${microsite.microsite_type}`) }}</h2>
+            <div>
+                <div class="py-5">
+                    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                        <div class="bg-white overflow-hidden border border-gray-100 sm:rounded-lg shadow-2xl">
+                            <div class="p-6 text-gray-900">
+
+                                <div class="grid grid-cols-3  gap-6">
+                                    <div class="col-span-3">
+                                        <h2 class="text-lg font-semibold text-gray-900 ">{{ $t('subscription.additional_info') }}</h2>
+                                        <TextInput
+                                            id="additional_info"
+                                            type="text"
+                                            class="mt-1 block w-full border border-gray-300 rounded-md focus:ring-gray-500 focus:border-gray-500"
+                                            v-model="form.additional_info"
+                                            :placeholder="$t('subscription.additional_info')"
+                                        />
+                                        <InputError class="mt-2 text-red-600" :message="form.errors.additional_info" />
+                                    </div>
+
+                                    <div class="col-span-3">
+                                        <h2 class="text-lg font-semibold text-gray-900">{{ $t('subscription.expiration_additional_info') }}</h2>
+                                        <TextInput
+                                            id="expiration_additional_info"
+                                            type="text"
+                                            class="mt-1 block w-full border border-gray-300 rounded-md focus:ring-gray-500 focus:border-gray-500"
+                                            v-model="form.expiration_additional_info"
+                                            :placeholder="$t('subscription.expiration_additional_info')"
+                                        />
+                                        <InputError class="mt-2 text-red-600" :message="form.errors.expiration_additional_info" />
+                                    </div>
+
+                                    <hr class="col-span-3 mt-4">
+                                    <div v-if="microsite.microsite_type === 'subscription'" class="col-span-3">
+                                        {{ $t('fails') }}
+                                        <span class="font-bold">{{ form.tries }}</span>
+                                        {{ $t('timeInterval') }}
+                                        <span class="font-bold">{{ backoffValue }}</span>
+                                        {{$t(selectedUnit)}}.
+                                    </div>
+
+                                    <div v-if="microsite.microsite_type === 'subscription'">
+                                        <h2 class="text-lg font-semibold text-gray-900 ">{{ $t('subscription.tries') }}</h2>
+                                        <TextInput
+                                            id="tries"
+                                            type="number"
+                                            class="mt-1 block w-full border border-gray-300 rounded-md focus:ring-gray-500 focus:border-gray-500"
+                                            v-model="form.tries"
+                                            :placeholder="$t('subscription.tries')"
+                                        />
+                                        <InputError class="mt-2 text-red-600" :message="form.errors.tries" />
+                                    </div>
+
+                                    <div v-if="microsite.microsite_type === 'subscription'">
+                                        <h2 class="text-lg font-semibold text-gray-900 ">{{ $t('subscription.backoff') }} {{$t(selectedUnit)}}</h2>
+
+                                        <div class="flex items-center space-x-2">
+                                            <input
+                                                id="backoff"
+                                                type="number"
+                                                class="mt-1 block w-full border border-gray-300 rounded-md focus:ring-gray-500 focus:border-gray-500"
+                                                v-model="backoffValue"
+                                                :placeholder="$t('form.number')"
+                                            />
+
+                                            <select v-model="selectedUnit" class="mt-1 block w-full border border-gray-300 rounded-md focus:border-gray-500 focus:ring-gray-500">
+                                                <option value="">{{ $t('select') }}</option>
+                                                <option value="seconds">{{ $t('seconds') }}</option>
+                                                <option value="minutes">{{ $t('minutes') }}</option>
+                                                <option value="hours">{{ $t('hours') }}</option>
+                                            </select>
+                                        </div>
+                                        <InputError class="mt-2 text-red-600" :message="form.errors.additionalValueType" />
+                                    </div>
+
+
+                                    <div v-if="microsite.microsite_type === 'invoice'" class="col-span-2">
+                                        <h2 class="text-lg font-semibold text-gray-900">{{
+                                                $t('form.additionalValue')
+                                            }}</h2>
+
+                                        <div class="flex items-center space-x-4">
+                                            <div class="relative w-full">
+                                                <input
+                                                    v-model="form.additionalValue"
+                                                    type="number"
+                                                    :placeholder="$t('form.additionalValue')"
+                                                    :class="['mt-1 block w-full border rounded-md pl-12 pr-4']"
+                                                />
+                                                <span v-if="form.additionalValueType === 'percentage'"
+                                                      class="absolute left-3 top-2.5">
+                                                    <PercentBadgeIcon class="w-7 text-gray-400 hover:text-gray-600"/>
+                                                </span>
+                                                <span v-if="form.additionalValueType === 'fixedValue'"
+                                                      class="absolute left-3 top-2.5">
+                                                    <CurrencyDollarIcon class="w-7 text-gray-400 hover:text-gray-600"/>
+                                                </span>
+                                            </div>
+
+                                            <select
+                                                v-model="form.additionalValueType"
+                                                :class="['mt-1 block w-full border rounded-md']"
+                                            >
+                                                <option value="">{{ $t('select') }}</option>
+                                                <option value="fixedValue">{{ $t('form.fixedValue') }}</option>
+                                                <option value="percentage">{{ $t('form.percentage') }}</option>
+                                            </select>
+                                        </div>
+
+                                        <InputError class="mt-2 text-red-600" :message="form.errors.additionalValueType" />
+                                        <InputError class="mt-2 text-red-600" :message="form.errors.additionalValue" />
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-center pt-4 sm:col-span-2">
+                                    <PrimaryButton @click="submit">
+                                        {{ $t('save') }}
+                                    </PrimaryButton>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Subscription;
 
 use App\Constants\Abilities;
+use App\Constants\PaymentStatus;
 use App\Constants\SubscriptionStatus;
 use App\Contracts\PaymentGatewayContract;
 use App\Domain\Subscription\Actions\DestroySubscriptionAction;
@@ -13,6 +14,7 @@ use App\Http\Requests\Subscription\StoreSubscriptionRequest;
 use App\Http\Requests\Subscription\UpdateSubscriptionRequest;
 use App\Infrastructure\Persistence\Models\Microsite;
 use App\Infrastructure\Persistence\Models\Subscription;
+use App\Infrastructure\Persistence\Models\SubscriptionPayment;
 use App\Infrastructure\Persistence\Models\SubscriptionPlan;
 use App\ViewModels\Subscription\SubscriptionIndexViewModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -30,8 +32,7 @@ class SubscriptionController extends Controller
         $search = Request::only(['search']);
 
         return Inertia::render('Subscriptions/Index', [
-            'subscriptions' => $viewModel
-                ->fromAuthenticatedUser()->getSubscriptions($search),
+            'subscriptions' => $viewModel->fromAuthenticatedUser()->getSubscriptions($search),
             'filter' => $search ?? '',
         ]);
     }
@@ -51,19 +52,30 @@ class SubscriptionController extends Controller
 
     public function returnSubscription(Subscription $subscription, PaymentGatewayContract $gatewayContract): Response
     {
-        $microsite = Microsite::query()->where('id', $subscription->microsite_id)->first();
-        $subscriptionPlans = SubscriptionPlan::all();
+        $microsite = Microsite::find($subscription->microsite_id);
+        $subscriptionPlans = SubscriptionPlan::where('id', $subscription->subscription_plan_id)->get();
+
         $gatewayContract->querySubscription($subscription);
 
         if ($subscription->status === SubscriptionStatus::ACTIVE->value) {
-            $gatewayContract->collectSubscription($subscription);
+
+            $subscriptionPaymentExists = SubscriptionPayment::where('subscription_id', $subscription->id)
+                ->where('status', PaymentStatus::APPROVED->value)
+                ->where('subscription_plan_id', $subscription->subscription_plan_id)
+                ->where(function ($query) {
+                    $query->whereNotNull('request_id')->orWhere('request_id', '!=', '');
+                })
+                ->exists();
+
+            if (!$subscriptionPaymentExists) {
+                $gatewayContract->collectSubscription($subscription);
+            }
         }
 
         return Inertia::render('Subscriptions/ReturnSubscription', [
             'subscription' => $subscription,
             'microsite' => $microsite,
-            'subscriptionPlans' => $subscriptionPlans
-
+            'subscriptionPlans' => $subscriptionPlans,
         ]);
     }
 
@@ -73,7 +85,24 @@ class SubscriptionController extends Controller
         $subscription = Subscription::with(['subscriptionPlan', 'microsite'])
             ->where('id', $id)->firstOrFail();
 
-        return Inertia::render('Subscriptions/Show', compact('subscription'));
+        $subscriptionPayments = SubscriptionPayment::select(
+            'subscription_payments.id',
+            'subscription_plans.name as plan',
+            'subscription_payments.amount as amount',
+            'subscription_payments.status as status',
+            'subscription_payments.attempt_count as attempt_count',
+            'subscription_payments.paid_at as paid_at',
+            'subscription_payments.request_id as request_id'
+        )
+            ->join('subscriptions', 'subscription_payments.subscription_id', '=', 'subscriptions.id')
+            ->join('subscription_plans', 'subscriptions.subscription_plan_id', '=', 'subscription_plans.id')
+            ->join('microsites', 'subscriptions.microsite_id', '=', 'microsites.id')
+            ->where('subscription_payments.subscription_id', $id)
+            ->paginate(10);
+
+
+
+        return Inertia::render('Subscriptions/Show', compact('subscription', 'subscriptionPayments'));
     }
 
     public function edit(string $id): Response

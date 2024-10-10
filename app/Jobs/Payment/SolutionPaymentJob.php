@@ -1,44 +1,43 @@
 <?php
 
-namespace App\Jobs;
+namespace App\Jobs\Payment;
 
 use App\Constants\PaymentStatus;
 use App\Contracts\PaymentGatewayContract;
-use App\Infrastructure\Persistence\Models\Subscription;
+use App\Infrastructure\Persistence\Models\Payment;
 use App\PaymentGateway\PlacetopayGateway;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class SolutionSubscriptionJob implements ShouldQueue
+class SolutionPaymentJob implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
 
-
-    protected Subscription $subscription;
+    protected Payment $payment;
     protected PlacetopayGateway $paymentGateway;
 
     public int $tries = 5;
-    public function __construct(Subscription $subscription)
+
+    public function __construct(Payment $payment)
     {
         $this->paymentGateway = resolve(PaymentGatewayContract::class);
-        $this->subscription = $subscription;
+        $this->payment = $payment;
     }
-
 
     public function handle(): void
     {
-        $this->paymentGateway->querySubscription($this->subscription);
+        $this->paymentGateway->queryPayment($this->payment);
     }
 
     public function failed(\Exception $exception): void
     {
-        $this->subscription->status = PaymentStatus::REJECTED->value;
-        $this->subscription->save();
+        $this->payment->status = PaymentStatus::REJECTED->value;
+        $this->payment->save();
     }
 }

@@ -13,11 +13,14 @@ class SubscriptionPayment extends Model
     protected $fillable = [
         'subscription_id',
         'subscription_plan_id',
-        'amount',
         'status',
+        'currency',
+        'amount',
         'attempt_count',
         'last_attempt_at',
         'next_retry_at',
+        'request_id',
+        'paid_at',
     ];
 
     public function subscription(): BelongsTo

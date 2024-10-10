@@ -76,10 +76,15 @@
         "purple": "Purple",
         "fuchsia": "Fuchsia",
         "pink": "Pink",
-        "rose": "Rose",
-        "white": "White"
+        "rose": "Light pink",
+        "white": "White",
+        "Settings": "Settings",
+        "additionalValue": "Additional value for late payment",
+        "additionalValueType": "Additional value type",
+        "fixedValue": "Fixed value",
+        "percentage": "Percentage",
+        "number": "Number"
     },
-
     "forgot_your_password": "Forgot your password?",
     "home": "Home",
     "language": {
@@ -368,8 +373,14 @@
         "edit_subscription" : "Edit Subscription Plan",
         "continue" : "Continue",
         "changePlan": "Change Plan",
-        "paymentMethod": "Current Payment Method",
-        "creditCard": "Credit Card"
+        "paymentMethod": "Current payment method",
+        "creditCard": "Credit Card",
+        "request_id": "Request ID",
+        "plan": "Plan",
+        "attempt_count": "Attempts",
+        "paid_at": "Paid at",
+        "tries": "Number of attempts",
+        "backoff": "Intervals at"
     },
     "invoices": {
         "title" : "Invoices",
@@ -418,5 +429,10 @@
     "check_your_email": "Check your email for the reset link password.",
     "confirm_password": "Confirm Password",
     "your_password_has_been_reset": "Your password has been reset!",
-    "if_you_did_not_request_a_password_reset": "If you did not request a password reset, you will not have any problems. You can continue using our app without any problems."
+    "if_you_did_not_request_a_password_reset": "If you did not request a password reset, you will not have any problems. You can continue using our application without problems.",
+    "seconds": "seconds",
+    "minutes": "minutes",
+    "hours": "hours",
+    "fails": "If the subscription charge fails, it can be retried up to",
+    "timeInterval": "times with an interval of"
 }

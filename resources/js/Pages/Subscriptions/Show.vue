@@ -3,9 +3,15 @@ import {Head, Link, usePage} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import SpanForm from "@/Layouts/Atoms/SpanForm.vue";
 import {route} from "ziggy-js";
+import PaymentTable from "@/Layouts/Organisms/PaymentTable.vue";
+import SubscriptionPaymentTable from "@/Layouts/Organisms/SubscriptionPaymentTable.vue";
 
 defineProps({
     subscription: {
+        type: Object,
+        default: () => []
+    },
+    subscriptionPayments: {
         type: Object,
         default: () => []
     }
@@ -33,6 +39,8 @@ const formatDate = (dateString) => {
     });
 };
 
+const headers = ["request_id","plan","amount","status","attempt_count","paid_at"];
+
 
 </script>
 
@@ -54,7 +62,6 @@ const formatDate = (dateString) => {
                     <div class="mt-6 border-t border-gray-100">
                         <dl class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
 
-                            <!-- Subscription Info -->
                             <div v-if="subscription.reference !== null" class="px-4 py-3">
                                 <dt class="text-sm font-medium leading-6 text-gray-400">Referencia de la subscripción:</dt>
                                 <dd class="text-md leading-6 text-gray-700 font-semibold">{{ subscription.reference }}</dd>
@@ -120,7 +127,9 @@ const formatDate = (dateString) => {
                     </div>
                 </div>
             </main>
-
+            <main v-if="subscriptionPayments.data.length > 0">
+                <SubscriptionPaymentTable :data="subscriptionPayments.data" :paginator="subscriptionPayments" :headers="headers" />
+            </main>
         </AuthenticatedLayout>
 </template>
 

@@ -77,9 +77,14 @@
         "fuchsia": "Fucsia",
         "pink": "Rosa",
         "rose": "Rosa claro",
-        "white": "Blanco"
+        "white": "Blanco",
+        "Settings": "Configuración de la",
+        "additionalValue": "Valor adicional por mora",
+        "additionalValueType": "Tipo de valor adicional",
+        "fixedValue": "Valor fijo",
+        "percentage": "Porcentaje",
+        "number": "Número"
     },
-
     "forgot_your_password": "¿Ha olvidado su contraseña?",
     "home": "Inicio",
     "language": {
@@ -369,7 +374,13 @@
         "continue" : "Continuar",
         "changePlan": "Cambiar de plan",
         "paymentMethod": "Método de pago actual",
-        "creditCard": "Tarjeta de credito"
+        "creditCard": "Tarjeta de credito",
+        "request_id": "ID de solicitud",
+        "plan": "Plan",
+        "attempt_count": "Intentos",
+        "paid_at": "Pagado en",
+        "tries": "Número de intentos",
+        "backoff": "Intervalos en"
     },
     "invoices": {
         "title" : "Facturas",
@@ -418,5 +429,10 @@
     "check_your_email": "Revisa tu correo electrónico para encontrar el enlace de restablecimiento de contraseña.",
     "confirm_password": "Confirmar contraseña",
     "your_password_has_been_reset": "Tu contraseña ha sido restablecida!",
-    "if_you_did_not_request_a_password_reset": "Si no solicitaste un restablecimiento de contraseña, no tendrás ningún problema. Puedes continuar usando nuestra aplicación sin problemas."
+    "if_you_did_not_request_a_password_reset": "Si no solicitaste un restablecimiento de contraseña, no tendrás ningún problema. Puedes continuar usando nuestra aplicación sin problemas.",
+    "seconds": "segundos",
+    "minutes": "minutos",
+    "hours": "horas",
+    "fails": "Si el cobro de suscripción falla, se podrá reintentar hasta",
+    "timeInterval": "veces con un intervalo de"
 }

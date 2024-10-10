@@ -7,11 +7,11 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ImportInvoice\InvoiceController;
 use App\Http\Controllers\ImportInvoice\InvoiceUploadController;
 use App\Http\Controllers\Payment\PaymentController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\Roles\RoleController;
 use App\Http\Controllers\Subscription\SubscriptionController;
+use App\Http\Controllers\SubscriptionPayment\SubscriptionPaymentController;
 use App\Http\Controllers\SubscriptionPlan\SubscriptionPlanController;
-use App\Infrastructure\Persistence\Models\Invoice;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -41,6 +41,7 @@ Route::group(['middleware' => 'auth', 'verified'], function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::resource('/subscriptionsPlan', SubscriptionPlanController::class);
+    Route::resource('/subscriptionPayments', SubscriptionPaymentController::class);
     Route::resource('/invoices', InvoiceController::class);
     Route::resource('/invoicesUpload', InvoiceUploadController::class);
     Route::post('/invoices', [InvoiceController::class, 'import'])->name('invoices.import');
