@@ -25,16 +25,21 @@ use Throwable;
 
 class PlacetopayGateway implements PaymentGatewayContract
 {
-    protected $placetoPay;
+    protected placetoPay $placetoPay;
 
     public function __construct(array $settings)
     {
-        $this->placetoPay = $this->getPaymentPlacetoPay($settings);
+        $this->connection($settings);
     }
 
     public function connection(array $settings): self
     {
-        $this->placetoPay = $this->getPaymentPlacetoPay($settings);
+        $this->placetoPay = new PlacetoPay([
+            'login' => $settings['login'],
+            'tranKey' => $settings['tranKey'],
+            'baseUrl' => $settings['baseUrl'],
+            'timeout' => $settings['timeout'] ?? 10,
+        ]);
         return $this;
     }
 
@@ -63,7 +68,6 @@ class PlacetopayGateway implements PaymentGatewayContract
             throw new GatewayException($exception->getMessage());
         }
     }
-
     public function createSessionSubscription(Subscription $subscription, Request $request): RedirectResponse
     {
         $microsite = Microsite::findOrFail($subscription->microsite_id);
@@ -82,7 +86,6 @@ class PlacetopayGateway implements PaymentGatewayContract
             ];
 
             $response = $this->placetoPay->request($requestData);
-
             $this->updateSubscriptionStatus($subscription, $response);
             return $response;
 
@@ -92,7 +95,6 @@ class PlacetopayGateway implements PaymentGatewayContract
             throw new GatewayException($exception->getMessage());
         }
     }
-
     public function createSessionInvoice(Invoice $invoice, Request $request): RedirectResponse
     {
         $microsite = Microsite::findOrFail($invoice->microsite_id);
@@ -117,6 +119,18 @@ class PlacetopayGateway implements PaymentGatewayContract
             Log::error('An error occurred while creating the bill invoice session', ['exception' => $exception->getMessage()]);
             throw new GatewayException($exception->getMessage());
         }
+    }
+    protected function updateStatus($entity, RedirectResponse $response): void
+    {
+        if ($response->isSuccessful()) {
+            $entity->status = PaymentStatus::PENDING->value;
+            $entity->process_identifier = $response->processUrl();
+            $entity->request_id = $response->requestId();
+        } else {
+            $entity->status = PaymentStatus::REJECTED->value;
+        }
+
+        $entity->save();
     }
 
     public function queryPayment(Payment $payment): Payment
@@ -195,16 +209,65 @@ class PlacetopayGateway implements PaymentGatewayContract
         return $invoice;
     }
 
-    public function getPaymentPlacetoPay(array $settings): PlacetoPay
+    public function querySubscriptionCollect(SubscriptionPayment $subscriptionPayment): SubscriptionPayment
     {
-        return new PlacetoPay([
-            'login' => $settings['login'],
-            'tranKey' => $settings['tranKey'],
-            'baseUrl' => $settings['baseUrl'],
-            'timeout' => $settings['timeout'] ?? 10,
-        ]);
-    }
+        try {
+            Log::info('Starting subscription collect query.', [
+                'subscription_payment_id' => $subscriptionPayment->id,
+            ]);
 
+            $subscriptionPlan = SubscriptionPlan::findOrFail($subscriptionPayment->subscription_plan_id);
+            $subscription = Subscription::findOrFail($subscriptionPayment->subscription_id);
+            $requestData = $this->buildRequestData($subscription, $subscriptionPlan);
+            $response = $this->placetoPay->collect($requestData);
+            $this->updateSubscription($subscription, $response, $subscriptionPlan);
+
+            if ($response->requestId()) {
+                Log::info('Received requestId from collect.', [
+                    'request_id' => $response->requestId(),
+                ]);
+
+                $date = Carbon::parse($response->status()->date());
+                $status = $response->status()->status();
+
+                $data = [
+                    'request_id' => $response->requestId(),
+                    'attempt_count' => $subscriptionPayment->attempt_count + 1,
+                ];
+
+                if ($status === PaymentStatus::APPROVED->value) {
+                    Log::info('Payment approved.');
+                    $data = array_merge($data, [
+                        'status' => PaymentStatus::APPROVED->value,
+                        'paid_at' => $date,
+                    ]);
+                } elseif ($status === PaymentStatus::REJECTED->value) {
+                    Log::warning('Payment rejected.');
+                    $data = array_merge($data, [
+                        'status' => PaymentStatus::PENDING->value,
+                        'paid_at' => null,
+                    ]);
+                }
+                $subscriptionPayment->update($data);
+
+                if ($status === PaymentStatus::REJECTED->value) {
+                    throw new GatewayException('Payment rejected. Retrying...');
+                }
+            } else {
+                Log::error('Failed to retrieve requestId from subscription collect.');
+            }
+
+            return $subscriptionPayment;
+
+        } catch (Throwable $exception) {
+            Log::error('An error occurred during subscription collect.', [
+                'subscription_payment_id' => $subscriptionPayment->id,
+                'exception' => $exception->getMessage(),
+            ]);
+            report($exception);
+            throw new GatewayException($exception->getMessage());
+        }
+    }
     protected function getPayerData($entity): array
     {
         return array_filter([
@@ -217,7 +280,6 @@ class PlacetopayGateway implements PaymentGatewayContract
             'mobile' => $entity->mobile ?? $entity->payer_phone,
         ]);
     }
-
     protected function getPaymentData($entity): array
     {
         return array_filter([
@@ -230,19 +292,6 @@ class PlacetopayGateway implements PaymentGatewayContract
         ]);
     }
 
-    protected function updateStatus($entity, RedirectResponse $response): void
-    {
-        if ($response->isSuccessful()) {
-            $entity->status = PaymentStatus::PENDING->value;
-            $entity->process_identifier = $response->processUrl();
-            $entity->request_id = $response->requestId();
-        } else {
-            $entity->status = PaymentStatus::REJECTED->value;
-        }
-
-        $entity->save();
-    }
-
     protected function updateSubscriptionStatus($entity, RedirectResponse $response): void
     {
         if ($response->isSuccessful()) {
@@ -252,7 +301,6 @@ class PlacetopayGateway implements PaymentGatewayContract
         } else {
             $entity->status = SubscriptionStatus::REJECTED->value;
         }
-
         $entity->save();
     }
 
@@ -293,6 +341,7 @@ class PlacetopayGateway implements PaymentGatewayContract
         }
 
     }
+
     protected function updateCollectSubscriptionStatus($subscription, $subscriptionPlan, $response): void
     {
         $date = Carbon::parse($response->status()->date());
@@ -322,72 +371,7 @@ class PlacetopayGateway implements PaymentGatewayContract
         if ($status === PaymentStatus::REJECTED->value) {
             SolutionCollectSubscriptionJob::dispatch($subscriptionPayment);
         }
-
     }
-
-    public function querySubscriptionCollect(SubscriptionPayment $subscriptionPayment): SubscriptionPayment
-    {
-        try {
-            Log::info('Starting subscription collect query.', [
-                'subscription_payment_id' => $subscriptionPayment->id,
-            ]);
-
-            $subscriptionPlan = SubscriptionPlan::findOrFail($subscriptionPayment->subscription_plan_id);
-            $subscription = Subscription::findOrFail($subscriptionPayment->subscription_id);
-
-            $requestData = $this->buildRequestData($subscription, $subscriptionPlan);
-            $response = $this->placetoPay->collect($requestData);
-            $this->updateSubscription($subscription, $response, $subscriptionPlan);
-
-            if ($response->requestId()) {
-                Log::info('Received requestId from collect.', [
-                    'request_id' => $response->requestId(),
-                ]);
-
-                $date = Carbon::parse($response->status()->date());
-                $status = $response->status()->status();
-
-                $data = [
-                    'request_id' => $response->requestId(),
-                    'attempt_count' => $subscriptionPayment->attempt_count + 1,
-                ];
-
-                if ($status === PaymentStatus::APPROVED->value) {
-                    Log::info('Payment approved.');
-                    $data = array_merge($data, [
-                        'status' => PaymentStatus::APPROVED->value,
-                        'paid_at' => $date,
-                    ]);
-                } elseif ($status === PaymentStatus::REJECTED->value) {
-                    Log::warning('Payment rejected.');
-                    $data = array_merge($data, [
-                        'status' => PaymentStatus::PENDING->value,
-                        'paid_at' => null,
-                    ]);
-                }
-
-                $subscriptionPayment->update($data);
-
-
-                if ($status === PaymentStatus::REJECTED->value) {
-                    throw new GatewayException('Payment rejected. Retrying...');
-                }
-            } else {
-                Log::error('Failed to retrieve requestId from subscription collect.');
-            }
-
-            return $subscriptionPayment;
-
-        } catch (Throwable $exception) {
-            Log::error('An error occurred during subscription collect.', [
-                'subscription_payment_id' => $subscriptionPayment->id,
-                'exception' => $exception->getMessage(),
-            ]);
-            report($exception);
-            throw new GatewayException($exception->getMessage());
-        }
-    }
-
 
     protected function buildRequestData(Subscription $subscription, SubscriptionPlan $subscriptionPlan): array
     {
@@ -419,5 +403,4 @@ class PlacetopayGateway implements PaymentGatewayContract
             default => throw new \Exception("Invalid subscription period: $period"),
         };
     }
-
 }
