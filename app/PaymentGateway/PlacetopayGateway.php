@@ -263,6 +263,7 @@ class PlacetopayGateway implements PaymentGatewayContract
             $requestData = $this->buildRequestData($subscription, $subscriptionPlan);
             $response = $this->placetoPay->collect($requestData);
             $this->updateCollectSubscriptionStatus($subscription, $subscriptionPlan, $response);
+            $this->updateSubscription($subscription, $response, $subscriptionPlan);
 
             return $response;
 
@@ -273,6 +274,25 @@ class PlacetopayGateway implements PaymentGatewayContract
         }
     }
 
+    /**
+     * @throws \Exception
+     */
+    protected function updateSubscription($subscription, $response, $subscriptionPlan): void
+    {
+        $date = Carbon::parse($response->status()->date());
+        $status = $response->status()->status();
+        $period = $subscriptionPlan->subscription_period;
+
+        if ($status === PaymentStatus::APPROVED->value) {
+            $nextBillingDate = $this->calculateNextBillingDate($date, $period);
+
+            $subscription->update([
+                'next_billing_date' => $nextBillingDate,
+                'total_charges' => $subscription->total_charges + 1,
+            ]);
+        }
+
+    }
     protected function updateCollectSubscriptionStatus($subscription, $subscriptionPlan, $response): void
     {
         $date = Carbon::parse($response->status()->date());
@@ -309,43 +329,24 @@ class PlacetopayGateway implements PaymentGatewayContract
     public function querySubscriptionCollect(SubscriptionPayment $subscriptionPayment): SubscriptionPayment
     {
         try {
-            Log::info('Iniciando consulta de colecta para la suscripción.', [
+            Log::info('Starting subscription collect query.', [
                 'subscription_payment_id' => $subscriptionPayment->id,
             ]);
 
             $subscriptionPlan = SubscriptionPlan::findOrFail($subscriptionPayment->subscription_plan_id);
-            Log::info('Plan de suscripción encontrado.', [
-                'subscription_plan_id' => $subscriptionPlan->id,
-                'amount' => $subscriptionPlan->amount,
-            ]);
-
             $subscription = Subscription::findOrFail($subscriptionPayment->subscription_id);
-            Log::info('Suscripción encontrada.', [
-                'subscription_id' => $subscription->id,
-                'reference' => $subscription->reference,
-            ]);
 
             $requestData = $this->buildRequestData($subscription, $subscriptionPlan);
-            Log::info('Datos de la solicitud preparados.', [
-                'request_data' => $requestData,
-            ]);
-
             $response = $this->placetoPay->collect($requestData);
-            Log::info('Respuesta de PlaceToPay recibida.', [
-                'response' => $response,
-            ]);
+            $this->updateSubscription($subscription, $response, $subscriptionPlan);
 
             if ($response->requestId()) {
-                Log::info('requestId recibido.', [
+                Log::info('Received requestId from collect.', [
                     'request_id' => $response->requestId(),
                 ]);
 
                 $date = Carbon::parse($response->status()->date());
                 $status = $response->status()->status();
-                Log::info('Estado de la transacción.', [
-                    'status' => $status,
-                    'date' => $date,
-                ]);
 
                 $data = [
                     'request_id' => $response->requestId(),
@@ -353,13 +354,13 @@ class PlacetopayGateway implements PaymentGatewayContract
                 ];
 
                 if ($status === PaymentStatus::APPROVED->value) {
-                    Log::info('El pago fue aprobado.');
+                    Log::info('Payment approved.');
                     $data = array_merge($data, [
                         'status' => PaymentStatus::APPROVED->value,
                         'paid_at' => $date,
                     ]);
                 } elseif ($status === PaymentStatus::REJECTED->value) {
-                    Log::warning('El pago fue rechazado.');
+                    Log::warning('Payment rejected.');
                     $data = array_merge($data, [
                         'status' => PaymentStatus::PENDING->value,
                         'last_attempt_at' => $date,
@@ -368,21 +369,19 @@ class PlacetopayGateway implements PaymentGatewayContract
                 }
 
                 $subscriptionPayment->update($data);
-                Log::info('Datos de la suscripción actualizados.', [
-                    'updated_data' => $data,
-                ]);
+
 
                 if ($status === PaymentStatus::REJECTED->value) {
                     throw new GatewayException('Payment rejected. Retrying...');
                 }
             } else {
-                Log::error('No se pudo obtener el requestId del collect de la subscripción');
+                Log::error('Failed to retrieve requestId from subscription collect.');
             }
 
             return $subscriptionPayment;
 
         } catch (Throwable $exception) {
-            Log::error('An error occurred while collecting subscription', [
+            Log::error('An error occurred during subscription collect.', [
                 'subscription_payment_id' => $subscriptionPayment->id,
                 'exception' => $exception->getMessage(),
             ]);
@@ -411,4 +410,16 @@ class PlacetopayGateway implements PaymentGatewayContract
             ]
         ];
     }
+
+    protected function calculateNextBillingDate(Carbon $currentDate, string $period): Carbon
+    {
+        return match ($period) {
+            'daily' => $currentDate->copy()->addDay(),
+            'weekly' => $currentDate->copy()->addWeek(),
+            'monthly' => $currentDate->copy()->addMonth(),
+            'yearly' => $currentDate->copy()->addYear(),
+            default => throw new \Exception("Invalid subscription period: $period"),
+        };
+    }
+
 }
