@@ -313,8 +313,7 @@ class PlacetopayGateway implements PaymentGatewayContract
             ]);
         } elseif ($status === PaymentStatus::REJECTED->value) {
             $data = array_merge($data, [
-                'last_attempt_at' => $date,
-                'next_retry_at' => $date->copy()->addMinutes(5),
+                'paid_at' => null,
             ]);
         }
 
@@ -363,8 +362,7 @@ class PlacetopayGateway implements PaymentGatewayContract
                     Log::warning('Payment rejected.');
                     $data = array_merge($data, [
                         'status' => PaymentStatus::PENDING->value,
-                        'last_attempt_at' => $date,
-                        'next_retry_at' => $date->copy()->addMinutes(5),
+                        'paid_at' => null,
                     ]);
                 }
 
