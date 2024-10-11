@@ -29,6 +29,8 @@ class Subscription extends Model
         'franchiseName',
         'lastDigits',
         'validUntil',
+        'next_billing_date',
+        'total_charges',
         'subscription_plan_id',
         'microsite_id',
         'status',
