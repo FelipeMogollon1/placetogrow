@@ -39,7 +39,14 @@ const formatDate = (dateString) => {
     });
 };
 
-const headers = ["request_id","plan","amount","status","attempt_count","paid_at"];
+const headers = [
+    "request_id",
+    "plan",
+    "amount",
+    "status",
+    "paid_at",
+    "attempt_count"
+];
 
 
 </script>
@@ -127,7 +134,8 @@ const headers = ["request_id","plan","amount","status","attempt_count","paid_at"
                     </div>
                 </div>
             </main>
-            <main v-if="subscriptionPayments.data.length > 0">
+            <main v-if="subscriptionPayments.data.length > 0" class="">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight pt-4">{{ $t('subscription.payments') }}</h2>
                 <SubscriptionPaymentTable :data="subscriptionPayments.data" :paginator="subscriptionPayments" :headers="headers" />
             </main>
         </AuthenticatedLayout>

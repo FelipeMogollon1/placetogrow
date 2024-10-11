@@ -100,8 +100,6 @@ class SubscriptionController extends Controller
             ->where('subscription_payments.subscription_id', $id)
             ->paginate(10);
 
-
-
         return Inertia::render('Subscriptions/Show', compact('subscription', 'subscriptionPayments'));
     }
 
