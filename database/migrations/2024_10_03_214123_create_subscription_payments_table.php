@@ -23,8 +23,6 @@ return new class () extends Migration {
             $table->decimal('amount', 10, 2);
             $table->enum('status', PaymentStatus::getPaymentStatus())->default(PaymentStatus::PENDING);
             $table->integer('attempt_count')->default(0);
-            $table->timestamp('last_attempt_at')->nullable();
-            $table->timestamp('next_retry_at')->nullable();
             $table->string('request_id')->nullable();
             $table->timestamp('paid_at')->nullable();
             $table->timestamps();
