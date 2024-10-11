@@ -30,6 +30,8 @@ return new class () extends Migration {
             $table->date('validUntil')->nullable();
             $table->enum('status', SubscriptionStatus::getAllSubscriptionStatus())->default(SubscriptionStatus::PENDING);
             $table->string('process_identifier')->nullable();
+            $table->timestamp('next_billing_date')->nullable();
+            $table->integer('total_charges')->default(0);
             $table->foreignId('subscription_plan_id')->constrained()->onDelete('cascade');
             $table->foreignId('microsite_id')->constrained()->onDelete('cascade');
             $table->timestamps();

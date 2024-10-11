@@ -45,11 +45,12 @@ const formatDate = (dateString) => {
 }
 
 const statusColors = {
-    pending: 'yellow',
-    processing: 'cyan',
+    PENDING: 'yellow',
+    APPROVED_PARTIAL: 'cyan',
     APPROVED: 'green',
-    failed: 'red',
-    completed_with_errors: 'orange'
+    REJECTED: 'red',
+    PARTIAL_EXPIRED: 'orange',
+    UNKNOWN: 'yellow',
 };
 
 </script>
@@ -75,11 +76,6 @@ const statusColors = {
                                     {{ sortOrder === 'asc' ? '▲' : '▼' }}
                                 </span>
                             </th>
-                           <!--
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                {{ $t('microsites_table.actions') }}
-                            </th>
-                            -->
                         </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
@@ -101,7 +97,7 @@ const statusColors = {
                                 class="px-6 py-3 whitespace text-sm text-gray-900"
                             >
 
-                                <template v-if="header === 'paid_at'">
+                                <template v-if="header === 'paid_at' && item[header] !== null">
                                     {{ formatDate(item[header]) }}
                                 </template>
 
@@ -115,8 +111,6 @@ const statusColors = {
                                     {{ item[header] }}
                                 </span>
 
-                            </td>
-                            <td>
                             </td>
                         </tr>
                         </tbody>

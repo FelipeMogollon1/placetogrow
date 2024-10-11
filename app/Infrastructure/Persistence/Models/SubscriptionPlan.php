@@ -28,6 +28,10 @@ class SubscriptionPlan extends Model
         'description' => 'array',
         'amount' => 'decimal:2',
         'subscription_period' => 'string',
+        'expiration_time' => 'integer',
+        'active' => 'boolean',
+        'microsite_id' => 'integer',
+        'currency' => 'string',
     ];
 
     public function microsite(): BelongsTo

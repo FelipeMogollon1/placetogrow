@@ -17,8 +17,6 @@ class SubscriptionPayment extends Model
         'currency',
         'amount',
         'attempt_count',
-        'last_attempt_at',
-        'next_retry_at',
         'request_id',
         'paid_at',
     ];

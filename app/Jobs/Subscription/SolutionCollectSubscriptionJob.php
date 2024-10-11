@@ -34,7 +34,7 @@ class SolutionCollectSubscriptionJob implements ShouldQueue
 
     public function backoff(): int
     {
-        return ($this->subscriptionPayment->subscription->microsite->form->backoff ?? 5) * 60;
+        return $this->subscriptionPayment->subscription->microsite->form->backoff ?? 60;
     }
 
     public function tries(): int
@@ -53,7 +53,7 @@ class SolutionCollectSubscriptionJob implements ShouldQueue
 
     public function failed(Exception $exception): void
     {
-        Log::error("El Job SolutionCollectSubscriptionJob falló para la suscripción ID: {$this->subscriptionPayment->subscription_id}. Error: {$exception->getMessage()}");
+        Log::error("Job SolutionCollectSubscriptionJob failed for subscription ID: {$this->subscriptionPayment->subscription_id}. Error: {$exception->getMessage()}");
 
         $this->subscriptionPayment->update([
             'status' => PaymentStatus::REJECTED->value,

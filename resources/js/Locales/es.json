@@ -380,7 +380,8 @@
         "attempt_count": "Intentos",
         "paid_at": "Pagado en",
         "tries": "Número de intentos",
-        "backoff": "Intervalos en"
+        "backoff": "Intervalos en",
+        "payments": "Pagos"
     },
     "invoices": {
         "title" : "Facturas",
