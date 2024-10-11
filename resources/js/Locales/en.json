@@ -380,7 +380,8 @@
         "attempt_count": "Attempts",
         "paid_at": "Paid at",
         "tries": "Number of attempts",
-        "backoff": "Intervals at"
+        "backoff": "Intervals at",
+        "payments": "Payments"
     },
     "invoices": {
         "title" : "Invoices",
