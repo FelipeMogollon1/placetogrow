@@ -31,7 +31,9 @@ return new class () extends Migration {
             $table->string('process_url')->nullable();
             $table->string('request_id')->nullable();
             $table->string('process_identifier')->nullable();
+            $table->date('expiration_date')->nullable();
             $table->timestamps();
+
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('microsite_id')->references('id')->on('microsites')->onDelete('cascade');
             $table->unique(['document', 'microsite_id']);

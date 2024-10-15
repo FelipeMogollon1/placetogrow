@@ -12,6 +12,7 @@ return new class () extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('microsite_id')->constrained()->onDelete('cascade');
+            $table->date('expiration_date')->nullable();
             $table->string('storage_path')->nullable();
             $table->string('error_file_path')->nullable();
             $table->unsignedInteger('valid_records_count')->nullable();
