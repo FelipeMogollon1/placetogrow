@@ -290,6 +290,6 @@ const headersUploadInvoice = [
                       :placeholder="$t('invoices.searchInvoice')">
                <MagnifyingGlassIcon class="absolute left-3 top-1/2 transform -translate-y-1/2 w-6 text-gray-600" />
            </div>
-        <InvoiceTable :data="invoices.data" :paginator="invoices" :headers="headers" />
+        <InvoiceTable :data="invoices.data" :paginator="invoices" :headers="headers"/>
     </AuthenticatedLayout>
 </template>

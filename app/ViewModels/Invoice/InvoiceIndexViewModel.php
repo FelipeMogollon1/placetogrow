@@ -39,9 +39,13 @@ class InvoiceIndexViewModel extends ViewModel
                 'invoices.amount',
                 'invoices.status',
                 'invoices.expiration_date',
-                'microsites.name as microsite_name'
+                'microsites.name as microsite_name',
+                'forms.additionalValue as additionalValue',
+                'forms.additionalValueType as additionalValueType',
             )
-            ->join('microsites', 'invoices.microsite_id', '=', 'microsites.id');
+            ->join('microsites', 'invoices.microsite_id', '=', 'microsites.id')
+            ->join('forms', 'forms.id', '=', 'microsites.form_id');
+
 
         if (in_array(Permissions::INVOICES_INDEX->value, $permissionsUser)) {
             if (in_array(Roles::ADMIN->value, $rolesUser)) {
