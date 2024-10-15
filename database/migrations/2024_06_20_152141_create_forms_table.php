@@ -1,5 +1,6 @@
 <?php
 
+use App\Constants\AdditionalValueTypes;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,8 +18,8 @@ return new class () extends Migration {
             $table->json('configuration');
             $table->unsignedBigInteger('tries')->default(5);
             $table->unsignedBigInteger('backoff')->default(300);
-            $table->unsignedBigInteger('additionalValue')->nullable();
-            $table->string('additionalValueType')->nullable();
+            $table->string('additionalValue')->nullable();
+            $table->enum('additionalValueType', AdditionalValueTypes::getAdditionalValueTypes())->nullable();
             $table->timestamps();
         });
     }
