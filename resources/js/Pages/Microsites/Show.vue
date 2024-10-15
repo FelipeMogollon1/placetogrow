@@ -561,8 +561,8 @@ watch(() => liveExpirationInfo, (newValue) => {
                                                 :class="['mt-1 block w-full border rounded-md']"
                                             >
                                                 <option value="">{{ $t('select') }}</option>
-                                                <option value="fixedValue">{{ $t('form.fixedValue') }}</option>
-                                                <option value="percentage">{{ $t('form.percentage') }}</option>
+                                                <option value="FIXED">{{ $t('form.fixedValue') }}</option>
+                                                <option value="PERCENTAGE">{{ $t('form.percentage') }}</option>
                                             </select>
                                         </div>
 

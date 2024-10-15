@@ -2,6 +2,7 @@
 
 namespace App\PaymentGateway;
 
+use App\Constants\AdditionalValueTypes;
 use App\Constants\PaymentStatus;
 use App\Constants\SubscriptionStatus;
 use App\Contracts\PaymentGatewayContract;
@@ -97,20 +98,20 @@ class PlacetopayGateway implements PaymentGatewayContract
     }
     public function createSessionInvoice(Invoice $invoice, Request $request): RedirectResponse
     {
-        $microsite = Microsite::findOrFail($invoice->microsite_id);
+        $microsite = Microsite::with('form')->findOrFail($invoice->microsite_id);
 
         try {
             $requestData = [
                 'payer' => $this->getPayerData($invoice),
-                'payment' => $this->getPaymentData($invoice),
+                'payment' => $this->getPaymentDataInvoice($invoice),
                 'expiration' => now()->addMinutes($microsite->payment_expiration_time)->toIso8601String(),
                 'returnUrl' => route('returnInvoice', $invoice->id),
                 'ipAddress' => $request->ip(),
                 'userAgent' => $request->userAgent(),
-
             ];
 
             $response = $this->placetoPay->request($requestData);
+
             $this->updateStatus($invoice, $response);
             return $response;
 
@@ -280,6 +281,40 @@ class PlacetopayGateway implements PaymentGatewayContract
             'mobile' => $entity->mobile ?? $entity->payer_phone,
         ]);
     }
+
+    protected function getPaymentDataInvoice($invoice): array
+    {
+        $microsite = Microsite::with('form')->findOrFail($invoice->microsite_id);
+        $amount = $invoice->amount;
+
+        $expirationDate = Carbon::parse($invoice->expiration_date);
+        Log::info('amount: ' . $expirationDate . ' now: ' . now());
+
+        if ($invoice->expiration_date < now()) {
+            Log::info('expiration date is less than now');
+
+            $additionalValue = $microsite->form->additionalValue;
+            $additionalValueType = $microsite->form->additionalValueType;
+            Log::info('additionalValue: ' . $additionalValue . ', additionalValueType: ' . $additionalValueType);
+
+            if ($additionalValueType === AdditionalValueTypes::FIXED->value) {
+                $amount += $additionalValue;
+            } elseif ($additionalValueType === AdditionalValueTypes::PERCENTAGE->value) {
+                $amount += $amount * ($additionalValue / 100);
+            }
+        }
+
+        return [
+            'reference' => $invoice->reference,
+            'description' => $invoice->description,
+            'amount' => [
+                'currency' => $invoice->currency ?? $invoice->currency_type,
+                'total' => $amount,
+            ],
+        ];
+    }
+
+
     protected function getPaymentData($entity): array
     {
         return array_filter([

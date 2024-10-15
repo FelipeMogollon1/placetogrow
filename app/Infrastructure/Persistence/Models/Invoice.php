@@ -25,6 +25,11 @@ class Invoice extends Model
         'user_id',
         'microsite_id',
         'microsite_type',
+        'receipt',
+        'process_url',
+        'request_id',
+        'process_identifier',
+        'expiration_date',
     ];
 
     protected $casts = [

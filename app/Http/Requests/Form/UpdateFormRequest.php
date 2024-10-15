@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Form;
 
+use App\Constants\AdditionalValueTypes;
 use App\Rules\Form\ValidateFormConfiguration;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -52,7 +53,7 @@ class UpdateFormRequest extends FormRequest
             'additionalValueType' => [
                 'nullable',
                 'string',
-                Rule::in(['fixedValue', 'percentage']),
+                Rule::in(AdditionalValueTypes::getAdditionalValueTypes()),
                 'required_with:additionalValue',
             ],
         ];

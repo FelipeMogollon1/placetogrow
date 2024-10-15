@@ -15,6 +15,7 @@ class InvoiceUpload extends Model
     protected $fillable = [
         'user_id',
         'microsite_id',
+        'expiration_date',
         'storage_path',
         'error_file_path',
         'valid_records_count',

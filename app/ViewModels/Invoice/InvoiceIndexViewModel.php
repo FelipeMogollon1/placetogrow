@@ -38,6 +38,7 @@ class InvoiceIndexViewModel extends ViewModel
                 'invoices.currency_type',
                 'invoices.amount',
                 'invoices.status',
+                'invoices.expiration_date',
                 'microsites.name as microsite_name'
             )
             ->join('microsites', 'invoices.microsite_id', '=', 'microsites.id');
@@ -59,7 +60,8 @@ class InvoiceIndexViewModel extends ViewModel
                     ->orWhere('microsites.name', 'like', '%' . $search . '%')
                     ->orWhere('invoices.name', 'like', '%' . $search . '%')
                     ->orWhere('invoices.surname', 'like', '%' . $search . '%')
-                    ->orWhere('invoices.amount', 'like', '%' . $search . '%');
+                    ->orWhere('invoices.amount', 'like', '%' . $search . '%')
+                    ->orWhere('invoices.expiration_date', 'like', '%' . $search . '%');
             });
         }
 

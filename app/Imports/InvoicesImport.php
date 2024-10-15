@@ -23,6 +23,7 @@ class InvoicesImport implements ToCollection, WithHeadingRow, WithChunkReading, 
     protected int $invoiceUploadId;
     protected $userId;
     protected mixed $micrositeId;
+    protected mixed $expirationDate;
     protected mixed $filePath;
     public array $errors = [];
     public int $validRecordsCount = 0;
@@ -36,6 +37,7 @@ class InvoicesImport implements ToCollection, WithHeadingRow, WithChunkReading, 
         $this->invoiceUploadId = $data['id'] ?? null;
         $this->userId = $data['user_id'] ?? null;
         $this->micrositeId = $data['microsite_id'];
+        $this->expirationDate = $data['expiration_date'];
         $this->filePath = $filePath;
 
         if (!$this->userId) {
@@ -78,12 +80,13 @@ class InvoicesImport implements ToCollection, WithHeadingRow, WithChunkReading, 
                     [
                         'document' => $rowArray['document'],
                         'microsite_id' => $this->micrositeId,
-                        'reference' => $rowArray['reference'],
+                        'reference' => $rowArray['reference']
                     ],
                     [
                         'reference' => $rowArray['reference'] ?: Str::random(10),
                         'user_id' => $this->userId,
                         'microsite_id' => $this->micrositeId,
+                        'expiration_date' => $this->expirationDate,
                         'name' => $rowArray['name'],
                         'surname' => $rowArray['surname'],
                         'email' => $rowArray['email'],
@@ -161,10 +164,10 @@ class InvoicesImport implements ToCollection, WithHeadingRow, WithChunkReading, 
     {
         if ($errorFilePath) {
             $status = InvoiceUploadStatus::COMPLETED_WITH_ERRORS->value;
-        }else{
+        } else {
             $status = InvoiceUploadStatus::COMPLETED->value;
         }
-            Log::info('register invoice upload status ' . $status);
+        Log::info('register invoice upload status ' . $status);
 
         InvoiceUpload::updateOrCreate(
             [

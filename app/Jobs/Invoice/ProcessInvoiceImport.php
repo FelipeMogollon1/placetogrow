@@ -13,7 +13,8 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ProcessInvoiceImport implements ShouldQueue
 {
-    use Dispatchable, Queueable;
+    use Dispatchable;
+    use Queueable;
 
     protected string $filePath;
     protected int $invoiceUploadId;
@@ -24,6 +25,9 @@ class ProcessInvoiceImport implements ShouldQueue
         $this->invoiceUploadId = $invoiceUploadId;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function handle(): void
     {
         Log::info('Processing invoice import for file: ' . $this->filePath);
@@ -35,6 +39,7 @@ class ProcessInvoiceImport implements ShouldQueue
             'id' => $invoiceUpload->id,
             'microsite_id' => $invoiceUpload->microsite_id,
             'user_id' => $invoiceUpload->user_id,
+            'expiration_date' => $invoiceUpload->expiration_date,
         ], $this->filePath);
 
         Excel::import($import, storage_path('app/public/' . $this->filePath));

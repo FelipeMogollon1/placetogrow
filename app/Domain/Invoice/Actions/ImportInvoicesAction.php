@@ -22,6 +22,7 @@ class ImportInvoicesAction
         $invoiceUpload = InvoiceUpload::create([
             'user_id' => auth()->user()->id,
             'microsite_id' => $data['microsite_id'],
+            'expiration_date' => $data['expiration_date'],
             'storage_path' => $relativeFilePath,
             'status' => InvoiceUploadStatus::PENDING->value
         ]);
