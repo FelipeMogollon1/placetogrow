@@ -126,18 +126,23 @@ const typeMicrosite = {
                                     <Link v-if="can('invoices.processPayment') && item.status !== 'APPROVED'"
                                           class="mx-1"
                                           :href="route('invoices.processPayment', item.id)"
+                                          :title="$t('process_payment')"
                                           method="POST"
                                     >
                                         <CreditCardIcon title="Realizar el pago" class="w-6 hover:text-gray-500"/>
                                     </Link>
 
-                                    <Link v-if="can('invoices.show')" class="mx-1" :href="route('invoices.show', item.id)">
+                                    <Link v-if="can('invoices.show')" class="mx-1"
+                                          :href="route('invoices.show', item.id)"
+                                          :title="$t('show_invoice')"
+                                    >
                                         <EyeIcon class="w-6 hover:text-gray-500"/>
                                     </Link>
 
                                     <Link v-if="can('invoices.destroy') && item.status !== 'APPROVED'"
                                           :href="route('invoices.destroy', item.id)"
                                           method="delete" as="button"
+                                          :title="$t('delete_invoice')"
                                     >
                                         <TrashIcon class="w-6 hover:text-red-500"/>
                                     </Link>

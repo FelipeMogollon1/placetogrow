@@ -154,6 +154,7 @@ const statusColors = {
                                         class="m-1"
                                         :href="route('invoicesUpload.destroy',item.id)"
                                         method="delete"
+                                        :title="$t('delete_register')"
                                     >
                                        <span class="material-symbols-outlined">
                                             <TrashIcon class="w-6 hover:text-red-500" />
