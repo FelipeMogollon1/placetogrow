@@ -546,11 +546,11 @@ watch(() => liveExpirationInfo, (newValue) => {
                                                     :placeholder="$t('form.additionalValue')"
                                                     :class="['mt-1 block w-full border rounded-md pl-12 pr-4']"
                                                 />
-                                                <span v-if="form.additionalValueType === 'percentage'"
+                                                <span v-if="form.additionalValueType === 'PERCENTAGE'"
                                                       class="absolute left-3 top-2.5">
                                                     <PercentBadgeIcon class="w-7 text-gray-400 hover:text-gray-600"/>
                                                 </span>
-                                                <span v-if="form.additionalValueType === 'fixedValue'"
+                                                <span v-if="form.additionalValueType === 'FIXED'"
                                                       class="absolute left-3 top-2.5">
                                                     <CurrencyDollarIcon class="w-7 text-gray-400 hover:text-gray-600"/>
                                                 </span>
