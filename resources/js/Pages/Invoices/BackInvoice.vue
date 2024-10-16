@@ -112,8 +112,11 @@ const formatDate = (dateString) => {
                     <div class="pb-1">
                         <dt class="text-md font-medium leading-6 text-gray-400">{{ $t('voucher.state') }}</dt>
                         <dd class="text-md leading-6 text-gray-700 font-semibold">
-                            <span-form :color="statusColors[invoice.status]">
+                            <span-form v-if="invoice.status === 'APPROVED'":color="statusColors[invoice.status]">
                                 {{ $t(`payment_status.${invoice.status}`) }}
+                            </span-form>
+                            <span-form v-else :color="statusColors['REJECTED']">
+                                {{ $t('payment_status.REJECTED') }}
                             </span-form>
                         </dd>
                     </div>

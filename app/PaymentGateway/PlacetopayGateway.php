@@ -140,9 +140,12 @@ class PlacetopayGateway implements PaymentGatewayContract
             $response = $this->placetoPay->query($payment->request_id);
             if ($response->isSuccessful()) {
                 if ($response->status()->isApproved()) {
+                    $answer = $response->payment();
+                    $answer = $answer[0]->toArray();
+
                     $payment->status = PaymentStatus::APPROVED->value;
                     $payment->paid_at = new Carbon($response->status()->date());
-                    $payment->receipt = Arr::get($response->payment(), 'receipt');
+                    $payment->receipt = Arr::get($answer, 'receipt');
                 } elseif ($response->status()->isRejected()) {
                     $payment->status = PaymentStatus::REJECTED->value;
                 }
@@ -194,9 +197,14 @@ class PlacetopayGateway implements PaymentGatewayContract
 
             if ($response->isSuccessful()) {
                 if ($response->status()->isApproved()) {
+                    $answer = $response->payment();
+                    $answer = $answer[0]->toArray();
+
                     $invoice->status = PaymentStatus::APPROVED->value;
                     $invoice->paid_at = new Carbon($response->status()->date());
-                    $invoice->receipt = Arr::get($response->payment(), 'receipt');
+                    $invoice->receipt = Arr::get($answer, 'receipt');
+                    $invoice->amount = $response->request()->payment()->amount()->total();
+                    $invoice->save();
                 } else {
                     $invoice->status = PaymentStatus::PENDING->value;
                 }
