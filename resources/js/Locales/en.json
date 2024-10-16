@@ -449,5 +449,7 @@
     "delete_invoice": "Delete invoice",
     "show_invoice": "Show invoice",
     "process_payment": "Process payment",
-    "delete_register": "Delete record"
+    "delete_register" : "Delete registration",
+    "no_account" : "Don't have an account?",
+    "register_here" : "Register here"
 }
