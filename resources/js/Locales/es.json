@@ -449,5 +449,7 @@
     "delete_invoice": "Eliminar factura",
     "show_invoice": "Mostrar factura",
     "process_payment": "Procesar pago",
-    "delete_register": "Eliminar registro"
+    "delete_register": "Eliminar registro",
+    "no_account" : "¿No tienes una cuenta?",
+    "register_here" : "Regístrate aquí"
 }
