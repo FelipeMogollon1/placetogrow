@@ -3,20 +3,22 @@
 namespace App\Console\Commands;
 
 use App\Constants\PaymentStatus;
+use App\Constants\SubscriptionStatus;
 use App\Infrastructure\Persistence\Models\Invoice;
 use App\Infrastructure\Persistence\Models\Subscription;
 use App\Jobs\Notify\NotifyUserAboutInvoice;
 use App\Jobs\Notify\NotifyUserAboutSubscription;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
-class NotifyUsersAboutExpiring extends Command
+class ExpiringInvoicesSubscriptions extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'notify:expiring-invoices-subscriptions';
+    protected $signature = 'app:Expiring-invoices-subscriptions';
 
     /**
      * The console command description.
@@ -30,19 +32,23 @@ class NotifyUsersAboutExpiring extends Command
      */
     public function handle(): void
     {
+        Log::info('start the command app:Expiring-invoices-subscriptions');
+
         $invoicesNotify = Invoice::where('status', PaymentStatus::PENDING->value)
-            ->where('expiration_date', now()->addDays(5))->get();
+            ->whereDate('expiration_date', now()->addDays(5))->get();
 
         foreach ($invoicesNotify as $invoice) {
             NotifyUserAboutInvoice::dispatch($invoice);
         }
 
-        $subscriptionsNotify = Subscription::whereBetween('next_billing_date', [now(), now()->addDays(5)])
-            ->get();
+        $subscriptionsNotify = Subscription::where('status', SubscriptionStatus::ACTIVE->value)
+            ->whereDate('next_billing_date', now()->addDays(5))->get();
 
         foreach ($subscriptionsNotify as $subscription) {
             NotifyUserAboutSubscription::dispatch($subscription);
             $this->info('Notification dispatched for subscription: ' . $subscription->reference);
         }
+        Log::info('finish the command app:Expiring-invoices-subscriptions');
+
     }
 }
