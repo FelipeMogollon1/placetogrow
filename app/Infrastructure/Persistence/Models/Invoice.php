@@ -5,10 +5,12 @@ namespace App\Infrastructure\Persistence\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Notifications\Notifiable;
 
 class Invoice extends Model
 {
     use HasFactory;
+    use Notifiable;
 
 
     protected $fillable = [
@@ -37,6 +39,7 @@ class Invoice extends Model
         'currency_type' => 'string',
         'status'        => 'string',
         'microsite_type' => 'string',
+        'expiration_date' => 'date',
     ];
 
     public function user(): BelongsTo
