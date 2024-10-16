@@ -416,7 +416,17 @@
         "processing": "Procesando",
         "completed": "Completado",
         "failed": "Fallido",
-        "completed_with_errors": "Completado con errores"
+        "completed_with_errors": "Completado con errores",
+        "expiration_date": "Fecha de vencimiento",
+        "late_payment": "Recordatorio de Pago",
+        "total_with_increment": "Total con incremento",
+        "invoice_expired_on": "Queremos recordarte que la factura seleccionada con fecha de vencimiento el",
+        "expired": " ha expirado",
+        "fixed_increment": "Incremento fijo",
+        "percentage_increment": "Incremento porcentual",
+        "convenience": "Para tu comodidad, aquí tienes el desglose de los cargos a pagar",
+        "cancel" : "Cancelar",
+        "continue_payment" : "Continuar pago"
     },
     "Forgot_your_password": "¿Olvidaste tu contraseña? No hay problema. Solo indícanos tu dirección de correo electrónico y te enviaremos un enlace para restablecer tu contraseña que te permitirá elegir una nueva.",
     "email": "Correo electrónico",
@@ -435,5 +445,9 @@
     "minutes": "minutos",
     "hours": "horas",
     "fails": "Si el cobro de suscripción falla, se podrá reintentar hasta",
-    "timeInterval": "veces con un intervalo de"
+    "timeInterval": "veces con un intervalo de",
+    "delete_invoice": "Eliminar factura",
+    "show_invoice": "Mostrar factura",
+    "process_payment": "Procesar pago",
+    "delete_register": "Eliminar registro"
 }
