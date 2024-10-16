@@ -26,7 +26,7 @@ class InvoiceExpirationNotification extends Notification
         return (new MailMessage())
             ->subject('Alerta de Vencimiento de Factura')
             ->greeting('Hola ' . $this->invoice->name)
-            ->line('Tu factura con referencia ' . $this->invoice->reference . ' está próxima a vencer el ' . $this->invoice->expiration_date->format('d/m/Y') . '.')
+            ->line('Tu factura con referencia ' . $this->invoice->reference . ' está próxima a vencer el ' . $this->invoice->expiration_date. '.')
             ->action('Ver Factura', url('/invoices/' . $this->invoice->id))
             ->line('Gracias por confiar en nuestro servicio.');
     }
