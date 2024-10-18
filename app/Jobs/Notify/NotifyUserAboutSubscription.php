@@ -19,24 +19,25 @@ class NotifyUserAboutSubscription implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    protected $subscription;
-    /**
-     * Create a new job instance.
-     */
-    public function __construct(Subscription $subscription)
+    protected Subscription $subscription;
+    public int $tries = 5;
+    public int $backoff = 60;
+
+
+      public function __construct(Subscription $subscription)
     {
         $this->subscription = $subscription;
     }
 
-    /**
-     * Execute the job.
-     */
     public function handle(): void
     {
         try {
-            log::info('start job notify');
+            log::info('start job subscription notify');
+            Log::info('Subscription email: ' . $this->subscription->email);
+
             Notification::route('mail', $this->subscription->email)
                 ->notify(new SubscriptionNotification($this->subscription));
+
         } catch (\Exception $e) {
             Log::error('Error at sending subscription expiration notification: ' . $e->getMessage());
         }
