@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\ImportInvoice;
+namespace App\Http\Controllers\Invoice;
 
 use App\Http\Controllers\Controller;
 use App\Infrastructure\Persistence\Models\InvoiceUpload;

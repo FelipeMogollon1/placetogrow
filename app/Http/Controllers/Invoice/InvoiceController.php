@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\ImportInvoice;
+namespace App\Http\Controllers\Invoice;
 
 use App\Constants\Abilities;
 use App\Contracts\PaymentGatewayContract;
