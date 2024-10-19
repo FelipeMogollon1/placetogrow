@@ -84,7 +84,7 @@ const typeMicrosite = {
 
                         <tr v-if="!props.data.length" class="text-center">
                             <td colspan="100%" class="px-6 py-3 text-sm text-gray-500">
-                                {{ $t('no_information') }}<!-- Mensaje de no información -->
+                                {{ $t('no_information') }}
                             </td>
                         </tr>
 
