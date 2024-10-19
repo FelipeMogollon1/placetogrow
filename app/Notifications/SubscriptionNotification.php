@@ -27,38 +27,32 @@ class SubscriptionNotification extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
-        Log::info('Details of the notification.', [
-            'subscription' => $this->subscription,
+        Log::info('Starting to send subscription notification.', [
+            'subscription_id' => $this->subscription->id ?? 'N/A',
         ]);
 
-        if (!$this->subscription) {
-            Log::error('Subscription object is null.');
-            return (new MailMessage())
-                ->subject('Error: Subscription Not Found')
-                ->line('We could not find your subscription information. Please contact support.');
-        }
-
-        $name = $this->subscription->name ?? 'Valued Customer';
-        $description = $this->subscription->description ?? 'your subscription';
+        $micrositeName = $this->subscription->microsite->name ?? __('your microsite');
+        $name = $this->subscription->name ?? __('Valued Customer');
+        $description = $this->subscription->description ?? __('your subscription');
         $nextBillingDate = $this->subscription->next_billing_date
-            ? Carbon::parse($this->subscription->next_billing_date)->format('d M Y')
-            : 'unknown';
+            ? Carbon::parse($this->subscription->next_billing_date)->translatedFormat('d M Y')
+            : __('unknown');
 
-        Log::info('finaly details of the notification.', [
+        Log::info('Final notification details:', [
             'name' => $name,
             'description' => $description,
+            'microsite_name' => $micrositeName,
             'next_billing_date' => $nextBillingDate,
         ]);
 
         return (new MailMessage())
-            ->subject('Upcoming Subscription Billing Reminder')
-            ->greeting('Hello ' . $name)
-            ->line('Your subscription for ' . $description . ' is due on ' . $nextBillingDate . '.')
-            ->line('Please ensure your payment information is up to date to avoid any disruptions.')
-            ->action('Manage Subscription', url('/subscription/' . $this->subscription->id))
-            ->line('Thank you for choosing our service!');
+            ->subject(__('notifications.Upcoming Subscription Billing Reminder') . ' ' . __('notifications.from') . ' ' . $micrositeName)
+            ->greeting(__('notifications.Hello') . ' ' . $name)
+            ->line(__('notifications.Your subscription for') . ' ' . $description . ' ' . __('notifications.on') . ' ' . $micrositeName . ' ' . __('notifications.is due on') . ' ' . $nextBillingDate . '.')
+            ->line(__('notifications.Please ensure your payment information is up to date to avoid any disruptions.'))
+            ->action(__('notifications.Manage Subscription'), url('/subscriptions/' . $this->subscription->id))
+            ->line(__('notifications.Thank you for choosing our service!'));
     }
-
 
     /**
      * Get the array representation of the notification.
