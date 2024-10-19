@@ -45,20 +45,16 @@ class ExpiringInvoicesSubscriptions extends Command
 
 
         $subscriptionsNotify = Subscription::join('subscription_plans', 'subscriptions.subscription_plan_id', '=', 'subscription_plans.id')
+            ->select('subscriptions.*')
             ->where('subscription_plans.subscription_period', '<>', SubscriptionPeriods::DAILY->value)
             ->whereColumn('subscriptions.total_charges', '<', 'subscription_plans.expiration_time')
             ->where('subscriptions.status', SubscriptionStatus::ACTIVE->value)
-            ->whereDate('next_billing_date', Carbon::now()->addDays(5)->toDateString());
+            ->whereDate('next_billing_date', Carbon::now()->addDays(5)->toDateString())
+            ->get();
 
-        Log::info('SQL Query:', ['query' => $subscriptionsNotify->toSql(), 'bindings' => $subscriptionsNotify->getBindings()]);
-
-        $subscriptionsNotify = $subscriptionsNotify->get();
-
-        Log::info('Subscriptions found:', ['count' => $subscriptionsNotify->count()]);
-
-        foreach ($subscriptionsNotify as $subscription) {
-            NotifyUserAboutSubscription::dispatch($subscription);
-            $this->info('Notification dispatched for subscription: ' . $subscription->reference);
+        foreach ($subscriptionsNotify as $subscriptionNotify) {
+            NotifyUserAboutSubscription::dispatch($subscriptionNotify);
+            $this->info('Notification dispatched for subscription: ' . $subscriptionNotify->reference);
         }
 
         Log::info('finish the command app:Expiring-invoices-subscriptions');
