@@ -63,7 +63,5 @@ class SolutionCollectSubscriptionJob implements ShouldQueue
         $subscription = Subscription::findOrFail($this->subscriptionPayment->subscription_id);
         (new DestroySubscriptionAction())->execute($subscription);
 
-        // Notification::send($this->subscriptionPayment->user, new SubscriptionFailedNotification($this->subscriptionPayment));
-
     }
 }
