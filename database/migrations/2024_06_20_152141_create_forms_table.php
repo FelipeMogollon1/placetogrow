@@ -16,8 +16,8 @@ return new class () extends Migration {
             $table->string('additional_info')->nullable();
             $table->string('expiration_additional_info')->nullable();
             $table->json('configuration');
-            $table->unsignedBigInteger('tries')->default(5);
-            $table->unsignedBigInteger('backoff')->default(300);
+            $table->unsignedBigInteger('tries');
+            $table->unsignedBigInteger('backoff');
             $table->string('additionalValue')->nullable();
             $table->enum('additionalValueType', AdditionalValueTypes::getAdditionalValueTypes())->nullable();
             $table->timestamps();
