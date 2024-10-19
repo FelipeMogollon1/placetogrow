@@ -39,7 +39,6 @@ class Invoice extends Model
         'currency_type' => 'string',
         'status'        => 'string',
         'microsite_type' => 'string',
-        'expiration_date' => 'date',
     ];
 
     public function user(): BelongsTo
