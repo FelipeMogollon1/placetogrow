@@ -50,15 +50,9 @@ class SubscriptionNotification extends Notification
             ->greeting(__('notifications.Hello') . ' ' . $name)
             ->line(__('notifications.Your subscription for') . ' ' . $description . ' ' . __('notifications.on') . ' ' . $micrositeName . ' ' . __('notifications.is due on') . ' ' . $nextBillingDate . '.')
             ->line(__('notifications.Please ensure your payment information is up to date to avoid any disruptions.'))
-            ->action(__('notifications.Manage Subscription'), url('/subscriptions/' . $this->subscription->id))
+            ->action(__('notifications.Manage Subscription'), url('/login'))
             ->line(__('notifications.Thank you for choosing our service!'));
     }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
 
     public function toArray(object $notifiable): array
     {
