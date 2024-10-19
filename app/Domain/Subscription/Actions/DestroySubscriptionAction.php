@@ -4,6 +4,7 @@ namespace App\Domain\Subscription\Actions;
 
 use App\Constants\SubscriptionStatus;
 use App\Infrastructure\Persistence\Models\Subscription;
+use App\Jobs\Subscription\RetrySubscriptionCancellation;
 use App\Notifications\SubscriptionCancelledNotification;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
@@ -45,6 +46,7 @@ class DestroySubscriptionAction
 
             if ($response->successful() && $response->json('status.status') === 'OK') {
                 $subscription->status = SubscriptionStatus::CANCELLED->value;
+
                 $subscription->save();
 
                 Notification::route('mail', $subscription->email)
@@ -52,6 +54,7 @@ class DestroySubscriptionAction
 
                 return true;
             }
+            RetrySubscriptionCancellation::dispatch($subscription)->delay(now()->addMinutes(1));
 
             Log::error('Failed to cancel subscription', [
                 'response' => $response->json(),
@@ -61,6 +64,7 @@ class DestroySubscriptionAction
             return false;
         } catch (\Exception $e) {
             Log::error('Exception occurred while canceling subscription', ['exception' => $e->getMessage()]);
+            RetrySubscriptionCancellation::dispatch($subscription)->delay(now()->addMinutes(1));
             return false;
         }
     }
