@@ -44,15 +44,16 @@ class PlacetopayGateway implements PaymentGatewayContract
         return $this;
     }
 
+    /**
+     * @throws GatewayException
+     */
     public function createSession(Payment $payment, Request $request): RedirectResponse
     {
-        $microsite = Microsite::findOrFail($payment->microsite_id);
-
         try {
             $requestData = [
                 'payer' => $this->getPayerData($payment),
                 'payment' => $this->getPaymentData($payment),
-                'expiration' => now()->addMinutes($microsite->payment_expiration_time)->toIso8601String(),
+                'expiration' => now()->addMinutes($payment->microsite->payment_expiration_time)->toIso8601String(),
                 'returnUrl' => route('returnBusiness', $payment->id),
                 'ipAddress' => $request->ip(),
                 'userAgent' => $request->userAgent(),
@@ -69,10 +70,9 @@ class PlacetopayGateway implements PaymentGatewayContract
             throw new GatewayException($exception->getMessage());
         }
     }
+
     public function createSessionSubscription(Subscription $subscription, Request $request): RedirectResponse
     {
-        $microsite = Microsite::findOrFail($subscription->microsite_id);
-
         try {
             $requestData = [
                 'payer' => $this->getPayerData($subscription),
@@ -80,7 +80,7 @@ class PlacetopayGateway implements PaymentGatewayContract
                     'reference' => $subscription->reference,
                     'description' => $subscription->description,
                 ],
-                'expiration' => now()->addMinutes($microsite->payment_expiration_time)->toIso8601String(),
+                'expiration' => now()->addMinutes($subscription->microsite->payment_expiration_time)->toIso8601String(),
                 'returnUrl' => route('returnSubscription', $subscription->id),
                 'ipAddress' => $request->ip(),
                 'userAgent' => $request->userAgent(),
@@ -98,13 +98,11 @@ class PlacetopayGateway implements PaymentGatewayContract
     }
     public function createSessionInvoice(Invoice $invoice, Request $request): RedirectResponse
     {
-        $microsite = Microsite::with('form')->findOrFail($invoice->microsite_id);
-
         try {
             $requestData = [
                 'payer' => $this->getPayerData($invoice),
                 'payment' => $this->getPaymentDataInvoice($invoice),
-                'expiration' => now()->addMinutes($microsite->payment_expiration_time)->toIso8601String(),
+                'expiration' => now()->addMinutes($invoice->microsite->payment_expiration_time)->toIso8601String(),
                 'returnUrl' => route('returnInvoice', $invoice->id),
                 'ipAddress' => $request->ip(),
                 'userAgent' => $request->userAgent(),
@@ -221,22 +219,14 @@ class PlacetopayGateway implements PaymentGatewayContract
     public function querySubscriptionCollect(SubscriptionPayment $subscriptionPayment): SubscriptionPayment
     {
         try {
-            Log::info('Starting subscription collect query.', [
-                'subscription_payment_id' => $subscriptionPayment->id,
-            ]);
+            Log::info('Starting subscription collect query.', ['subscription_payment_id' => $subscriptionPayment->id]);
 
-            $subscriptionPlan = SubscriptionPlan::findOrFail($subscriptionPayment->subscription_plan_id);
-            $subscription = Subscription::findOrFail($subscriptionPayment->subscription_id);
-            $requestData = $this->buildRequestData($subscription, $subscriptionPlan);
-            $response = $this->placetoPay->collect($requestData);
-            $this->updateSubscription($subscription, $response, $subscriptionPlan);
+            $requestData = $this->buildRequestData( $subscriptionPayment->subscription, $subscriptionPayment->subscription_plan);
+            $response = $this->placetoPay->collect( $requestData );
 
             if ($response->requestId()) {
-                Log::info('Received requestId from collect.', [
-                    'request_id' => $response->requestId(),
-                ]);
+                Log::info('Received requestId from collect.', ['request_id' => $response->requestId()]);
 
-                $date = Carbon::parse($response->status()->date());
                 $status = $response->status()->status();
 
                 $data = [
@@ -246,12 +236,16 @@ class PlacetopayGateway implements PaymentGatewayContract
 
                 if ($status === PaymentStatus::APPROVED->value) {
                     Log::info('Payment approved.');
+
+                    $this->updateSubscription($subscriptionPayment->subscription, $response, $subscriptionPayment->subscriptionPlan);
                     $data = array_merge($data, [
                         'status' => PaymentStatus::APPROVED->value,
-                        'paid_at' => $date,
+                        'paid_at' => Carbon::parse($response->status()->date()),
                     ]);
+
                 } elseif ($status === PaymentStatus::REJECTED->value) {
                     Log::warning('Payment rejected.');
+
                     $data = array_merge($data, [
                         'status' => PaymentStatus::PENDING->value,
                         'paid_at' => null,
@@ -295,8 +289,7 @@ class PlacetopayGateway implements PaymentGatewayContract
         $microsite = Microsite::with('form')->findOrFail($invoice->microsite_id);
         $amount = $invoice->amount;
 
-        $expirationDate = Carbon::parse($invoice->expiration_date);
-        Log::info('amount: ' . $expirationDate . ' now: ' . now());
+        Log::info('amount: ' . Carbon::parse($invoice->expiration_date) . ' now: ' . now());
 
         if ($invoice->expiration_date < now()) {
             Log::info('expiration date is less than now');
@@ -350,12 +343,16 @@ class PlacetopayGateway implements PaymentGatewayContract
     public function collectSubscription(Subscription $subscription): RedirectInformation
     {
         try {
-            $subscriptionPlan = SubscriptionPlan::findOrFail($subscription->subscription_plan_id);
-            $requestData = $this->buildRequestData($subscription, $subscriptionPlan);
-            $response = $this->placetoPay->collect($requestData);
-            $this->updateCollectSubscriptionStatus($subscription, $subscriptionPlan, $response);
-            $this->updateSubscription($subscription, $response, $subscriptionPlan);
+            Log::info('Starting subscription collect query.', ['subscription' => $subscription->id]);
 
+            $requestData = $this->buildRequestData($subscription, $subscription->subscriptionPlan);
+            $response = $this->placetoPay->collect($requestData);
+
+            $this->updateCollectSubscriptionStatus($subscription, $subscription->subscriptionPlan, $response);
+
+            if ($response->status()->status() === PaymentStatus::APPROVED->value) {
+                $this->updateSubscription($subscription, $response, $subscription->subscriptionPlan);
+            }
             return $response;
 
         } catch (Throwable $exception) {
@@ -370,19 +367,13 @@ class PlacetopayGateway implements PaymentGatewayContract
      */
     protected function updateSubscription($subscription, $response, $subscriptionPlan): void
     {
-        $date = Carbon::parse($response->status()->date());
-        $status = $response->status()->status();
-        $period = $subscriptionPlan->subscription_period;
+        $date = Carbon::parse($response->status()->date())->startOfDay();
+        $nextBillingDate = $this->calculateNextBillingDate($date, $subscriptionPlan->subscription_period);
 
-        if ($status === PaymentStatus::APPROVED->value) {
-            $nextBillingDate = $this->calculateNextBillingDate($date, $period);
-
-            $subscription->update([
-                'next_billing_date' => $nextBillingDate,
-                'total_charges' => $subscription->total_charges + 1,
-            ]);
-        }
-
+        $subscription->update([
+            'next_billing_date' => $nextBillingDate,
+            'total_charges' => $subscription->total_charges + 1,
+        ]);
     }
 
     protected function updateCollectSubscriptionStatus($subscription, $subscriptionPlan, $response): void
@@ -397,21 +388,12 @@ class PlacetopayGateway implements PaymentGatewayContract
             'currency' => $response->request()->payment()->amount()->currency(),
             'amount' => $response->request()->payment()->amount()->total(),
             'attempt_count' => 0,
+            'paid_at' => $status === PaymentStatus::APPROVED->value ? $date : null,
         ];
-
-        if ($status === PaymentStatus::APPROVED->value) {
-            $data = array_merge($data, [
-                'paid_at' => $date,
-            ]);
-        } elseif ($status === PaymentStatus::REJECTED->value) {
-            $data = array_merge($data, [
-                'paid_at' => null,
-            ]);
-        }
 
         $subscriptionPayment = SubscriptionPayment::create($data);
 
-        if ($status === PaymentStatus::REJECTED->value) {
+        if (!isset($data['paid_at'])) {
             SolutionCollectSubscriptionJob::dispatch($subscriptionPayment);
         }
     }
@@ -436,6 +418,10 @@ class PlacetopayGateway implements PaymentGatewayContract
         ];
     }
 
+
+    /**
+     * @throws \Exception
+     */
     protected function calculateNextBillingDate(Carbon $currentDate, string $period): Carbon
     {
         return match ($period) {
