@@ -4,8 +4,9 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\FormController;
 use App\Http\Controllers\Admin\MicrositeController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\ImportInvoice\InvoiceController;
-use App\Http\Controllers\ImportInvoice\InvoiceUploadController;
+use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Invoice\InvoiceController;
+use App\Http\Controllers\Invoice\InvoiceUploadController;
 use App\Http\Controllers\Payment\PaymentController;
 use App\Http\Controllers\Profile\ProfileController;
 use App\Http\Controllers\Roles\RoleController;
@@ -26,10 +27,7 @@ Route::get('/invoices/download-template', [InvoiceController::class, 'downloadTe
 
 Route::group(['middleware' => 'auth', 'verified'], function () {
 
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-
+    Route::resource('dashboard', DashboardController::class);
     Route::resource('/forms', FormController::class);
     Route::post('/forms/{id}', [FormController::class,'update'])->name('forms.custom_update');
     Route::resource('/roles', RoleController::class);
