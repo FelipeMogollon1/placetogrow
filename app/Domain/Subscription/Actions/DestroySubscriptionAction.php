@@ -4,9 +4,11 @@ namespace App\Domain\Subscription\Actions;
 
 use App\Constants\SubscriptionStatus;
 use App\Infrastructure\Persistence\Models\Subscription;
+use App\Notifications\SubscriptionCancelledNotification;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 
@@ -44,6 +46,9 @@ class DestroySubscriptionAction
             if ($response->successful() && $response->json('status.status') === 'OK') {
                 $subscription->status = SubscriptionStatus::CANCELLED->value;
                 $subscription->save();
+
+                Notification::route('mail', $subscription->email)
+                    ->notify(new SubscriptionCancelledNotification($subscription));
 
                 return true;
             }

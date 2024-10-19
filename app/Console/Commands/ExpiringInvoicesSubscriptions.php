@@ -3,11 +3,13 @@
 namespace App\Console\Commands;
 
 use App\Constants\PaymentStatus;
+use App\Constants\SubscriptionPeriods;
 use App\Constants\SubscriptionStatus;
 use App\Infrastructure\Persistence\Models\Invoice;
 use App\Infrastructure\Persistence\Models\Subscription;
 use App\Jobs\Notify\NotifyUserAboutInvoice;
 use App\Jobs\Notify\NotifyUserAboutSubscription;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -41,13 +43,20 @@ class ExpiringInvoicesSubscriptions extends Command
             NotifyUserAboutInvoice::dispatch($invoice);
         }
 
-        $subscriptionsNotify = Subscription::where('status', SubscriptionStatus::ACTIVE->value)
-            ->whereDate('next_billing_date', now()->addDays(5))->get();
 
-        foreach ($subscriptionsNotify as $subscription) {
-            NotifyUserAboutSubscription::dispatch($subscription);
-            $this->info('Notification dispatched for subscription: ' . $subscription->reference);
+        $subscriptionsNotify = Subscription::join('subscription_plans', 'subscriptions.subscription_plan_id', '=', 'subscription_plans.id')
+            ->select('subscriptions.*')
+            ->where('subscription_plans.subscription_period', '<>', SubscriptionPeriods::DAILY->value)
+            ->whereColumn('subscriptions.total_charges', '<', 'subscription_plans.expiration_time')
+            ->where('subscriptions.status', SubscriptionStatus::ACTIVE->value)
+            ->whereDate('next_billing_date', Carbon::now()->addDays(5)->toDateString())
+            ->get();
+
+        foreach ($subscriptionsNotify as $subscriptionNotify) {
+            NotifyUserAboutSubscription::dispatch($subscriptionNotify);
+            $this->info('Notification dispatched for subscription: ' . $subscriptionNotify->reference);
         }
+
         Log::info('finish the command app:Expiring-invoices-subscriptions');
 
     }
