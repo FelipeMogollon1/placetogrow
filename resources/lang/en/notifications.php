@@ -24,4 +24,10 @@ return [
     'Manage Subscription' => 'Manage Subscription',
     'Thank you for choosing our service!' => 'Thank you for choosing our service!',
     'from' => 'from',
+    'Subscription Cancelled Subject' => 'Your Subscription has been Cancelled',
+    'Subscription Cancelled Greeting' => 'Hello :name :surname,',
+    'Subscription Cancelled Line1' => 'We would like to inform you that your subscription with reference :reference has been successfully cancelled.',
+    'Microsite Name' => 'Microsite: :microsite',
+    'Subscription Cancelled Thanks' => 'Thank you for using our service. If you have any questions, feel free to contact us.',
+    'Login Button' => 'Login to your Account',
 ];

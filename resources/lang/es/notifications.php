@@ -24,4 +24,10 @@ return [
     'Manage Subscription' => 'Gestionar Suscripción',
     'Thank you for choosing our service!' => '¡Gracias por elegir nuestro servicio!',
     'from' => 'de',
+    'Subscription Cancelled Subject' => 'Tu Suscripción ha sido Cancelada',
+    'Subscription Cancelled Greeting' => 'Hola :name :surname,',
+    'Subscription Cancelled Line1' => 'Queremos informarte que tu suscripción con referencia :reference ha sido cancelada exitosamente.',
+    'Microsite Name' => 'Micrositio: :microsite',
+    'Subscription Cancelled Thanks' => 'Gracias por utilizar nuestro servicio. Si tienes alguna pregunta, no dudes en contactarnos.',
+    'Login Button' => 'Iniciar Sesión en tu Cuenta',
 ];
