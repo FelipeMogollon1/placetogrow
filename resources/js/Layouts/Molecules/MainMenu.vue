@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="mb-4">
-            <Link class="group flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ease-in-out" :href="route('dashboard')">
+            <Link class="group flex items-center p-2 rounded-lg hover:bg-gray-100 transition duration-150 ease-in-out" :href="route('dashboard.index')">
                 <PresentationChartBarIcon class="mr-3 h-6 w-6 text-gray-500 group-hover:text-orange-500 transition duration-150 ease-in-out" />
                 <div class="text-gray-500 group-hover:text-orange-500 transition duration-150 ease-in-out">{{ $t('dashboard') }}</div>
             </Link>
