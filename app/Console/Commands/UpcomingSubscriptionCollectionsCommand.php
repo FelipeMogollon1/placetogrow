@@ -33,16 +33,16 @@ class UpcomingSubscriptionCollectionsCommand extends Command
         $daysBeforeSubscriptionCollection = (int) config('notifications.days_before_subscription_collection');
 
         $subscriptionsNotify = Subscription::join('subscription_plans', 'subscriptions.subscription_plan_id', '=', 'subscription_plans.id')
-            ->select('subscriptions.id, subscriptions.email, subscriptions.name, subscriptions.surname, subscriptions.reference, subscriptions.total_charges, subscription_plans.expiration_time')
+            ->select('subscriptions.id')
             ->where('subscription_plans.subscription_period', '<>', SubscriptionPeriods::DAILY->value)
             ->whereColumn('subscriptions.total_charges', '<', 'subscription_plans.expiration_time')
             ->where('subscriptions.status', SubscriptionStatus::ACTIVE->value)
-            ->whereBetween('next_billing_date', [Carbon::now(), Carbon::now()->addDays($daysBeforeSubscriptionCollection)])
+            ->whereBetween('subscriptions.next_billing_date', [Carbon::now(), Carbon::now()->addDays($daysBeforeSubscriptionCollection)])
             ->get();
 
         foreach ($subscriptionsNotify as $subscriptionNotify) {
             NotifyUserAboutSubscription::dispatch($subscriptionNotify);
-            $this->info('Notification dispatched for subscription: ' . $subscriptionNotify->reference);
+            $this->info('Notification dispatched for subscription: ' . $subscriptionNotify->id);
         }
 
         Log::info('Finished command: app:upcoming-subscription-collections');

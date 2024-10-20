@@ -33,9 +33,15 @@ class NotifyUserAboutSubscription implements ShouldQueue
     {
         try {
             log::info('start job subscription notify');
-            Log::info('Subscription email: ' . $this->subscription->email);
 
-            Notification::route('mail', $this->subscription->email)
+            $recipients[] = $this->subscription->email;
+            $micrositeUser = optional($this->subscription->microsite)->user;
+
+            if (!is_null($micrositeUser) && !is_null($micrositeUser->email)) {
+                $recipients[] = $micrositeUser->email;
+            }
+
+            Notification::route('mail', $recipients)
                 ->notify(new SubscriptionNotification($this->subscription));
 
         } catch (\Exception $e) {
