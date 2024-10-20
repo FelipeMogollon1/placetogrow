@@ -218,11 +218,12 @@ class PlacetopayGateway implements PaymentGatewayContract
 
     public function querySubscriptionCollect(SubscriptionPayment $subscriptionPayment): SubscriptionPayment
     {
+        log::info('querySubscriptionCollect here: ' . $subscriptionPayment->subscription . ' ' . $subscriptionPayment->subscription_plan);
         try {
             Log::info('Starting subscription collect query.', ['subscription_payment_id' => $subscriptionPayment->id]);
 
-            $requestData = $this->buildRequestData( $subscriptionPayment->subscription, $subscriptionPayment->subscription_plan);
-            $response = $this->placetoPay->collect( $requestData );
+            $requestData = $this->buildRequestData($subscriptionPayment->subscription, $subscriptionPayment->subscriptionPlan);
+            $response = $this->placetoPay->collect($requestData);
 
             if ($response->requestId()) {
                 Log::info('Received requestId from collect.', ['request_id' => $response->requestId()]);
@@ -251,6 +252,7 @@ class PlacetopayGateway implements PaymentGatewayContract
                         'paid_at' => null,
                     ]);
                 }
+
                 $subscriptionPayment->update($data);
 
                 if ($status === PaymentStatus::REJECTED->value) {
@@ -344,14 +346,16 @@ class PlacetopayGateway implements PaymentGatewayContract
     {
         try {
             Log::info('Starting subscription collect query.', ['subscription' => $subscription->id]);
+            $subscriptionPlan = $subscription->subscriptionPlan;
+            Log::info('subscriptionPlan: ' . $subscriptionPlan);
 
-            $requestData = $this->buildRequestData($subscription, $subscription->subscriptionPlan);
+            $requestData = $this->buildRequestData($subscription, $subscriptionPlan);
             $response = $this->placetoPay->collect($requestData);
 
-            $this->updateCollectSubscriptionStatus($subscription, $subscription->subscriptionPlan, $response);
+            $this->updateCollectSubscriptionStatus($subscription, $subscriptionPlan, $response);
 
             if ($response->status()->status() === PaymentStatus::APPROVED->value) {
-                $this->updateSubscription($subscription, $response, $subscription->subscriptionPlan);
+                $this->updateSubscription($subscription, $response, $subscriptionPlan);
             }
             return $response;
 
@@ -393,7 +397,7 @@ class PlacetopayGateway implements PaymentGatewayContract
 
         $subscriptionPayment = SubscriptionPayment::create($data);
 
-        if (!isset($data['paid_at'])) {
+        if (!isset($data['paid_at']) && $status === PaymentStatus::REJECTED->value) {
             SolutionCollectSubscriptionJob::dispatch($subscriptionPayment);
         }
     }
