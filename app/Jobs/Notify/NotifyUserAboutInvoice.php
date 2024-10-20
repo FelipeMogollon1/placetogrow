@@ -31,9 +31,14 @@ class NotifyUserAboutInvoice implements ShouldQueue
     public function handle(): void
     {
         try {
-            Log::info('start job invoice notify');
+            $recipients[] = $this->invoice->email;
+            $micrositeUser = optional($this->invoice->microsite)->user;
 
-            Notification::route('mail', $this->invoice->email)
+            if (!is_null($micrositeUser) && !is_null($micrositeUser->email)) {
+                $recipients[] = $micrositeUser->email;
+            }
+
+            Notification::route('mail', $recipients)
                 ->notify(new InvoiceExpirationNotification($this->invoice));
 
         } catch (\Exception $e) {
