@@ -29,7 +29,7 @@ class SubscriptionCancelledNotification extends Notification implements ShouldQu
         $micrositeName = $this->subscription->microsite ? $this->subscription->microsite->name : __('notifications.unknown');
         $reference = $this->subscription->reference;
 
-        return (new MailMessage)
+        return (new MailMessage())
             ->subject(__('notifications.Subscription Cancelled Subject'))
             ->greeting(__('notifications.Subscription Cancelled Greeting', [
                 'name' => $this->subscription->name,
@@ -41,7 +41,7 @@ class SubscriptionCancelledNotification extends Notification implements ShouldQu
             ->line(__('notifications.Microsite Name', [
                 'microsite' => $micrositeName,
             ]))
-            ->action(__('notifications.Login Button'),url('/login'))
+            ->action(__('notifications.Login Button'), url('/login'))
             ->line(__('notifications.Subscription Cancelled Thanks'));
     }
 
