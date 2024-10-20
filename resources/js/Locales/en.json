@@ -426,7 +426,15 @@
         "percentage_increment": "Percentage increment",
         "convenience": "For your convenience, here is the breakdown of the charges to be paid",
         "cancel": "Cancel",
-        "continue_payment": "Continue payment"
+        "continue_payment" : "Continue payment",
+        "paid": "Paid",
+        "overdue": "Overdue",
+        "label": "Invoices",
+        "quantity": "Amount"
+    },
+    "error": {
+        "select_dates": "Please select both dates.",
+        "start_date_before_end": "The start date must be less than the end date."
     },
     "Forgot_your_password": "Forgot your password? No problem. Just tell us your email address and we will send you a link to reset your password which will allow you to choose a new one.",
     "email": "Email",
@@ -451,5 +459,12 @@
     "process_payment": "Process payment",
     "delete_register" : "Delete registration",
     "no_account" : "Don't have an account?",
-    "register_here" : "Register here"
+    "register_here" : "Register here",
+    "filter": "Filter",
+    "invoice_summary": "Invoice Summary",
+    "pending_vs_overdue": "Pending vs Overdue Chart",
+    "paid_vs_pending": "Paid vs Pending Invoices Chart",
+    "invoices_paid": "Paid Invoices",
+    "invoices_pending": "Pending Invoices",
+    "invoices_overdue": "Overdue Invoices"
 }

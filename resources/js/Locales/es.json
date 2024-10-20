@@ -426,7 +426,15 @@
         "percentage_increment": "Incremento porcentual",
         "convenience": "Para tu comodidad, aquí tienes el desglose de los cargos a pagar",
         "cancel" : "Cancelar",
-        "continue_payment" : "Continuar pago"
+        "continue_payment" : "Continuar pago",
+        "paid": "Pagadas",
+        "overdue": "Vencidas",
+        "label": "Facturas",
+        "quantity": "Cantidad"
+    },
+    "error": {
+        "select_dates": "Por favor, seleccione ambas fechas.",
+        "start_date_before_end": "La fecha de inicio debe ser menor que la fecha final."
     },
     "Forgot_your_password": "¿Olvidaste tu contraseña? No hay problema. Solo indícanos tu dirección de correo electrónico y te enviaremos un enlace para restablecer tu contraseña que te permitirá elegir una nueva.",
     "email": "Correo electrónico",
@@ -451,5 +459,12 @@
     "process_payment": "Procesar pago",
     "delete_register": "Eliminar registro",
     "no_account" : "¿No tienes una cuenta?",
-    "register_here" : "Regístrate aquí"
+    "register_here" : "Regístrate aquí",
+    "filter": "Filtrar",
+    "invoice_summary": "Resumen de Facturas",
+    "pending_vs_overdue": "Gráfica de Pendientes vs Vencidas",
+    "paid_vs_pending": "Gráfica de Facturas Pagadas vs Pendientes",
+    "invoices_paid": "Facturas Pagadas",
+    "invoices_pending": "Facturas Pendientes",
+    "invoices_overdue": "Facturas Vencidas"
 }
