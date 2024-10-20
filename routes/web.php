@@ -14,7 +14,6 @@ use App\Http\Controllers\Subscription\SubscriptionController;
 use App\Http\Controllers\SubscriptionPayment\SubscriptionPaymentController;
 use App\Http\Controllers\SubscriptionPlan\SubscriptionPlanController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/', [MicrositeController::class, 'welcomeIndex'])->name('Welcome');
 Route::get('/microsites/{slug}/payment-form', [MicrositeController::class, 'paymentForm'])->name('microsites.paymentForm');

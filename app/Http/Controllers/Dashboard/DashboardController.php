@@ -2,45 +2,40 @@
 
 namespace App\Http\Controllers\Dashboard;
 
-use App\Constants\PaymentStatus;
+use App\Constants\Abilities;
 use App\Http\Controllers\Controller;
 use App\Infrastructure\Persistence\Models\Invoice;
-use App\Infrastructure\Persistence\Models\Microsite;
+use App\ViewModels\Dashboard\DashboardViewModel;
 use App\ViewModels\Invoice\InvoiceMicrositeIndexViewModel;
 use Carbon\Carbon;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request): Response
+    use AuthorizesRequests;
+    public function index(Request $request, InvoiceMicrositeIndexViewModel $viewModelMicrosite): Response
     {
-        $startDate = $request->input('start_date', Carbon::now()->startOfMonth());
-        $endDate = $request->input('end_date', Carbon::now()->endOfMonth());
+        $this->authorize(Abilities::VIEW_ANY->value, Invoice::class);
 
-        $totalPaid = Invoice::where('status', PaymentStatus::APPROVED->value)
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->count();
+        $startDate = $request->input('start_date', Carbon::now()->subMonth()->startOfDay());
+        $endDate = $request->input('end_date', Carbon::now()->endOfDay());
+        $micrositeIdArray = $request->input('microsite_id');
+        $microsite_id = $micrositeIdArray['id'] ?? null;
 
-        $totalPending = Invoice::where('status', PaymentStatus::PENDING->value)
-            ->where('expiration_date', '>=', Carbon::now())
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->count();
-
-        $totalOverdue = Invoice::where('status', PaymentStatus::PENDING->value)
-            ->where('expiration_date', '<', Carbon::now())
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->count();
+        $viewModel = new DashboardViewModel($startDate, $endDate, $microsite_id);
 
         return Inertia::render('Dashboard', [
-            'totalPaid' => $totalPaid,
-            'totalPending' => $totalPending,
-            'totalOverdue' => $totalOverdue,
+            'totalPaid' => $viewModel->getTotalPaid(),
+            'totalPending' => $viewModel->getTotalPending(),
+            'totalOverdue' => $viewModel->getTotalOverdue(),
             'startDate' => $startDate,
-            'endDate' => $endDate
+            'endDate' => $endDate,
+            'microsites' => $viewModelMicrosite->getMicrosites(),
+            'selectedMicrosite' => $micrositeIdArray,
         ]);
     }
-
 
 }

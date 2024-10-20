@@ -4,7 +4,6 @@ namespace App\Providers;
 
 use App\Contracts\PaymentGatewayContract;
 use App\PaymentGateway\PlacetopayGateway;
-use Illuminate\Support\Arr;
 use Illuminate\Support\ServiceProvider;
 
 class PaymentServiceProvider extends ServiceProvider

@@ -8,6 +8,7 @@ class StoreSubscriptionPlanAction
 {
     public function execute(array $data): SubscriptionPlan
     {
+
         $description = is_array($data['description']) ? json_encode($data['description']) : $data['description'];
 
         return SubscriptionPlan::create([

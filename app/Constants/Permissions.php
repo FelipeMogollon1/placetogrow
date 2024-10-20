@@ -54,7 +54,7 @@ enum Permissions: string
     case INVOICES_DESTROY  = 'invoices.destroy';
     case INVOICE_PROCESS_PAYMENT = 'invoices.processPayment';
 
-
+    case DASHBOARD_INDEX = 'dashboard.index';
 
     public static function getAllPermissions(): array
     {
@@ -73,8 +73,9 @@ enum Permissions: string
             self::INVOICES_INDEX->value,
             self::INVOICES_SHOW->value,
             self::INVOICES_IMPORT->value,
-            self::INVOICES_DESTROY->value
-
+            self::INVOICES_DESTROY->value,
+            self::INVOICE_PROCESS_PAYMENT->value,
+            self::DASHBOARD_INDEX->value,
         ];
     }
 

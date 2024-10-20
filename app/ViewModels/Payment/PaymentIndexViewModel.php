@@ -38,7 +38,6 @@ class PaymentIndexViewModel extends ViewModel
             'payments.currency',
             'payments.amount',
             'payments.status',
-
         )
             ->join('microsites', 'payments.microsite_id', '=', 'microsites.id');
 

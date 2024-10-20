@@ -16,4 +16,3 @@ Schedule::command('app:expiring-subscriptions')
 
 Schedule::command('app:upcoming-subscription-collections')
     ->withoutOverlapping(10)->dailyAt('13:00')->runInBackground();
-

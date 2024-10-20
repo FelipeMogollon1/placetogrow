@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Constants\Roles;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -35,6 +36,12 @@ class ConfirmablePasswordController extends Controller
         }
 
         $request->session()->put('auth.password_confirmed_at', time());
+
+        $rolesUser = auth()->user()->roles->pluck('name')->toArray();
+
+        if (in_array(Roles::GUEST->value, $rolesUser)) {
+            return redirect()->intended(route('profile.edit', absolute: false));
+        }
 
         return redirect()->intended(route('dashboard.index', absolute: false));
     }

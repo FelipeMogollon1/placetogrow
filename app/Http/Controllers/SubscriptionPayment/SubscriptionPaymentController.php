@@ -10,7 +10,6 @@ use Inertia\Response;
 
 class SubscriptionPaymentController extends Controller
 {
-
     public function index(): Response
     {
         return Inertia::render('Subscriptions/Show', [

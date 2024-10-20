@@ -25,7 +25,11 @@ class RegisteredUserController extends Controller
     public function store(StoreUserRequest $request, StoreRegisteredUserAction $action): RedirectResponse
     {
         $action->execute($request->validated());
+        $rolesUser = auth()->user()->roles->pluck('name')->toArray();
 
+        if (in_array(Roles::GUEST->value, $rolesUser)) {
+            return redirect()->intended(route('profile.edit', absolute: false));
+        }
         return redirect(route('dashboard.index', absolute: false));
     }
 

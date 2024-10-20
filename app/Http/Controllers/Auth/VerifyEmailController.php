@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Constants\Roles;
 use App\Http\Controllers\Controller;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -14,12 +15,23 @@ class VerifyEmailController extends Controller
      */
     public function __invoke(EmailVerificationRequest $request): RedirectResponse
     {
+        $rolesUser = auth()->user()->roles->pluck('name')->toArray();
+
         if ($request->user()->hasVerifiedEmail()) {
+
+            if (in_array(Roles::GUEST->value, $rolesUser)) {
+                return redirect()->intended(route('profile.edit', absolute: false).'?verified=1');
+            }
+
             return redirect()->intended(route('dashboard.index', absolute: false).'?verified=1');
         }
 
         if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
+        }
+
+        if (in_array(Roles::GUEST->value, $rolesUser)) {
+            return redirect()->intended(route('profile.edit', absolute: false).'?verified=1');
         }
 
         return redirect()->intended(route('dashboard.index', absolute: false).'?verified=1');

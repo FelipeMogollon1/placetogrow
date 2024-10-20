@@ -430,7 +430,10 @@
         "paid": "Pagadas",
         "overdue": "Vencidas",
         "label": "Facturas",
-        "quantity": "Cantidad"
+        "quantity": "Cantidad",
+        "allMicrosites": "Todos los micrositios",
+        "start_date": "Fecha de inicio",
+        "end_date": "Fecha de finalización"
     },
     "error": {
         "select_dates": "Por favor, seleccione ambas fechas.",
