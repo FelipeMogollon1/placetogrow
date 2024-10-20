@@ -24,7 +24,7 @@ class NotifyUserAboutSubscription implements ShouldQueue
     public int $backoff = 60;
 
 
-      public function __construct(Subscription $subscription)
+    public function __construct(Subscription $subscription)
     {
         $this->subscription = $subscription;
     }
