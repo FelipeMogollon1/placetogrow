@@ -354,6 +354,8 @@ class PlacetopayGateway implements PaymentGatewayContract
 
             $this->updateCollectSubscriptionStatus($subscription, $subscriptionPlan, $response);
 
+            Log::info('status collect placetopay '. $response->status()->status());
+
             if ($response->status()->status() === PaymentStatus::APPROVED->value) {
                 $this->updateSubscription($subscription, $response, $subscriptionPlan);
             }
