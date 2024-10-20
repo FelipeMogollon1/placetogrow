@@ -120,12 +120,12 @@ onMounted(() => {
                 label: t('invoices.label'),
                 data: [metrics.value.totalPaid, metrics.value.totalPending, metrics.value.totalOverdue],
                 backgroundColor: [
-                    'rgba(75, 192, 192, 0.6)',
+                    'rgba(104,216,104,0.6)',
                     'rgba(255, 206, 86, 0.6)',
                     'rgba(255, 99, 132, 0.6)'
                 ],
                 borderColor: [
-                    'rgba(75, 192, 192, 1)',
+                    'rgba(104,216,104, 1)',
                     'rgba(255, 206, 86, 1)',
                     'rgba(255, 99, 132, 1)'
                 ],
@@ -178,12 +178,12 @@ onMounted(() => {
                 label: t('invoices.label'),
                 data: [metrics.value.totalPaid, metrics.value.totalPending],
                 backgroundColor: [
-                    'rgba(75, 192, 192, 0.7)',
-                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(104,216,104, 0.3)',
+                    'rgba(255, 206, 86, 0.3)',
                 ],
                 borderColor: [
-                    'rgba(255, 255, 255, 1)',
-                    'rgba(255, 255, 255, 1)',
+                    'rgba(104,216,104, 1)',
+                    'rgba(255, 206, 86, 1)',
                 ],
                 borderWidth: 2,
                 hoverOffset: 10,
@@ -218,12 +218,13 @@ onMounted(() => {
                 label: t('invoices.label'), // Traducción
                 data: [metrics.value.totalPending, metrics.value.totalOverdue],
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.3)',
-                    'rgba(75, 192, 192, 0.3)'
+                    'rgba(255, 206, 86, 0.3)',
+                    'rgba(255, 99, 132, 0.3)'
                 ],
                 borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(75, 192, 192, 1)'
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(255, 99, 132, 1)'
+
                 ],
                 borderWidth: 2,
                 hoverOffset: 10,
