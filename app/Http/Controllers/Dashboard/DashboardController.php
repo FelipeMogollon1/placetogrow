@@ -10,6 +10,7 @@ use App\ViewModels\Invoice\InvoiceMicrositeIndexViewModel;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -20,8 +21,8 @@ class DashboardController extends Controller
     {
         $this->authorize(Abilities::VIEW_ANY->value, Invoice::class);
 
-        $startDate = $request->input('start_date', Carbon::now()->subMonth()->startOfDay());
-        $endDate = $request->input('end_date', Carbon::now()->endOfDay());
+        $startDate = Carbon::parse($request->input('start_date', Carbon::now()->subMonth()->startOfDay()))->startOfDay();
+        $endDate = Carbon::parse($request->input('end_date', Carbon::now()->endOfDay()))->endOfDay();
         $micrositeIdArray = $request->input('microsite_id');
         $microsite_id = $micrositeIdArray['id'] ?? null;
 
