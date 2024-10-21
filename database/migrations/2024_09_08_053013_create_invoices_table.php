@@ -36,7 +36,7 @@ return new class () extends Migration {
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('microsite_id')->references('id')->on('microsites')->onDelete('cascade');
-            $table->unique(['document', 'microsite_id']);
+            $table->unique(['reference','document_type','document', 'microsite_id']);
         });
     }
 
