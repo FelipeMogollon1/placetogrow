@@ -10,7 +10,8 @@ class UpdateSubscriptionAction
     {
         $subscription = Subscription::findOrFail($id);
         $subscription->update([
-            'subscription_plan_id' => $data['subscription_plan_id']
+            'subscription_plan_id' => $data['subscription_plan_id'],
+            'total_charges' => 0
         ]);
 
         return $subscription;

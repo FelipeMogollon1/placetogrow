@@ -35,7 +35,7 @@ class UpdateSubscriptionRequest extends FormRequest
             'validUntil' => 'nullable|date',
             'next_billing_date' => 'nullable|date',
             'total_charges' => 'nullable|integer',
-            'microsite_id' => 'required|exists:microsites,id',
+            'microsite_id' => 'nullable|exists:microsites,id',
         ];
     }
 }
