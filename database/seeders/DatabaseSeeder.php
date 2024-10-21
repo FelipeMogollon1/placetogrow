@@ -15,5 +15,6 @@ class DatabaseSeeder extends Seeder
         $this->call(MicrositeSeeder::class);
         $this->call(InvoiceSeeder::class);
         $this->call(SubscriptionPlanSeeder::class);
+        $this->call(SubscriptionSeeder::class);
     }
 }
