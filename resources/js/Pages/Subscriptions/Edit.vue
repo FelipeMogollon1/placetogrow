@@ -1,11 +1,13 @@
 <script setup>
 import { ref } from 'vue';
 import { Head, Link, useForm, usePage } from "@inertiajs/vue3";
+import { useI18n } from 'vue-i18n';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import { route } from "ziggy-js";
 import { CheckBadgeIcon } from "@heroicons/vue/24/outline/index.js";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
+const { t } = useI18n();
 const page = usePage();
 
 defineProps({
@@ -25,14 +27,31 @@ const form = useForm({
 });
 
 const selectedPlan = ref(page.props.subscription[0].subscription_plan_id);
+const showModal = ref(false);
+const warningMessage = ref('');
 
 const selectPlan = (id) => {
+    if (String(id) === String(selectedPlan.value)) {
+        warningMessage.value = t("subscription.currentPlanWarning");
+    } else {
+        warningMessage.value = '';
+    }
     selectedPlan.value = id;
 };
 
+const confirmUpdate = () => {
+    if (String(selectedPlan.value) === String(page.props.subscription[0].subscription_plan_id)) {
+        warningMessage.value = t("subscription.currentPlanWarning");
+    } else {
+        form.subscription_plan_id = selectedPlan.value;
+        showModal.value = true;
+        warningMessage.value = '';
+    }
+};
+
 function updateSubscription() {
-    form.subscription_plan_id = selectedPlan.value;
     form.put(route('subscriptions.update', page.props.subscription[0].id));
+    showModal.value = false;
 }
 
 const isFlipped = ref(false);
@@ -48,6 +67,7 @@ const formatDate = (dateStr) => {
     return `${month.toString().padStart(2, '0')}/${year}`;
 };
 </script>
+
 
 <template>
     <Head :title="$t('subscription.editSubscription')" />
@@ -67,8 +87,7 @@ const formatDate = (dateStr) => {
         </template>
 
         <main class="flex flex-col md:flex-row justify-center">
-
-            <section class="w-full md:w-3/5 bg-white grid grid-cols-1  sm:grid-cols-1 p-7 m-7 rounded-2xl shadow-lg">
+            <section class="w-full md:w-3/5 bg-white grid grid-cols-1 sm:grid-cols-1 p-7 m-7 rounded-2xl shadow-lg">
                 <h2 class="text-3xl font-bold mb-4 text-gray-800">
                     {{ $t('subscription.changePlan') }}
                 </h2>
@@ -107,10 +126,12 @@ const formatDate = (dateStr) => {
                             </p>
                         </div>
                     </div>
+
+                    <p v-if="warningMessage" class="text-red-500 text-sm mt-2">{{ warningMessage }}</p>
                 </div>
 
                 <div class="mt-6 flex justify-end">
-                    <PrimaryButton @click="updateSubscription()">
+                    <PrimaryButton @click="confirmUpdate()">
                         {{ $t('subscription.continue') }}
                     </PrimaryButton>
                 </div>
@@ -163,11 +184,20 @@ const formatDate = (dateStr) => {
                     </div>
                 </div>
             </section>
-
         </main>
+        <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div class="bg-white rounded-lg p-6 max-w-sm mx-auto">
+                <h3 class="text-lg font-bold mb-4">{{ $t('subscription.confirmChange') }}</h3>
+                <p>{{ $t('subscription.confirmChangeMessage') }}</p>
+                <p class="pt-2 text-gray-900 font-bold">{{ $t('subscription.additional') }}</p>
+                <div class="mt-4 flex justify-end">
+                    <PrimaryButton @click="updateSubscription()">{{ $t('subscription.acceptAndContinue') }}</PrimaryButton>
+                    <button @click="showModal = false" class="ml-2 text-gray-500">{{ $t('subscription.cancel') }}</button>
+                </div>
+            </div>
+        </div>
     </AuthenticatedLayout>
 </template>
-
 
 <style scoped>
 .perspective-1000 {
@@ -185,4 +215,12 @@ const formatDate = (dateStr) => {
 .transform-style-preserve-3d {
     transform-style: preserve-3d;
 }
+
+.fixed {
+    position: fixed;
+}
+.bg-black {
+    background-color: rgba(0, 0, 0, 0.5);
+}
 </style>
+
