@@ -19,7 +19,7 @@ class MicrositeSeeder extends Seeder
 
         $microsites = [];
 
-        for ($i = 1; $i <= 8; $i++) {
+        for ($i = 1; $i <= 9; $i++) {
             $slug = Str::slug("Microsite $i") . '-' . Str::random(5);
 
             while (Microsite::where('slug', $slug)->exists()) {
