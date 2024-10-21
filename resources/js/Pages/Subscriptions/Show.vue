@@ -41,7 +41,6 @@ const formatDate = (dateString) => {
 
 const headers = [
     "request_id",
-    "plan",
     "amount",
     "status",
     "paid_at",
