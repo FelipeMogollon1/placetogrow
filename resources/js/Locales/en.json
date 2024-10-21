@@ -225,7 +225,8 @@
             "roles": "Roles",
             "payments": "Payments",
             "invoices": "Invoices",
-            "subscriptions": "Subscriptions"
+            "subscriptions": "Subscriptions",
+            "dashboard": "Dashboard"
         },
         "permissions": {
             "index": "List",
@@ -302,6 +303,9 @@
             "destroy": "Delete",
             "import": "Import",
             "processPayment": "Process Payment"
+        },
+        "dashboard": {
+            "index": "List"
         }
     },
     "category": {
@@ -380,8 +384,14 @@
         "attempt_count": "Attempts",
         "paid_at": "Paid at",
         "tries": "Number of attempts",
-        "backoff": "Intervals at",
-        "payments": "Payments"
+        "backoff": "Intervals in",
+        "payments": "Payments",
+        "currentPlanWarning": "You have selected the plan you currently have. If you want to make a change, please choose a different plan from the list of subscriptions.",
+        "confirmChange": "Confirm Change",
+        "confirmChangeMessage": "Are you sure you want to change your subscription plan? This action cannot be undone.",
+        "acceptAndContinue": "Accept and Continue",
+        "cancel": "Cancel",
+        "additional": "Your plan will be updated as of the next cutoff date."
     },
     "invoices": {
         "title" : "Invoices",

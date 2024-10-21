@@ -225,7 +225,8 @@
             "roles": "Roles",
             "payments": "Pagos",
             "invoices": "Facturas",
-            "subscriptions": "Suscripciones"
+            "subscriptions": "Suscripciones",
+            "dashboard": "Panel"
         },
         "permissions": {
             "index": "Listar",
@@ -302,6 +303,9 @@
             "destroy": "Eliminar",
             "import": "Importar",
             "processPayment": "Procesar Pago"
+        },
+        "dashboard": {
+            "index": "Listar"
         }
     },
     "category": {
@@ -381,7 +385,13 @@
         "paid_at": "Pagado en",
         "tries": "Número de intentos",
         "backoff": "Intervalos en",
-        "payments": "Pagos"
+        "payments": "Pagos",
+        "currentPlanWarning": "Ha seleccionado el plan que tiene actualmente. Si desea realizar una modificación, elija un plan diferente de la lista de suscripciones.",
+        "confirmChange": "Confirmar Cambio",
+        "confirmChangeMessage": "¿Está seguro de que desea cambiar su plan de suscripción? Esta acción no se puede deshacer.",
+        "acceptAndContinue": "Aceptar y Continuar",
+        "cancel": "Cancelar",
+        "additional": "Su plan se actualizará a partir de próxima fecha de corte."
     },
     "invoices": {
         "title" : "Facturas",
