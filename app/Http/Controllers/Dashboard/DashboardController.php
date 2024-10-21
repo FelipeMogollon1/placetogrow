@@ -10,7 +10,6 @@ use App\ViewModels\Invoice\InvoiceMicrositeIndexViewModel;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 
