@@ -12,7 +12,7 @@ return new class () extends Migration {
         Schema::create('subscription_plans', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->json('description');
+            $table->json('description')->nullable();
             $table->decimal('amount', 10, 2);
             $table->enum('currency', CurrencyTypes::getCurrencyType());
             $table->enum('subscription_period', SubscriptionPeriods::getAllSubscriptionPeriods());
