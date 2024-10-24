@@ -4,6 +4,7 @@ namespace App\Jobs\Notify;
 
 use App\Infrastructure\Persistence\Models\Subscription;
 use App\Notifications\SubscriptionEndingNotification;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -15,7 +16,7 @@ class NotifyUserAboutSubcriptionEnding implements ShouldQueue
 {
     use Dispatchable;
     use InteractsWithQueue;
-    use \Illuminate\Bus\Queueable;
+    use Queueable;
     use SerializesModels;
 
     protected Subscription $subscription;
@@ -33,7 +34,14 @@ class NotifyUserAboutSubcriptionEnding implements ShouldQueue
             log::info('start job subscription notify ending');
             Log::info('Subscription email: ' . $this->subscription->email);
 
-            Notification::route('mail', $this->subscription->email)
+            $recipients[] = $this->subscription->email;
+            $micrositeUser = optional($this->subscription->microsite)->user;
+
+            if (!is_null($micrositeUser) && !is_null($micrositeUser->email)) {
+                $recipients[] = $micrositeUser->email;
+            }
+
+            Notification::route('mail', $recipients)
                 ->notify(new SubscriptionEndingNotification($this->subscription));
 
         } catch (\Exception $e) {
