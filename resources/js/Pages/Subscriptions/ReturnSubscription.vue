@@ -27,11 +27,11 @@ defineProps({
 
 const statusColors = {
     PENDING: 'yellow',
-    APPROVED: 'green',
-    REJECTED: 'red',
-    APPROVED_PARTIAL: 'cyan',
-    PARTIAL_EXPIRED: 'orange',
-    UNKNOWN: 'blue'
+    ACTIVE: 'green',
+    CANCELLED: 'red',
+    PAUSED: 'cyan',
+    REJECTED: 'orange',
+    EXPIRED: 'blue'
 };
 
 const formatDate = (dateString) => {

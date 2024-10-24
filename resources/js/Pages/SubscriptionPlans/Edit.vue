@@ -100,30 +100,6 @@
                     <InputError class="mt-2" :message="form.errors.amount" />
                 </div>
 
-                <div class="md:col-span-2">
-                    <InputLabel for="additional_info" :value="$t('subscription.additional_info')" />
-                    <TextInput
-                        id="additional_info"
-                        type="text"
-                        class="mt-1 block w-full"
-                        v-model="form.additional_info"
-                        :placeholder="$t('subscription.additional_info')"
-                    />
-                    <InputError class="mt-2" :message="form.errors.additional_info" />
-                </div>
-
-                <div class="md:col-span-2">
-                    <InputLabel for="expiration_additional_info" :value="$t('subscription.expiration_additional_info')" />
-                    <TextInput
-                        id="expiration_additional_info"
-                        type="text"
-                        class="mt-1 block w-full"
-                        v-model="form.expiration_additional_info"
-                        :placeholder="$t('subscription.expiration_additional_info')"
-                    />
-                    <InputError class="mt-2" :message="form.errors.expiration_additional_info" />
-                </div>
-
                 <div class="md:col-span-2 flex justify-center">
                     <PrimaryButton @click="submit">
                         {{ $t('subscription.updateSubscriptionPlan') }}
@@ -171,8 +147,6 @@ const form = useForm({
     subscription_period: props.subscription.subscription_period || "monthly",
     expiration_time: props.subscription.expiration_time || 1,
     additional_info: props.subscription.additional_info || "",
-    expiration_additional_info: props.subscription.expiration_additional_info || "",
-    microsite_id: props.subscription.microsite_id || ""
 });
 
 const submit = () => {

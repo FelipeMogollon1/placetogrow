@@ -19,7 +19,7 @@ class MicrositeSeeder extends Seeder
 
         $microsites = [];
 
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 9; $i++) {
             $slug = Str::slug("Microsite $i") . '-' . Str::random(5);
 
             while (Microsite::where('slug', $slug)->exists()) {
@@ -41,6 +41,7 @@ class MicrositeSeeder extends Seeder
                 'payment_expiration_time' => rand(30, 60),
                 'category_id' => $categories->random()->id,
                 'form_id' => $form->id,
+                'user_id' => 2,
             ];
 
             $microsites[] = $microsite;

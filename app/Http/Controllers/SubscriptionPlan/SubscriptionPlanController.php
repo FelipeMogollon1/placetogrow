@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Subscription;
+namespace App\Http\Controllers\SubscriptionPlan;
 
+use App\Domain\SubscriptionPlan\Actions\DestroySubscriptionPlanAction;
 use App\Domain\SubscriptionPlan\Actions\StoreSubscriptionPlanAction;
 use App\Domain\SubscriptionPlan\Actions\UpdateSubscriptionPlanAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SubscriptionPlan\StoreSubscriptionPlanRequest;
 use App\Http\Requests\SubscriptionPlan\UpdateSubscriptionPlanRequest;
-use App\Infrastructure\Persistence\Models\SubscriptionPlan;
 use Illuminate\Http\RedirectResponse;
 
 class SubscriptionPlanController extends Controller
@@ -23,20 +23,18 @@ class SubscriptionPlanController extends Controller
 
     public function update(UpdateSubscriptionPlanRequest $request, string $id, UpdateSubscriptionPlanAction $action): RedirectResponse
     {
-        $action->execute($id, $request->validated());
+        $micrositeId = $action->execute($id, $request->validated());
 
-        return redirect()->route('microsites.show', $request->microsite_id)
+        return redirect()->route('microsites.show', $micrositeId)
             ->with('success', 'Subscription plan updated.');
     }
 
 
-    public function destroy(int $id): RedirectResponse
+    public function destroy(int $id, DestroySubscriptionPlanAction $action): RedirectResponse
     {
-        $subscriptionPlan = SubscriptionPlan::findOrFail($id);
-        $micrositeId = $subscriptionPlan->microsite_id;
-        $subscriptionPlan->delete();
+        $micrositeId = $action->execute($id);
 
         return redirect()->route('microsites.show', $micrositeId)
-            ->with('success', 'Subscription plan deleted.');
+            ->with('success', 'Subscription plan deactivated.');
     }
 }

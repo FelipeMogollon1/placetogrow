@@ -5,10 +5,12 @@ namespace App\Infrastructure\Persistence\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Notifications\Notifiable;
 
 class Invoice extends Model
 {
     use HasFactory;
+    use Notifiable;
 
 
     protected $fillable = [
@@ -25,6 +27,11 @@ class Invoice extends Model
         'user_id',
         'microsite_id',
         'microsite_type',
+        'receipt',
+        'process_url',
+        'request_id',
+        'process_identifier',
+        'expiration_date',
     ];
 
     protected $casts = [

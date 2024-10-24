@@ -3,9 +3,15 @@ import {Head, Link, usePage} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import SpanForm from "@/Layouts/Atoms/SpanForm.vue";
 import {route} from "ziggy-js";
+import PaymentTable from "@/Layouts/Organisms/PaymentTable.vue";
+import SubscriptionPaymentTable from "@/Layouts/Organisms/SubscriptionPaymentTable.vue";
 
 defineProps({
     subscription: {
+        type: Object,
+        default: () => []
+    },
+    subscriptionPayments: {
         type: Object,
         default: () => []
     }
@@ -13,11 +19,11 @@ defineProps({
 
 const statusColors = {
     PENDING: 'yellow',
-    APPROVED: 'green',
-    REJECTED: 'red',
-    APPROVED_PARTIAL: 'cyan',
-    PARTIAL_EXPIRED: 'orange',
-    UNKNOWN: 'blue'
+    ACTIVE: 'green',
+    CANCELLED: 'red',
+    PAUSED: 'cyan',
+    REJECTED: 'orange',
+    EXPIRED: 'blue'
 };
 
 const formatDate = (dateString) => {
@@ -32,6 +38,14 @@ const formatDate = (dateString) => {
         timeZoneName: 'short'
     });
 };
+
+const headers = [
+    "request_id",
+    "amount",
+    "status",
+    "paid_at",
+    "attempt_count"
+];
 
 
 </script>
@@ -54,7 +68,6 @@ const formatDate = (dateString) => {
                     <div class="mt-6 border-t border-gray-100">
                         <dl class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
 
-                            <!-- Subscription Info -->
                             <div v-if="subscription.reference !== null" class="px-4 py-3">
                                 <dt class="text-sm font-medium leading-6 text-gray-400">Referencia de la subscripción:</dt>
                                 <dd class="text-md leading-6 text-gray-700 font-semibold">{{ subscription.reference }}</dd>
@@ -80,7 +93,6 @@ const formatDate = (dateString) => {
                                 <dd class="text-md leading-6 text-gray-700 font-semibold">{{ formatDate(subscription.created_at) }}</dd>
                             </div>
 
-                            <!-- Subscription Plan Info -->
                             <div v-if="subscription.subscription_plan.name !== null" class="px-4 py-3">
                                 <dt class="text-sm font-medium leading-6 text-gray-400">Plan de Suscripción:</dt>
                                 <dd class="text-md leading-6 text-gray-700 font-semibold">{{ subscription.subscription_plan.name }}</dd>
@@ -121,7 +133,10 @@ const formatDate = (dateString) => {
                     </div>
                 </div>
             </main>
-
+            <main v-if="subscriptionPayments.data.length > 0" class="">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight pt-4">{{ $t('subscription.payments') }}</h2>
+                <SubscriptionPaymentTable :data="subscriptionPayments.data" :paginator="subscriptionPayments" :headers="headers" />
+            </main>
         </AuthenticatedLayout>
 </template>
 

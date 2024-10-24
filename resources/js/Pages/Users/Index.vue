@@ -3,7 +3,6 @@ import { Head, Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {route} from "ziggy-js";
 import UserTable from "@/Layouts/Organisms/UserTable.vue";
-import PaymentTable from "@/Layouts/Organisms/PaymentTable.vue";
 
 defineProps({
     users: {
@@ -12,7 +11,7 @@ defineProps({
     }
 });
 
-const headers = ["name","email","roles"];
+const headers = ["name","surname","document_type","document","email","roles"];
 
 </script>
 

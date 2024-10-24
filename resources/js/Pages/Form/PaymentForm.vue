@@ -11,6 +11,8 @@ import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 import SubscriptionView from "@/Layouts/Organisms/SubscriptionView.vue";
+import FlashMessages from '@/Layouts/Molecules/FlashMessages.vue';
+
 
 const page = usePage();
 const microsite = ref(page.props.microsite || {});
@@ -162,7 +164,7 @@ watch(() => form.currency, (newCurrency) => {
                 <LanguageDropdown />
             </nav>
         </header>
-
+        <flash-messages />
         <main v-if="microsite.microsite_type === 'subscription'">
 
             <SubscriptionView  :color="colorOptions[formConfig.color]"
@@ -170,7 +172,9 @@ watch(() => form.currency, (newCurrency) => {
                                :subscriptionPlans="subscriptionPlans"
                                :fields="formConfig.configuration.fields"
                                :documentTypes="documentTypes"
+                               :forms="formConfig"
             />
+
         </main>
 
 
@@ -198,11 +202,11 @@ watch(() => form.currency, (newCurrency) => {
                         </div>
                     </div>
                     <div class="col-span-2 flex pt-1 pb-6 text-gray-500">
-                        <div v-if="formConfig.configuration.additional_information === '' || formConfig.configuration.additional_information === null " class="text-md pb-2">
+                        <div v-if="formConfig.additional_info === '' || formConfig.additional_info === null " class="text-md pb-2">
                             {{ $t('payment.additional_data') }}
                         </div>
                         <div v-else class="text-md pb-2">
-                            {{formConfig.configuration.additional_information}}
+                            {{formConfig.additional_info}}
                         </div>
                     </div>
 
@@ -393,6 +397,9 @@ watch(() => form.currency, (newCurrency) => {
                                 {{ $t('form.start_payment') }}
                             </PrimaryButton>
                         </div>
+                        <p :class="['text-sm text-center mt-6 text-gray-500 col-span-2']">
+                            *{{ formConfig.expiration_additional_info  }}
+                        </p>
                     </form>
                 </div>
 

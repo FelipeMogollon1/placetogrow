@@ -43,6 +43,8 @@ enum Permissions: string
 
     case SUBSCRIPTIONS_INDEX = 'subscriptions.index';
     case SUBSCRIPTIONS_SHOW = 'subscriptions.show';
+    case SUBSCRIPTIONS_EDIT = 'subscriptions.edit';
+    case SUBSCRIPTIONS_UPDATE  = 'subscriptions.update';
     case SUBSCRIPTIONS_DESTROY  = 'subscriptions.destroy';
 
 
@@ -52,7 +54,7 @@ enum Permissions: string
     case INVOICES_DESTROY  = 'invoices.destroy';
     case INVOICE_PROCESS_PAYMENT = 'invoices.processPayment';
 
-
+    case DASHBOARD_INDEX = 'dashboard.index';
 
     public static function getAllPermissions(): array
     {
@@ -68,11 +70,12 @@ enum Permissions: string
             self::PAYMENTS_SHOW->value,
             self::SUBSCRIPTIONS_INDEX->value,
             self::SUBSCRIPTIONS_SHOW->value,
-            self::SUBSCRIPTIONS_DESTROY->value,
             self::INVOICES_INDEX->value,
             self::INVOICES_SHOW->value,
             self::INVOICES_IMPORT->value,
-            self::INVOICES_DESTROY->value
+            self::INVOICES_DESTROY->value,
+            self::INVOICE_PROCESS_PAYMENT->value,
+            self::DASHBOARD_INDEX->value,
         ];
     }
 
@@ -83,6 +86,8 @@ enum Permissions: string
             self::PAYMENTS_SHOW->value,
             self::SUBSCRIPTIONS_INDEX->value,
             self::SUBSCRIPTIONS_SHOW->value,
+            self::SUBSCRIPTIONS_EDIT->value,
+            self::SUBSCRIPTIONS_UPDATE->value,
             self::SUBSCRIPTIONS_DESTROY->value,
             self::INVOICES_INDEX->value,
             self::INVOICES_SHOW->value,

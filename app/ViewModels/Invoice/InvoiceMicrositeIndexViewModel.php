@@ -17,11 +17,6 @@ class InvoiceMicrositeIndexViewModel extends ViewModel
         $this->user = auth()->user();
     }
 
-    public static function fromAuthenticatedUser(): InvoiceMicrositeIndexViewModel
-    {
-        return new self();
-    }
-
     public function getMicrosites(): Collection
     {
         $permissionsUser = $this->user->getAllPermissions()->pluck('name')->toArray();
@@ -32,10 +27,9 @@ class InvoiceMicrositeIndexViewModel extends ViewModel
 
         if (in_array(Permissions::INVOICES_INDEX->value, $permissionsUser)) {
             if (in_array(Roles::ADMIN->value, $rolesUser)) {
-
                 $micrositesQuery->where('user_id', $this->user->id);
             } elseif (in_array(Roles::GUEST->value, $rolesUser)) {
-                $micrositesQuery->where('user_id', $this->user->id);
+                return collect();
             }
         }
 

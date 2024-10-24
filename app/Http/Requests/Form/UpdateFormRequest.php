@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\Form;
 
+use App\Constants\AdditionalValueTypes;
 use App\Rules\Form\ValidateFormConfiguration;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateFormRequest extends FormRequest
 {
@@ -24,7 +26,36 @@ class UpdateFormRequest extends FormRequest
             'footer' => ['nullable'],
             'header' => ['nullable'],
             'color' => ['nullable'],
-            'additional_information' => ['nullable'],
+            'additional_info' => [
+                'nullable',
+                'string',
+            ],
+            'expiration_additional_info' => [
+                'nullable',
+                'string',
+            ],
+            'tries' => [
+                'required',
+                'integer',
+                'min:1',
+            ],
+            'backoff' => [
+                'required',
+                'integer',
+                'min:1',
+            ],
+            'additionalValue' => [
+                'nullable',
+                'integer',
+                'min:1',
+                'required_with:additionalValueType',
+            ],
+            'additionalValueType' => [
+                'nullable',
+                'string',
+                Rule::in(AdditionalValueTypes::getAdditionalValueTypes()),
+                'required_with:additionalValue',
+            ],
         ];
     }
 }

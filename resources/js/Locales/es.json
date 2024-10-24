@@ -1,4 +1,5 @@
 {
+    "total_records": "Registros totales",
     "about": "Acerca de",
     "all_rights_reserved": "Todos los derechos reservados.",
     "categories": "Categorias",
@@ -76,9 +77,14 @@
         "fuchsia": "Fucsia",
         "pink": "Rosa",
         "rose": "Rosa claro",
-        "white": "Blanco"
+        "white": "Blanco",
+        "Settings": "Configuración de la",
+        "additionalValue": "Valor adicional por mora",
+        "additionalValueType": "Tipo de valor adicional",
+        "fixedValue": "Valor fijo",
+        "percentage": "Porcentaje",
+        "number": "Número"
     },
-
     "forgot_your_password": "¿Ha olvidado su contraseña?",
     "home": "Inicio",
     "language": {
@@ -145,6 +151,9 @@
         "cancel": "Cancelar",
         "email": "Correo electrónico",
         "name": "Nombre",
+        "surname": "Apellido",
+        "document_type": "Tipo de documento",
+        "document": "Documento",
         "password": "Contraseña",
         "profile": "Mi perfil",
         "profile_information": "Información del perfil",
@@ -192,6 +201,10 @@
     },
     "payment_status": {
         "PENDING" : "Pendiente",
+        "ACTIVE" : "Activo",
+        "CANCELLED" : "Cancelado",
+        "PAUSED" : "Pausado",
+        "EXPIRED" : "Expirado",
         "APPROVED" : "Aprobado",
         "REJECTED" : "Rechazado",
         "APPROVED_PARTIAL" : "Aprobado Parcialmente",
@@ -210,7 +223,10 @@
             "microsites": "Micrositios",
             "categories": "Categorías",
             "roles": "Roles",
-            "payments": "Pagos"
+            "payments": "Pagos",
+            "invoices": "Facturas",
+            "subscriptions": "Suscripciones",
+            "dashboard": "Panel"
         },
         "permissions": {
             "index": "Listar",
@@ -219,7 +235,9 @@
             "store": "Guardar",
             "edit": "Editar",
             "update": "Actualizar",
-            "destroy": "Eliminar"
+            "destroy": "Eliminar",
+            "import": "Importar",
+            "processPayment": "Procesar Pago"
         },
         "users": {
             "index": "Listar",
@@ -265,6 +283,29 @@
             "edit": "Editar",
             "update": "Actualizar",
             "destroy": "Eliminar"
+        },
+        "subscriptions": {
+            "index": "Listar",
+            "show": "Ver detalle",
+            "create": "Crear",
+            "store": "Guardar",
+            "edit": "Editar",
+            "update": "Actualizar",
+            "destroy": "Eliminar"
+        },
+        "invoices": {
+            "index": "Listar",
+            "show": "Ver detalle",
+            "create": "Crear",
+            "store": "Guardar",
+            "edit": "Editar",
+            "update": "Actualizar",
+            "destroy": "Eliminar",
+            "import": "Importar",
+            "processPayment": "Procesar Pago"
+        },
+        "dashboard": {
+            "index": "Listar"
         }
     },
     "category": {
@@ -330,7 +371,27 @@
         "subscriptionForm" : "Formulario de Suscripción",
         "selectedSubscription" : "Suscripción Seleccionada",
         "send" : "Enviar",
-        "return" : "Volver"
+        "return" : "Volver",
+        "currency": "Moneda",
+        "editSubscription" : "Editar subscripción",
+        "edit_subscription" : "Editar Plan de Suscripción",
+        "continue" : "Continuar",
+        "changePlan": "Cambiar de plan",
+        "paymentMethod": "Método de pago actual",
+        "creditCard": "Tarjeta de credito",
+        "request_id": "ID de solicitud",
+        "plan": "Plan",
+        "attempt_count": "Intentos",
+        "paid_at": "Pagado en",
+        "tries": "Número de intentos",
+        "backoff": "Intervalos en",
+        "payments": "Pagos",
+        "currentPlanWarning": "Ha seleccionado el plan que tiene actualmente. Si desea realizar una modificación, elija un plan diferente de la lista de suscripciones.",
+        "confirmChange": "Confirmar Cambio",
+        "confirmChangeMessage": "¿Está seguro de que desea cambiar su plan de suscripción? Esta acción no se puede deshacer.",
+        "acceptAndContinue": "Aceptar y Continuar",
+        "cancel": "Cancelar",
+        "additional": "Su plan se actualizará a partir de próxima fecha de corte."
     },
     "invoices": {
         "title" : "Facturas",
@@ -350,6 +411,73 @@
         "selectMicrosite": "Selecciona el micrositio",
         "matter": "Importar",
         "searchInvoice" : "Buscar factura...",
-        "noFile": "No se  ha seleccionado un archivo"
-    }
+        "noFile": "No se  ha seleccionado un archivo",
+        "paymentDate": "Fecha de pago",
+        "downloadTemplate" : "Descargar Template",
+        "microsite": "Micrositio",
+        "storage_path": "Archivo original",
+        "error_file_path": "Archivo de errores",
+        "created_at": "Fecha de creación",
+        "valid_records_count": "Registros válidos",
+        "total_records": "Registros totales",
+        "importErrors": "Errores de importación",
+        "downloadable": "Descargables",
+        "pending": "Pendiente",
+        "processing": "Procesando",
+        "completed": "Completado",
+        "failed": "Fallido",
+        "completed_with_errors": "Completado con errores",
+        "expiration_date": "Fecha de vencimiento",
+        "late_payment": "Recordatorio de Pago",
+        "total_with_increment": "Total con incremento",
+        "invoice_expired_on": "Queremos recordarte que la factura seleccionada con fecha de vencimiento el",
+        "expired": " ha expirado",
+        "fixed_increment": "Incremento fijo",
+        "percentage_increment": "Incremento porcentual",
+        "convenience": "Para tu comodidad, aquí tienes el desglose de los cargos a pagar",
+        "cancel" : "Cancelar",
+        "continue_payment" : "Continuar pago",
+        "paid": "Pagadas",
+        "overdue": "Vencidas",
+        "label": "Facturas",
+        "quantity": "Cantidad",
+        "allMicrosites": "Todos los micrositios",
+        "start_date": "Fecha de inicio",
+        "end_date": "Fecha de finalización"
+    },
+    "error": {
+        "select_dates": "Por favor, seleccione ambas fechas.",
+        "start_date_before_end": "La fecha de inicio debe ser menor que la fecha final."
+    },
+    "Forgot_your_password": "¿Olvidaste tu contraseña? No hay problema. Solo indícanos tu dirección de correo electrónico y te enviaremos un enlace para restablecer tu contraseña que te permitirá elegir una nueva.",
+    "email": "Correo electrónico",
+    "Reset_password": "Restablecer contraseña",
+    "password": "Contraseña",
+    "Reset_password_instructions": "Instrucciones de restablecimiento de contraseña",
+    "If_you_did_not_request_a_password_reset": "Si no solicitaste un restablecimiento de contraseña, no tendrás ningún problema. Puedes continuar usando nuestra aplicación sin problemas.",
+    "reset_password": "Restablecer contraseña",
+    "send_password_reset_link": "Enviar enlace al correo electrónico",
+    "password_reset_link_sent": "Enlace de restablecimiento de contraseña enviado!",
+    "check_your_email": "Revisa tu correo electrónico para encontrar el enlace de restablecimiento de contraseña.",
+    "confirm_password": "Confirmar contraseña",
+    "your_password_has_been_reset": "Tu contraseña ha sido restablecida!",
+    "if_you_did_not_request_a_password_reset": "Si no solicitaste un restablecimiento de contraseña, no tendrás ningún problema. Puedes continuar usando nuestra aplicación sin problemas.",
+    "seconds": "segundos",
+    "minutes": "minutos",
+    "hours": "horas",
+    "fails": "Si el cobro de suscripción falla, se podrá reintentar hasta",
+    "timeInterval": "veces con un intervalo de",
+    "delete_invoice": "Eliminar factura",
+    "show_invoice": "Mostrar factura",
+    "process_payment": "Procesar pago",
+    "delete_register": "Eliminar registro",
+    "no_account" : "¿No tienes una cuenta?",
+    "register_here" : "Regístrate aquí",
+    "filter": "Filtrar",
+    "invoice_summary": "Resumen de Facturas",
+    "pending_vs_overdue": "Gráfica de Pendientes vs Vencidas",
+    "paid_vs_pending": "Gráfica de Facturas Pagadas vs Pendientes",
+    "invoices_paid": "Facturas Pagadas",
+    "invoices_pending": "Facturas Pendientes",
+    "invoices_overdue": "Facturas Vencidas"
 }

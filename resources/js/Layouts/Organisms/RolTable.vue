@@ -84,7 +84,14 @@ const statusColors = {
                                 :key="header"
                                 class="px-6 py-3 whitespace text-sm text-gray-900"
                             >
-                                {{ item[header] }}
+                                <span v-if="['sa', 'admin', 'guest'].includes(item.name)">
+                                    {{ $t(`roles_table.${item.name}`) }}
+                                </span>
+                                <span v-else>
+                                    {{ item.name }}
+                                </span>
+
+
                             </td>
                             <td>
                                 <div v-if="!['sa', 'admin', 'guest'].includes(item.name)" class="text-gray-400 flex justify-center">

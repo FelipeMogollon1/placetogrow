@@ -8,15 +8,16 @@ class ImportInvoicesRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return auth()->user()->can('invoices.import');
     }
 
 
     public function rules(): array
     {
         return [
-            'invoices' => 'required|file|mimes:csv,xlsx,xls|max:2048',
+            'invoices' => 'required|file|mimes:csv,xlsx,xls',
             'microsite_id' => 'required|integer|exists:microsites,id',
+            'expiration_date' => 'required|date|after:today',
         ];
     }
 }
