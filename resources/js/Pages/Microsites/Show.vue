@@ -139,6 +139,11 @@ watch(selectedColor, (newColor) => {
 });
 
 const submit = () => {
+
+    if (!form.backoff) {
+        form.backoff = 300;
+    }
+
     form.post(route('forms.custom_update', form.id))
 };
 
