@@ -46,14 +46,20 @@ class DestroySubscriptionAction
 
             if ($response->successful() && $response->json('status.status') === 'OK') {
                 $subscription->status = SubscriptionStatus::CANCELLED->value;
-
                 $subscription->save();
 
                 Notification::route('mail', $subscription->email)
                     ->notify(new SubscriptionCancelledNotification($subscription));
 
                 return true;
+
+            } elseif ($response->json('status.status') === 'FAILED' && $response->json('status.reason') === 'XN') {
+                $subscription->status = SubscriptionStatus::CANCELLED->value;
+                $subscription->save();
+
+                return true;
             }
+
             RetrySubscriptionCancellation::dispatch($subscription)->delay(now()->addMinutes(1));
 
             Log::error('Failed to cancel subscription', [
