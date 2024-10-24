@@ -33,9 +33,9 @@ class ExpiringSubscriptionsCommand extends Command
         $daysBeforeSubscriptionExpiration = (int) config('notifications.days_before_subscription_expiration');
 
         $subscriptionsNotifyEnding = Subscription::join('subscription_plans', 'subscriptions.subscription_plan_id', '=', 'subscription_plans.id')
-            ->select('subscriptions.id, subscriptions.email, subscriptions.name, subscriptions.surname, subscriptions.reference, subscriptions.total_charges, subscription_plans.expiration_time')
+            ->select('subscriptions.id', 'subscriptions.reference')
             ->where('subscription_plans.subscription_period', '<>', SubscriptionPeriods::DAILY->value)
-            ->where('subscriptions.total_charges', '=', 'subscription_plans.expiration_time')
+            ->whereColumn('subscriptions.total_charges', 'subscription_plans.expiration_time')
             ->where('subscriptions.status', SubscriptionStatus::ACTIVE->value)
             ->whereBetween('next_billing_date', [Carbon::now(), Carbon::now()->addDays($daysBeforeSubscriptionExpiration)])
             ->get();
