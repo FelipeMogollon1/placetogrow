@@ -112,9 +112,9 @@ class SubscriptionController extends Controller
             ->join('subscriptions', 'subscriptions.subscription_plan_id', '=', 'subscription_plans.id')
             ->where('subscriptions.id', $id)->get();
 
-        $subscriptionPlans = SubscriptionPlan::select('subscription_plans.*')
-            ->join('microsites', 'subscription_plans.microsite_id', '=', 'microsites.id')
-            ->where('active', true)->get();
+        $subscriptionPlans = SubscriptionPlan::whereIn('microsite_id', function ($query) use ($id) {
+            $query->select('microsite_id')->from('subscriptions')->where('id', $id);
+        })->where('active', true)->get();
 
         return Inertia::render('Subscriptions/Edit', compact('subscription', 'subscriptionPlans'));
     }
