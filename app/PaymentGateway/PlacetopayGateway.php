@@ -4,6 +4,7 @@ namespace App\PaymentGateway;
 
 use App\Constants\AdditionalValueTypes;
 use App\Constants\PaymentStatus;
+use App\Constants\SubscriptionPeriods;
 use App\Constants\SubscriptionStatus;
 use App\Contracts\PaymentGatewayContract;
 use App\Exceptions\GatewayException;
@@ -431,10 +432,10 @@ class PlacetopayGateway implements PaymentGatewayContract
     protected function calculateNextBillingDate(Carbon $currentDate, string $period): Carbon
     {
         return match ($period) {
-            'daily' => $currentDate->copy()->addDay(),
-            'weekly' => $currentDate->copy()->addWeek(),
-            'monthly' => $currentDate->copy()->addMonth(),
-            'yearly' => $currentDate->copy()->addYear(),
+            SubscriptionPeriods::DAILY->value => $currentDate->copy()->addDay(),
+            SubscriptionPeriods::WEEKLY->value => $currentDate->copy()->addWeek(),
+            SubscriptionPeriods::MONTHLY->value => $currentDate->copy()->addMonth(),
+            SubscriptionPeriods::YEARLY->value => $currentDate->copy()->addYear(),
             default => throw new \Exception("Invalid subscription period: $period"),
         };
     }
