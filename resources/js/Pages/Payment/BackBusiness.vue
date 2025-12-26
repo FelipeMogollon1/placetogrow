@@ -101,8 +101,10 @@ const formatDate = (dateString) => {
                     </div>
                     <div class="pb-1">
                         <dt class="text-md font-medium leading-6 text-gray-400">{{ $t('voucher.paid') }}</dt>
-                        <dd v-if="payment.currency === 'USD' " class="text-md leading-6 text-gray-700 font-semibold">$ {{ payment.amount.toLocaleString('en-US') }}</dd>
-                        <dd v-else class="text-md leading-6 text-gray-700 font-semibold">$ {{ payment.amount.toLocaleString('es-CO') }}</dd>
+                        <dd class="text-md leading-6 text-gray-700 font-semibold">
+                            $ {{ (payment.amount * 1).toLocaleString(payment.currency === 'USD' ? 'en-US' : 'es-CO') }}
+                        </dd>
+
                     </div>
                     <div class="pb-1">
                         <dt class="text-md font-medium leading-6 text-gray-400">{{ $t('voucher.product') }}</dt>

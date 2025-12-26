@@ -2,14 +2,16 @@
 
 namespace App\Console\Commands;
 
+use App\Constants\PaymentStatus;
+use App\Constants\SubscriptionStatus;
 use App\Infrastructure\Persistence\Models\Invoice;
 use App\Infrastructure\Persistence\Models\Payment;
 use App\Infrastructure\Persistence\Models\Subscription;
-use App\Jobs\SoluctionInvoiceJob;
-use App\Jobs\SolutionInvoiceJob;
-use App\Jobs\SolutionPaymentJob;
-use App\Jobs\SolutionSubscriptionJob;
+use App\Jobs\Invoice\SolutionInvoiceJob;
+use App\Jobs\Payment\SolutionPaymentJob;
+use App\Jobs\Subscription\SolutionSubscriptionJob;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class TransactionsConsult extends Command
 {
@@ -32,20 +34,21 @@ class TransactionsConsult extends Command
      */
     public function handle(): void
     {
-        $payments = Payment::where('status', 'pending')->get();
+        Log::info('start the command transactions-consult');
+        $payments = Payment::where('status', PaymentStatus::PENDING->value)->orWhereNull('status')->get();
         foreach ($payments as $payment) {
             SolutionPaymentJob::dispatch($payment);
         }
 
-        $subscriptions = Subscription::where('status', 'approved')->get();
+        $subscriptions = Subscription::where('status', SubscriptionStatus::PENDING->value)->get();
         foreach ($subscriptions as $subscription) {
             SolutionSubscriptionJob::dispatch($subscription);
         }
 
-        $invoices = Invoice::where('status', 'pending')->get();
+        $invoices = Invoice::where('status', PaymentStatus::PENDING->value)->get();
         foreach ($invoices as $invoice) {
             SolutionInvoiceJob::dispatch($invoice);
         }
-
+        Log::info('finish the command transactions-consult');
     }
 }

@@ -3,9 +3,9 @@
 namespace Tests\Feature\Payments;
 
 use App\Constants\PaymentStatus;
-use App\Infrastructure\Persistence\Models\Payment;
 use App\Infrastructure\Persistence\Models\Microsite;
-use App\Jobs\SolutionPaymentJob;
+use App\Infrastructure\Persistence\Models\Payment;
+use App\Jobs\Payment\SolutionPaymentJob;
 use App\PaymentGateway\PlacetopayGateway;
 use Dnetix\Redirection\Message\RedirectInformation;
 use Dnetix\Redirection\Message\RedirectResponse;

@@ -56,7 +56,7 @@ class MicrositeController extends Controller
     {
         $this->authorize(Abilities::VIEW->value, Microsite::class);
         $microsite = Microsite::withCategory($id)->firstOrFail()->toArray();
-        $subscriptionPlans = SubscriptionPlan::where('microsite_id', $id)->orderBy('name', 'asc')->paginate(6);
+        $subscriptionPlans = SubscriptionPlan::where('microsite_id', $id)->where('active', true)->orderBy('name', 'asc')->paginate(6);
         $arrayConstants = $this->getCommonData();
 
         return Inertia::render('Microsites/Show', compact('microsite', 'arrayConstants', 'subscriptionPlans'));
@@ -82,9 +82,16 @@ class MicrositeController extends Controller
     public function destroy(int $id, DestroyMicrositeAction $destroyAction): RedirectResponse
     {
         $this->authorize(Abilities::DELETE->value, Microsite::class);
+
+        if ($destroyAction->hasSubscriptions($id)) {
+            return redirect()->route('subscriptions.index', $id)
+                ->with('error', 'Cannot delete microsite with active subscriptions.');
+        }
+
         $destroyAction->execute($id);
 
-        return to_route('microsites.index');
+        return to_route('microsites.index')
+            ->with('success', 'Microsite deleted successfully.');
     }
 
     public function welcomeIndex(): Response
@@ -97,7 +104,7 @@ class MicrositeController extends Controller
     public function paymentForm(string $slug): Response
     {
         $microsite = Microsite::where('slug', $slug)->with('form')->firstOrFail();
-        $subscriptionPlans = SubscriptionPlan::where('microsite_id', $microsite->id)->orderBy('name', 'asc')->paginate(6);
+        $subscriptionPlans = SubscriptionPlan::where('microsite_id', $microsite->id)->where('active', true)->orderBy('name', 'asc')->paginate(6);
         $arrayConstants = $this->getCommonData();
 
         return Inertia::render('Form/PaymentForm', compact('microsite', 'subscriptionPlans', 'arrayConstants'));

@@ -5,6 +5,7 @@ import { route } from 'ziggy-js';
 import { EyeIcon, XCircleIcon } from '@heroicons/vue/24/outline';
 import Paginator from '@/Components/Paginator.vue';
 import SpanForm from "@/Layouts/Atoms/SpanForm.vue";
+import {PencilIcon} from "@heroicons/vue/24/outline/index.js";
 
 
 const props = defineProps({
@@ -38,11 +39,11 @@ const sortData = (key) => {
 
 const statusColors = {
     PENDING: 'yellow',
-    APPROVED: 'green',
-    REJECTED: 'red',
-    APPROVED_PARTIAL: 'cyan',
-    PARTIAL_EXPIRED: 'orange',
-    UNKNOWN: 'blue'
+    ACTIVE: 'green',
+    CANCELLED: 'red',
+    PAUSED: 'cyan',
+    REJECTED: 'orange',
+    EXPIRED: 'blue'
 };
 
 const typeMicrosite = {
@@ -83,7 +84,7 @@ const typeMicrosite = {
 
                         <tr v-if="!props.data.length" class="text-center">
                             <td colspan="100%" class="px-6 py-3 text-sm text-gray-500">
-                                {{ $t('no_information') }}<!-- Mensaje de no información -->
+                                {{ $t('no_information') }}
                             </td>
                         </tr>
 
@@ -120,17 +121,24 @@ const typeMicrosite = {
 
                             </td>
                             <td>
-                                <div class="text-gray-400 flex justify-center">
+                                <div class="text-gray-400 flex justify-center items-center space-x-2">
+
                                     <Link
-                                        v-if="can('subscriptions.show')" class="mx-1"
+                                        v-if="can('subscriptions.edit') && item.status === 'ACTIVE'" class="mx-1"
+                                        :href="route('subscriptions.edit', item.id)"
+                                        :title="$t('subscription.editSubscription')"
+                                    >
+                                        <PencilIcon class="w-6 hover:text-gray-500"/>
+                                    </Link>
+                                    <Link
+                                        v-if="can('subscriptions.show') " class="mx-1"
                                         :href="route('subscriptions.show', item.id)"
                                         :title="$t('subscription.detailer')"
                                     >
                                         <EyeIcon class="w-6 hover:text-gray-500"/>
                                     </Link>
                                     <Link
-                                        v-if="can('subscriptions.destroy') && item.status !== 'REJECTED' "
-                                          class="mx-1"
+                                        v-if="can('subscriptions.destroy') && item.status === 'ACTIVE'" class="mx-1"
                                         :href="route('subscriptions.destroy', item.id)"
                                         method="delete"
                                         as="button"
@@ -138,7 +146,6 @@ const typeMicrosite = {
                                     >
                                         <XCircleIcon title="Cancelar" class="w-6 hover:text-red-500"/>
                                     </Link>
-
 
                                 </div>
                             </td>

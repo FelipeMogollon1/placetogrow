@@ -6,6 +6,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import {watch} from "vue";
 
 const props = defineProps({
     user:{
@@ -16,11 +17,17 @@ const props = defineProps({
     },
     roles:{
         type:Object
+    },
+    documentTypes:{
+        type:Object
     }
 })
 
 const initialValues = {
     name : props.user.name,
+    surname : props.user.surname,
+    document_type : props.user.document_type,
+    document : props.user.document,
     email : props.user.email,
     role: props.user.roles[0].name,
     password: "",
@@ -29,8 +36,33 @@ const initialValues = {
 
 const form = useForm(initialValues)
 
+const documentPatterns = {
+    CC: /^[1-9][0-9]{3,9}$/,
+    CE: /^([a-zA-Z]{1,5})?[1-9][0-9]{3,7}$/,
+    TI: /^[1-9][0-9]{4,11}$/,
+    NIT: /^[1-9]\d{6,9}$/,
+};
+
+watch(() => form.document_type, (newType) => {
+    if (newType && form.document) {
+        validateDocument(form.document, newType);
+    }
+});
+
+const validateDocument = (document, type) => {
+    const pattern = documentPatterns[type];
+    if (pattern && !pattern.test(document)) {
+        form.errors.document = `El documento no es válido para el tipo ${type}.`;
+    } else {
+        form.errors.document = null;
+    }
+};
 const submit = () => {
-    form.put(route('users.update',props.user.id))
+    validateDocument(form.document, form.document_type);
+
+    if (!form.errors.document) {
+        form.put(route('users.update',props.user.id))
+    }
 }
 
 </script>
@@ -70,7 +102,47 @@ const submit = () => {
                                 />
                                 <InputError class="mt-2" :message="form.errors.name" />
                             </div>
+                            <div>
+                                <InputLabel for="surname" :value="$t('user.surname')"  />
+                                <TextInput
+                                    id="surname"
+                                    type="text"
+                                    class="mt-1 block w-full"
+                                    v-model="form.surname"
+                                    autofocus
+                                    autocomplete="surname"
+                                    :placeholder="$t('user.name')"
+                                />
+                                <InputError class="mt-2" :message="form.errors.surname" />
+                            </div>
 
+                            <div>
+                                <InputLabel for="document_type" :value="$t('microsites_table.document_type')" />
+                                <select
+                                    name="document_type"
+                                    id="document_type"
+                                    class="w-full mt-1 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                    v-model="form.document_type"
+                                >
+                                    <option value="">{{ $t('select') }}</option>
+                                    <option v-for="(type, index) in documentTypes" :key="index" :value="type">{{ $t(`documentType.${type}`) }}</option>
+                                </select>
+                                <InputError class="mt-2" :message="form.errors.document_type" />
+                            </div>
+
+                            <div>
+                                <InputLabel for="document" :value="$t('microsites_table.document')" />
+                                <TextInput
+                                    id="document"
+                                    type="text"
+                                    class="mt-1 block w-full"
+                                    v-model="form.document"
+                                    autofocus
+                                    autocomplete="document"
+                                    placeholder="1234567890"
+                                />
+                                <InputError class="mt-2" :message="form.errors.document" />
+                            </div>
                             <div>
                                 <InputLabel for="email" :value="$t('user.email')" />
                                 <TextInput
@@ -140,7 +212,7 @@ const submit = () => {
 
                             <div class="flex justify-center col-span-2">
                                 <PrimaryButton >
-                                    {{ $t('user.create_user') }}
+                                    {{ $t('user.update_user') }}
                                 </PrimaryButton>
                             </div>
 

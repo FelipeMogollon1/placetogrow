@@ -5,10 +5,13 @@ namespace App\Infrastructure\Persistence\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Notifications\Notifiable;
 
 class Subscription extends Model
 {
     use HasFactory;
+    use Notifiable;
 
     protected $fillable = [
         'reference',
@@ -25,8 +28,11 @@ class Subscription extends Model
         'paid_at',
         'token',
         'sub_token',
+        'franchiseName',
         'lastDigits',
         'validUntil',
+        'next_billing_date',
+        'total_charges',
         'subscription_plan_id',
         'microsite_id',
         'status',
@@ -40,5 +46,10 @@ class Subscription extends Model
     public function microsite(): BelongsTo
     {
         return $this->belongsTo(Microsite::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(SubscriptionPayment::class);
     }
 }

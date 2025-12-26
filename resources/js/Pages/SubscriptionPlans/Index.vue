@@ -25,6 +25,7 @@ const props = defineProps({
 
 const headers = [
     "name",
+    "currency",
     "amount",
     "subscription_period",
     "expiration_time"

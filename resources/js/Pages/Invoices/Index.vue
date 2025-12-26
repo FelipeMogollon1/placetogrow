@@ -2,13 +2,17 @@
 import {Head, Link, router, useForm, usePage} from '@inertiajs/vue3';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import {MagnifyingGlassIcon, PhotoIcon} from "@heroicons/vue/24/outline/index.js";
-import {ref, computed, watch} from "vue";
+import {ref, computed, watch, watchEffect} from "vue";
 import { route } from "ziggy-js";
 import InvoiceTable from "@/Layouts/Organisms/InvoiceTable.vue";
 import {Listbox, ListboxButton, ListboxLabel, ListboxOption, ListboxOptions} from "@headlessui/vue";
-import {CheckIcon, ChevronUpDownIcon} from "@heroicons/vue/20/solid/index.js";
+import {CheckIcon, ChevronUpDownIcon, InboxArrowDownIcon, CalendarIcon} from "@heroicons/vue/20/solid/index.js";
 import {debounce} from "@/Utils/debounce.js";
 import { useI18n } from 'vue-i18n';
+import InvoiceUploadTable from "@/Layouts/Organisms/InvoiceUploadTable.vue";
+import InputError from "@/Components/InputError.vue";
+import TextInput from "@/Components/TextInput.vue";
+import InputLabel from "@/Components/InputLabel.vue";
 
 const { t } = useI18n();
 
@@ -18,6 +22,10 @@ defineProps({
         default: () => []
     },
     microsites: {
+        type: Object,
+        default: () => []
+    },
+    uploadInvoice:{
         type: Object,
         default: () => []
     }
@@ -53,23 +61,20 @@ watch(
 const headers = [
     "reference",
     "microsite_name",
-    "microsite_type",
     "name",
     "surname",
-    "email",
-    "document_type",
-    "document",
     "currency_type",
     "amount",
+    "expiration_date",
     "status",
-
 ];
 
 const selected = ref(null);
 
 const form = useForm({
     invoices: null,
-    microsite_id: null
+    microsite_id: null,
+    expiration_date: null
 });
 
 const fileInput = ref(null);
@@ -104,6 +109,28 @@ const submitForm = () => {
         forceFormData: true
     });
 };
+
+const downloadTemplate = () => {
+    window.location.href = route('invoices.download-template');
+};
+
+
+const page = usePage();
+const importErrors = ref( [])
+
+watchEffect(() => {
+    importErrors.value = page.props.flash.importErrors || [];
+});
+
+const headersUploadInvoice = [
+    "microsite",
+    "name",
+    "valid_records_count",
+    "total_records",
+    "created_at",
+    "status"
+];
+
 </script>
 
 <template>
@@ -117,18 +144,55 @@ const submitForm = () => {
 
         <form v-if="can('invoices.import')" @submit.prevent="submitForm" class="space-y-6 p-6 mt-5 bg-white rounded-lg shadow-md ">
 
-            <div>
-                <p class="text-gray-700 mb-2">{{ $t('invoices.selectImport') }}</p>
+            <div v-if="importErrors.length > 0" class="bg-red-100 text-red-700 p-4 mb-4 rounded-lg">
+                <p class="font-bold mb-2">Errores encontrados durante la importación:</p>
+                <ul class="space-y-4">
+                    <li v-for="(errorData, index) in importErrors" :key="index">
+                        <div class="mb-2">
+                            <p><strong>Fila {{ index + 1 }}:</strong></p>
+                            <ul class="ml-4">
+                                <li v-for="(value, key) in errorData.row" :key="key">
+                                    <strong>{{ key }}:</strong> {{ value }}
+                                </li>
+                            </ul>
+                        </div>
 
+                        <div class="ml-4 text-sm text-red-600">
+                            <ul>
+                                <li v-for="(fieldErrors, field) in errorData.errors" :key="field">
+                                    <strong>Error en el campo {{ field }}:</strong>
+                                    <ul class="ml-4 list-disc">
+                                        <li v-for="(message, messageIndex) in fieldErrors" :key="messageIndex">
+                                            {{ message }}
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
             </div>
 
-            <div class="flex items-center space-x-10">
 
+            <div class="flex justify-between">
+                <p class="text-gray-700 mb-2">{{ $t('invoices.selectImport') }}</p>
+                <button
+                    @click="downloadTemplate"
+                    class="inline-flex items-center px-4 py-2 bg-transparent border border-gray-500 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                >
+                    {{ $t('invoices.downloadTemplate') }}
+                    <InboxArrowDownIcon class="ml-4 w-6 text-gray-700 hover:text-white" />
+                </button>
+            </div>
+
+
+            <hr>
+            <div class="flex items-center space-x-20">
                 <div class="flex-grow">
                     <label class="flex items-center cursor-pointer">
-            <span class="inline-flex items-center px-4 py-2 bg-gray-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                {{ $t('invoices.selectFile') }}
-            </span>
+                    <span class="inline-flex items-center px-10 py-2 bg-gray-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                        {{ $t('invoices.selectFile') }}
+                    </span>
                         <input
                             ref="fileInput"
                             type="file"
@@ -142,7 +206,7 @@ const submitForm = () => {
                     <p class="text-red-500" v-if="form.errors.invoices">{{ form.errors.invoices }}</p>
                 </div>
 
-                  <div class="flex-grow">
+                <div class="flex-grow">
                     <Listbox as="div" v-model="selected">
                         <ListboxLabel v-if="selected" class="block text-sm font-medium leading-6 text-gray-900">
                             {{ $t('invoices.selectMicrosite') }}
@@ -167,13 +231,13 @@ const submitForm = () => {
                             <transition leave-active-class="transition ease-in duration-100" leave-from-class="opacity-100" leave-to-class="opacity-0">
                                 <ListboxOptions class="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                     <ListboxOption as="template" v-for="person in microsites" :key="person.id" :value="person" v-slot="{ active, selected }">
-                                        <li :class="[active ? 'bg-orange-600 text-white' : 'text-gray-900', 'relative cursor-default select-none py-2 pl-3 pr-9']">
+                                        <li :class="[active ? 'bg-orange-500 text-white' : 'text-gray-900', 'relative cursor-default select-none py-2 pl-3 pr-9']">
                                             <div class="flex items-center">
                                                 <img v-if="person.logo" class="h-6 w-6 flex-shrink-0 rounded-full" :src="`/storage/${person.logo}`" alt="Logo">
                                                 <PhotoIcon v-else class="h-6 w-6 flex-shrink-0 rounded-full"/>
                                                 <span :class="[selected ? 'font-semibold' : 'font-normal', 'ml-3 block truncate']">{{ person.name }}</span>
                                             </div>
-                                            <span v-if="selected" :class="[active ? 'text-white' : 'text-orange-600', 'absolute inset-y-0 right-0 flex items-center pr-4']">
+                                            <span v-if="selected" :class="[active ? 'text-white' : 'text-orange-600', 'absolute inset-y-0 right-0 flex items-center pr-4 ']">
                                     <CheckIcon class="h-5 w-5" aria-hidden="true" />
                                 </span>
                                         </li>
@@ -185,6 +249,23 @@ const submitForm = () => {
                     <input type="hidden" name="microsite_id" :value="selected?.id" />
                       <p class="text-red-500" v-if="form.errors.microsite_id">{{ form.errors.microsite_id }}</p>
                 </div>
+
+                <div class="flex-grow">
+                    <InputLabel for="expiration_date" :value="$t('invoices.expiration_date')" />
+                    <div class="relative mt-1">
+                        <TextInput
+                            id="expiration_date"
+                            type="date"
+                            class="block w-full border border-orange-300 rounded-md focus:border-orange-500 focus:ring-orange-500 "
+                            v-model="form.expiration_date"
+                            autofocus
+                            autocomplete="off"
+                            required
+                        />
+
+                    </div>
+                    <InputError class="mt-2" :message="form.errors.expiration_date" />
+                </div>
             </div>
 
             <div class="flex justify-center">
@@ -194,6 +275,11 @@ const submitForm = () => {
                     {{ $t('invoices.matter') }}
                 </button>
             </div>
+            <hr>
+            <InvoiceUploadTable v-if="uploadInvoice.data.length > 0"
+                                :data="uploadInvoice.data"
+                                :headers="headersUploadInvoice"
+                                :paginator="uploadInvoice"/>
         </form>
 
 
@@ -204,6 +290,6 @@ const submitForm = () => {
                       :placeholder="$t('invoices.searchInvoice')">
                <MagnifyingGlassIcon class="absolute left-3 top-1/2 transform -translate-y-1/2 w-6 text-gray-600" />
            </div>
-        <InvoiceTable :data="invoices.data" :paginator="invoices" :headers="headers" />
+        <InvoiceTable :data="invoices.data" :paginator="invoices" :headers="headers"/>
     </AuthenticatedLayout>
 </template>

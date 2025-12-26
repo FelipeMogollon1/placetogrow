@@ -11,6 +11,7 @@ class FormController extends Controller
 {
     public function update(UpdateFormRequest $request, string $id, UpdateFormAction $action): RedirectResponse
     {
+
         $action->execute($id, $request->validated());
 
         return redirect()->back()->with('success', 'Form updated.');

@@ -20,16 +20,18 @@ class SubscriptionPlan extends Model
         'currency',
         'subscription_period',
         'expiration_time',
-        'additional_info',
-        'expiration_additional_info',
         'microsite_id',
+        'active',
     ];
-
 
     protected $casts = [
         'description' => 'array',
         'amount' => 'decimal:2',
         'subscription_period' => 'string',
+        'expiration_time' => 'integer',
+        'active' => 'boolean',
+        'microsite_id' => 'integer',
+        'currency' => 'string',
     ];
 
     public function microsite(): BelongsTo
@@ -40,6 +42,16 @@ class SubscriptionPlan extends Model
     public function subscriptions(): HasMany
     {
         return $this->hasMany(Subscription::class);
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(SubscriptionPayment::class);
+    }
+
+    public function scopeActivos($query)
+    {
+        return $query->where('active', true);
     }
 
 }

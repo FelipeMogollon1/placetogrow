@@ -21,4 +21,5 @@ class InvoicePolicy
     {
         return $user->hasPermissionTo(Permissions::INVOICES_DESTROY);
     }
+
 }

@@ -1,7 +1,7 @@
 <?php
 
 use App\Constants\DocumentTypes;
-use App\Constants\PaymentStatus;
+use App\Constants\SubscriptionStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -25,10 +25,13 @@ return new class () extends Migration {
             $table->timestamp('paid_at')->nullable();
             $table->text('token')->nullable();
             $table->text('sub_token')->nullable();
+            $table->text('franchiseName')->nullable();
             $table->text('lastDigits')->nullable();
             $table->date('validUntil')->nullable();
-            $table->enum('status', PaymentStatus::getPaymentStatus())->nullable();
+            $table->enum('status', SubscriptionStatus::getAllSubscriptionStatus())->default(SubscriptionStatus::PENDING);
             $table->string('process_identifier')->nullable();
+            $table->timestamp('next_billing_date')->nullable();
+            $table->integer('total_charges')->default(0);
             $table->foreignId('subscription_plan_id')->constrained()->onDelete('cascade');
             $table->foreignId('microsite_id')->constrained()->onDelete('cascade');
             $table->timestamps();

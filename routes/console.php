@@ -1,8 +1,18 @@
 <?php
 
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Schedule;
 
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote')->hourly();
+Schedule::command('app:transactions-consult')
+    ->withoutOverlapping(10)->everyFifteenMinutes()->runInBackground();
+
+Schedule::command('app:daily-subscription-collection')
+    ->withoutOverlapping(10)->dailyAt('10:00')->runInBackground();
+
+Schedule::command('app:expiring-invoices')
+    ->withoutOverlapping(10)->dailyAt('11:00')->runInBackground();
+
+Schedule::command('app:expiring-subscriptions')
+    ->withoutOverlapping(10)->dailyAt('12:00')->runInBackground();
+
+Schedule::command('app:upcoming-subscription-collections')
+    ->withoutOverlapping(10)->dailyAt('13:00')->runInBackground();

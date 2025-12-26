@@ -22,7 +22,7 @@ return new class () extends Migration {
             $table->string('surname')->nullable();
             $table->string('email')->nullable();
             $table->enum('document_type', DocumentTypes::getDocumentTypes());
-            $table->bigInteger('document')->nullable();
+            $table->string('document')->nullable();
             $table->text('description')->nullable();
             $table->enum('currency_type', CurrencyTypes::getCurrencyType());
             $table->decimal('amount', 10, 2)->nullable();
@@ -31,9 +31,12 @@ return new class () extends Migration {
             $table->string('process_url')->nullable();
             $table->string('request_id')->nullable();
             $table->string('process_identifier')->nullable();
+            $table->date('expiration_date')->nullable();
             $table->timestamps();
+
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('microsite_id')->references('id')->on('microsites')->onDelete('cascade');
+            $table->unique(['reference','document_type','document', 'microsite_id']);
         });
     }
 

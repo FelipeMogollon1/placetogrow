@@ -7,6 +7,7 @@ import TextInput from "@/Components/TextInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import { FaceFrownIcon } from "@heroicons/vue/24/outline/index.js";
 import {route} from "ziggy-js";
+import Paginator from "@/Components/Paginator.vue";
 
 const selectedCurrency = ref('USD');
 
@@ -46,6 +47,10 @@ const props = defineProps({
     disableSubmit: {
         type: Boolean,
         default: false
+    },
+    forms:{
+        type: Object,
+        default: () => []
     }
 });
 
@@ -255,9 +260,8 @@ watch(() => form.document, validateDocument);
 
         <div v-if="subscriptionPlans.data && subscriptionPlans.data.length > 0">
 
-
             <p class="text-center mb-6" :class="colorClasses.primaryText">
-                {{ subscriptionPlans.data[0].additional_info || '' }}
+                {{ forms.additional_info || '' }}
             </p>
 
         </div>
@@ -282,10 +286,11 @@ watch(() => form.document, validateDocument);
                     colorClasses.primaryText,
                 ]"
             >
-                <h2 :class="['lg:text-3xl md:text-3xl sm:text-4xl font-bold mb-2', colorClasses.primaryText]">{{ subscription.name }}</h2>
+                <h2 :class="['lg:text-3xl md:text-3xl sm:text-4xl font-bold mb-2 capitalize', colorClasses.primaryText]">{{ subscription.name }}</h2>
                 <p :class="['lg:text-4xl md:text-3xl sm:text-4xl font-bold mb-4', colorClasses.secondaryText]">
-                    {{ subscription.expiration_time }}x ${{ subscription.amount}} {{ subscription.currency}} / {{ $t(`subscription.${subscription.subscription_period}`) }}</p>
-                <p class="mb-4 lg:text-2xl md:text-xl sm:text-3xl">{{ $t('subscription.totalPrice') }} ${{ (subscription.expiration_time * subscription.amount).toFixed(2) }} {{ subscription.currency}}</p>
+                    {{ subscription.expiration_time }}x $ {{ (subscription.amount * 1).toLocaleString(subscription.currency === 'USD' ? 'en-US' : 'es-CO') }} {{ subscription.currency}} / {{ $t(`subscription.${subscription.subscription_period}`) }}
+                </p>
+                <p class="mb-4 lg:text-2xl md:text-xl sm:text-3xl">{{ $t('subscription.totalPrice') }} ${{ (subscription.expiration_time * subscription.amount).toLocaleString(subscription.currency === 'USD' ? 'en-US' : 'es-CO') }} {{ subscription.currency}}</p>
                 <div class="flex justify-center">
                     <ul class="grid grid-cols-1 gap-1">
                         <li
@@ -299,6 +304,9 @@ watch(() => form.document, validateDocument);
                     </ul>
                 </div>
             </div>
+        </div>
+        <div v-if="!showForm" class="flex justify-center">
+            <Paginator :paginator="subscriptionPlans.links"/>
         </div>
 
         <div v-else class="bg-white p-6 rounded-lg shadow-xl w-full max-w-xl mx-auto">
@@ -476,7 +484,7 @@ watch(() => form.document, validateDocument);
 
         <div v-if="subscriptionPlans.data && subscriptionPlans.data.length > 0">
             <p v-if="!showForm" :class="['text-sm text-center mt-6 text-gray-50']">
-                {{ subscriptionPlans.data[0].expiration_additional_info || '' }}
+                {{ forms.expiration_additional_info || '' }}
             </p>
         </div>
     </div>

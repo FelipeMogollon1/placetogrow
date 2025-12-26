@@ -61,7 +61,7 @@ class UpdateSubscriptionPlanRequest extends FormRequest
                 'max:255',
             ],
             'microsite_id' => [
-                'sometimes',
+                'nullable',
                 'exists:microsites,id',
             ],
         ];

@@ -46,7 +46,9 @@ class SubscriptionIndexViewModel extends ViewModel
                     ->where('microsites.user_id', $this->user->id);
             } elseif (in_array(Roles::GUEST->value, $rolesUser)) {
                 $subscriptionsQuery
-                    ->where('subscriptions.email', $this->user->email);
+                    ->where('subscriptions.email', $this->user->email)
+                    ->where('subscriptions.document_type', $this->user->document_type)
+                    ->where('subscriptions.document', $this->user->document);
             }
         }
 
